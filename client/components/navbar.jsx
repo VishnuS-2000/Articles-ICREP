@@ -33,7 +33,7 @@ const NavBar=()=>{
 
 
             
-        <div className={`w-full flex  fixed top-0 right-0 z-50 px-2 py-2  left-0  h-[60px] items-center justify-between bg-white  ${scroll?"drop-shadow":"shadow-none"} desktop:flex-col desktop:p-0 `}>
+        <div className={`w-full  flex  sticky top-0 right-0 z-50   left-0   items-center justify-between bg-white  ${scroll?"drop-shadow":"shadow-none"} desktop:flex-col desktop:p-0 `}>
 
 
     {/*  Desktop */}
@@ -41,7 +41,7 @@ const NavBar=()=>{
 
 
 
-<div className='flex  w-full space-x-8 px-5 py-1 bg-primary hidden desktop:flex'>
+<div className='flex  w-full space-x-8 px-5 py-1 bg-gradient-to-r from-indigo-800 to-primary hidden desktop:flex'>
     
     <Link href='/'>
     <h1 className='text-white font-[500] cursor-pointer'>Home</h1>
@@ -77,7 +77,7 @@ const NavBar=()=>{
 
     <div className='flex flex-col justify-center items-center '>
 
-       <p className='text-sm font-[600] text-center tablet:text-lg desktop:text-2xl'>JOURNAL OF INTERDISCIPLINARY STUDIES</p>
+       <p className='text-xs font-[600] text-center tablet:text-lg desktop:text-2xl'>JOURNAL OF INTERDISCIPLINARY STUDIES</p>
 
     </div>
     
@@ -91,9 +91,9 @@ const NavBar=()=>{
 
 
         
-    {show?<div className='fixed w-full text-white opacity-100 left-0 right-0 top-[60px] bg-primary bg-blur-3xl flex items-center justify-start drop-shadow-lg  bg-white h-[10%] tablet:h-[5%] z-50 duration-500 transition-all desktop:hidden'>
+    {show?<div className='fixed w-full text-white opacity-100 left-0 right-0 top-[60px] bg-gradient-to-r from-indigo-900 to-primary bg-blur-3xl flex items-center justify-start drop-shadow-lg  bg-white h-[10%] tablet:h-[6%] z-50 duration-500 transition-all desktop:hidden'>
       
-      <button className='absolute right-1 p-1 top-1 rounded-full hover:bg-slate-100 hover:text-black ' onClick={()=>setShow(false)}>
+      <button className='absolute right-1 p-1 top-1 rounded-full ' onClick={()=>setShow(false)}>
       <CloseIcon/>
       </button>
       
