@@ -12,11 +12,12 @@ const NavBar=()=>{
 
     const handleScroll=()=>{
         if(window.scrollY>0){
+            console('scroll')
             setShow(false)
             setScroll(true)
         }
         else{
-            setScroll|(false)
+            setScroll(false)
         }    
 
     }
@@ -64,7 +65,7 @@ const NavBar=()=>{
 
 
 
-    {!scroll&&<button className='fixed left-[2px] desktop:hidden ' onClick={()=>setShow(true)}><MoreVertIcon/></button>}
+    {!show&&<button className='fixed top-3 left-[1px] desktop:hidden ' onClick={()=>setShow(true)}><MoreVertIcon/></button>}
 
 
     <Link href={'https://icrep.cusat.ac.in'}>
@@ -77,7 +78,7 @@ const NavBar=()=>{
 
     <div className='flex flex-col justify-center items-center '>
 
-       <p className='text-xs font-[600] text-center tablet:text-lg desktop:text-2xl'>JOURNAL OF INTERDISCIPLINARY STUDIES</p>
+       <p className='text-xs font-[600] text-center tablet:text-lg desktop:text-xl'>JOURNAL OF INTERDISCIPLINARY STUDIES</p>
 
     </div>
     
@@ -91,7 +92,7 @@ const NavBar=()=>{
 
 
         
-    {show?<div className='fixed w-full text-white opacity-100 left-0 right-0 top-[60px] bg-gradient-to-r from-indigo-900 to-primary bg-blur-3xl flex items-center justify-start drop-shadow-lg  bg-white h-[10%] tablet:h-[6%] z-50 duration-500 transition-all desktop:hidden'>
+    {show?<div className='fixed w-full text-white opacity-100 left-0 right-0 z-50 top-[60px] bg-gradient-to-r from-indigo-900 to-primary bg-blur-3xl flex items-center justify-start drop-shadow-lg  bg-white h-[10%] tablet:h-[6%] z-50 duration-500 transition-all desktop:hidden'>
       
       <button className='absolute right-1 p-1 top-1 rounded-full ' onClick={()=>setShow(false)}>
       <CloseIcon/>

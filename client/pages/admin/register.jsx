@@ -16,12 +16,12 @@ import {
   
   import VisibilityIcon from "@mui/icons-material/Visibility";
   import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
-
+  import KeyIcon from '@mui/icons-material/Key';
   import Link  from "next/link"
 
 
 
-export default function Login(){
+export default function Register(){
 
 
     const [showPassword, setShowPassword] = useState(false);
@@ -36,21 +36,17 @@ export default function Login(){
 
 
 
-    return     <div className=" min-h-screen tablet:bg-gradient-to-r from-primary to-blue-800 flex flex-col w-full  justify-center tablet:items-center">
+    return     <div className="  min-h-screen tablet:bg-gradient-to-r from-primary to-blue-800 flex flex-col w-full  justify-center tablet:items-center">
     <form onSubmit={handleSubmit}>
-      <div className="fixed top-0 right-0 left-0  desktop:relative desktop:top-[-50px]">
-        
+      <div className="fixed top-0 right-0 left-0  tablet:relative tablet:top-[-50px]">
         {/* {notification.createdAt && <Notification options={notification} />} */}
       </div>
-      
 
-      <div className="flex flex-col w-full bg-white p-5  space-y-5 tablet:px-10 tablet:py-24 flex-[0.8] tablet:drop-shadow-lg  tablet:rounded-md tablet:w-[560px]   desktop:space-y-8">
-        
-    
-        <h1 className="text-2xl font-[700] desktop:text-3xl">Login</h1>
+      <div className="flex flex-col w-full bg-white p-5  space-y-5 tablet:px-10 tablet:py-20 tablet:drop-shadow-lg  tablet:rounded-md tablet:w-[560px]   desktop:space-y-8">
+        <h1 className="text-2xl font-bold desktop:text-3xl">Create Account</h1>
 
         <FormControl>
-          <FormLabel>Username</FormLabel>
+          <FormLabel>Email</FormLabel>
           <InputGroup>
             <InputLeftElement
               children={
@@ -70,15 +66,14 @@ export default function Login(){
             />
           </InputGroup>
         </FormControl>
-
-        <div className="space-y-3">
-          <FormControl>
+        
+        <FormControl>
             <FormLabel>Password</FormLabel>
             <InputGroup>
               <InputLeftElement
                 children={
                   <button className="text-slate-500 ">
-                    <LockIcon />
+                    <KeyIcon />
                   </button>
                 }
               />
@@ -111,15 +106,38 @@ export default function Login(){
             </InputGroup>
           </FormControl>
 
+        <div className="space-y-3">
+       
+
+
+          <FormControl>
+            <FormLabel>Confirm Password</FormLabel>
+          <InputGroup>
+              <InputLeftElement
+                children={
+                  <button className="text-slate-500 ">
+                    <LockIcon />
+                  </button>
+                }
+              />
+              <Input
+                variant="filled"
+                value={account.confirm}
+                type={"password"}
+                onChange={(e) => {
+                  setAccount({ ...account, confirm: e.target.value });
+                }}
+                autoComplete="off"
+              />
+      
+            </InputGroup>
+
+          </FormControl>
+
           <div className="flex w-full justify-between">
-          <Link href="/admin/register">
+          <Link href="/admin/login">
               <p className="text-gray-600 cursor-pointer text-sm">
-                Create Account
-              </p>
-            </Link>
-            <Link href="/admin/forgotpassword">
-              <p className="text-gray-600 cursor-pointer text-sm">
-                Forgot Password
+                Already member?
               </p>
             </Link>
           </div>
