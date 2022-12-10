@@ -1,18 +1,33 @@
 import {menuItems} from "../Dashboard/Menu"
 import {useRouter} from "next/router"
 
-
+import axios from "../../axios"
+import Image from "next/image"
 export const Sidebar=({active,toggler})=>{
 
     const router=useRouter()
-    const handleLogout=()=>{
-        router.push('/admin/login')
-    }
+    const handleLogout=async()=>{
+
+
+        const result=await axios.get('/auth/logout',{
+            headers:{'Content-Type':'application/json'},
+            withCredentials:'include'
+            
+        })
+        console.log(result)
+
+        if(result?.status==200)
+            {
+                router.replace('/admin/login')
+
+            }
+
+    }   
 
     return <div className="flex z-[50] fixed bottom-0 overflow-x-auto border-t border-slate-200 bg-white  p-2 justify-between w-full desktop:justify-start desktop:flex-col desktop:h-screen desktop:w-[20%] desktop:space-y-3 desktop:border-r desktop:border-slate-200 desktop:px-3">
         
         <div className="hidden desktop:flex justify-center select-none">
-        <img src="/assets/logo/icrep.png" className="flex-[0.1] max-w-[180px]" />
+        <Image src="/assets/logo/icrep.png" className="flex-[0.1] max-w-[180px]" width={180} height={400} />
         </div>
 
 

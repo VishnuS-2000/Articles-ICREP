@@ -3,19 +3,22 @@ import { AuthorContext } from "../CurrentProvider"
 
 import { FormControl,FormLabel,Input,Textarea,Avatar,Select, FormHelperText, FormErrorMessage,InputRightElement,InputGroup } from "@chakra-ui/react"
 import { useCurrent } from "../useCurrent"
+import useAxiosPrivate from "../../../hooks/useAxiosPrivate"
+import { Spinner } from "@chakra-ui/react"
+
 export const EditAuthor=()=>{
     const {current}=useCurrent()
+    const axiosPrivate=useAxiosPrivate()
 
-
-
+    console.log(current?.author)
     const [account,setAccount]=useState({
-        firstName:current?.author?.firstName,
-        lastName:current?.author.lastName,
+        firstName:current?.author.name.split(' ')[0],
+        lastName:current?.author.name.split(' ')[1],
         email:current?.author.email,
         designation:current?.author.designation,
         bio:current?.author?.bio,
-        specializations:current?.author.specializations,
-        image:current?.author.image
+        specialization:current?.author.specialization,
+        image:current?.author.photo
     })
 
     const [errorFields,setErrorFields]=useState([false,false,false,false,false])
@@ -25,10 +28,14 @@ export const EditAuthor=()=>{
         email:null,
         designation:null,
         bio:null,
-        specializations:null,
+        specialization:null,
         image:null
         
     })
+
+    
+    const [loading,setLoading]=useState(false)
+
 
     const acceptedFileTypes=['image/png','image/jpg','image/jpeg']
 
@@ -37,27 +44,66 @@ export const EditAuthor=()=>{
             const raw=target.files[0]
             const url=URL.createObjectURL(target?.files[0])
             setChanges({...changes,image:{raw,url}})
-        }
+        }   
         else{
             alert("Invalid file type" )
         }
     }
 
 
-    const handleSubmit = (e)=>{
+    const handleSubmit = async(e)=>{
         e.preventDefault()
-        console.log(account)
-        alert('submitted')
+        setLoading(true)
+        try{
+
+            let fileName=null
+            
+            if(account?.image!==current?.author.photo){
+
+            console.log(account?.image.raw)
+            const imageResult=await axiosPrivate.post('/author/image',{
+                file:account?.image?.raw
+            },{
+                headers:{'Content-Type':'multipart/form-data'}
+            })
+            if(imageResult?.status==200){
+                fileName=imageResult?.data?.result
+            }
+            else{
+                alert("File Upload Failed")
+                return
+            }
+                }
+
+            const response=await axiosPrivate.put(`/author/${current?.author?.id}`,{
+                name:account.firstName+' '+account.lastName,
+                email:account.email,
+                designation:account.designation,
+                bio:account.bio,
+                specialization:account.specialization,
+                photo:fileName?fileName:account?.image
+            })
+            if(response?.status==200){
+                setLoading(false)
+                alert("Successfully updated author")
+            }
+
+        }   
+        catch(err){ 
+            setLoading(false)
+            console.error(err)
+            
+        }
     }
 
 
 
 
-return <div className="flex flex-col py-4 space-y-3 h-full tablet:space-y-6 desktop:space-y-3 ">
-    <h1 className="text-lg font-[600]">Create Author</h1>
+return <div className="flex flex-col py-4 space-y-3  tablet:space-y-6 desktop:space-y-3 ">
+    <h1 className="text-lg font-[600]">Edit Author</h1>
 
 
-    <form className="flex flex-col  h-full py-4 space-y-4  tablet:space-y-12 w-full desktop:w-[650px] desktop:space-y-6" onSubmit={handleSubmit} >
+    <form className="flex flex-col  h-full space-y-4  tablet:space-y-12 w-full desktop:w-[650px] desktop:space-y-6" onSubmit={handleSubmit} >
 
     <Input id='upload-button' type='file' placeholder='upload' className='hidden' onChange={handleChange} />
     <label htmlFor="upload-button">
@@ -139,7 +185,7 @@ return <div className="flex flex-col py-4 space-y-3 h-full tablet:space-y-6 desk
 </svg>
 
                 </button>
-            </div>:<button onClick={()=>{setChanges({...changes,lastName:account?.lastName})}}>
+            </div>:<button type="button" onClick={()=>{setChanges({...changes,lastName:account?.lastName})}}>
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
     <path strokeLinecap="round" strokeLinejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10" />
     </svg>
@@ -172,7 +218,7 @@ return <div className="flex flex-col py-4 space-y-3 h-full tablet:space-y-6 desk
 </svg>
 
                 </button>
-            </div>:<button onClick={()=>{setChanges({...changes,email:account?.email})}}>
+            </div>:<button type="button" onClick={()=>{setChanges({...changes,email:account?.email})}}>
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
     <path strokeLinecap="round" strokeLinejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10" />
     </svg>
@@ -225,9 +271,18 @@ return <div className="flex flex-col py-4 space-y-3 h-full tablet:space-y-6 desk
 
     <FormControl>
         <FormLabel className="text-secondary">Specializations</FormLabel>
-            <Input variant="filled" value={account?.specializations} onChange={({target})=>{setAccount({...account,specializations:target.value})}}/>
+            <Input variant="filled" value={account?.specialization} onChange={({target})=>{setAccount({...account,specialization:target.value})}}/>
     </FormControl>
-    <button type="submit" className={`p-2 w-full rounded-full flex justify-center font-[600] drop-shadow cursor-pointer drop-shadow items-center bg-gradient-to-r from-primary to-indigo-800 text-white `} >Save</button>
+    <button type="submit" className={`p-2 w-full rounded-full flex justify-center font-[600] drop-shadow cursor-pointer drop-shadow items-center bg-gradient-to-r from-primary to-indigo-800 text-white `} >
+    {loading?<div className="space-x-3 flex">
+            <p>Please Wait...</p>
+            <Spinner color='white'/>
+        </div>:
+        <p>
+        Save
+        </p>}
+
+        </button>
 
     </form>
 

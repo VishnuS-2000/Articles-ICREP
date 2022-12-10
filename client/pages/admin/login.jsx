@@ -19,19 +19,68 @@ import {
 
   import Link  from "next/link"
 
+  import axios from  "../../axios"
 
+  import { useAuth } from '../../hooks/useAuth';
+
+  import { useRouter } from 'next/router';
 
 export default function Login(){
 
 
+  const router=useRouter()
     const [showPassword, setShowPassword] = useState(false);
     const [account, setAccount] = useState({
       email: "",
       password: "",
     });
 
-    const handleSubmit=()=>{
+    const {auth,setAuth}=useAuth()
+    const handleSubmit=async(e)=>{
+      e.preventDefault();
+        if(!account.email||!account.password){
+          alert("No Email or Password")
+          return;
+        }
 
+        try{
+
+        const res=await axios.post('/auth/login',{
+          email:account.email,
+          password:account.password
+
+        },{
+          headers:{'Content-Type':'application/json'},
+          withCredentials:'include'
+        })  
+
+
+        if(res?.status==200){
+          setAuth(res?.data)
+          router.replace('/admin/dashboard')
+        }
+        
+
+
+      }
+      catch(err){
+        console.log(err)
+        if(err?.response?.status==400){
+          alert("No Password or Username")
+
+        }
+        else if(err?.response?.status==401){
+            alert("Unauthorized")
+
+        }
+        else{
+          alert("Internal Server Error")
+        }
+      
+      }
+
+
+      
     }
 
 

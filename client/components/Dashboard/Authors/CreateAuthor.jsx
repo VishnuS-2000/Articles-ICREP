@@ -1,21 +1,38 @@
 import {useState,useCallback} from "react"
 
-import { FormControl,FormLabel,Input,Textarea,Avatar,Select, FormHelperText, FormErrorMessage } from "@chakra-ui/react"
-export const CreateAuthor=()=>{
+import { FormControl,FormLabel,Input,Textarea,Avatar,Select, FormHelperText, FormErrorMessage,useDisclosure, Spinner } from "@chakra-ui/react"
+import useAxiosPrivate from "../../../hooks/useAxiosPrivate"
 
+import { Notification } from "../../Notification"
+
+import moment from "moment"
+import useNotification from "../../../hooks/useNotification"
+
+
+export const CreateAuthor=({toggler})=>{
+
+
+    const { isOpen, onOpen, onClose } = useDisclosure()
+
+    const [loading,setLoading]=useState(false)
+
+
+    const axiosPrivate=useAxiosPrivate()
     
-    const [account,setAccount]=useState({
+    const [author,setAuthor]=useState({
         firstName:'',
         lastName:'',
         email:null,
-        designation:null,
+        designation:'faculty',
         bio:null,
         specializations:null,
         image:null
     })
 
+    const fields=['firstName', 'lastName', 'email', 'designation','bio']
     const [errorFields,setErrorFields]=useState([false,false,false,false,false])
 
+   const {Notification,setNotification}=useNotification()
 
     const acceptedFileTypes=['image/png','image/jpg','image/jpeg']
 
@@ -23,34 +40,106 @@ export const CreateAuthor=()=>{
         if(acceptedFileTypes.includes(target.files[0]?.type)){
             const raw=target.files[0]
             const url=URL.createObjectURL(target?.files[0])
-            setAccount({...account,image:{raw,url}})
+            setAuthor({...author,image:{raw,url}})
         }
         else{
-            alert("Invalid file type" )
+
+            setNotification({message:'Invalid File Type',status:'error',createdAt:moment()})
         }
     }
 
+    const validateFields=()=>{
+        let valid=true
+        fields.map((field,index)=>{
+            if(!author[field]){
+                setErrorFields((prev)=>{
+                        prev[index]=true
+                        valid=false
+                        return prev
+                })
+                setNotification({message:`Missing Fields`,status:'error',createdAt:moment()})
+            }
+        })
+        return valid
+    }
 
-    const handleSubmit = (e)=>{
+    const handleSubmit = async(e)=>{
         e.preventDefault()
-        console.log(account)
-        alert('submitted')
+        console.log(author)
+        try{
+            
+            // Checking Error Fields
+
+        if(!validateFields()){
+            return
+        }
+
+        setLoading(true)
+
+
+        let fileName=null
+        if(author?.image?.raw){
+        const imageResult=await axiosPrivate.post('/author/image',{
+            file:author?.image?.raw
+        },{
+            headers:{'Content-Type':'multipart/form-data'}
+        })
+        if(imageResult?.status==200){
+            fileName=imageResult?.data?.result
+        }
+        else{
+            setNotification({message:`Missing Fields`,status:'error',createdAt:moment()})
+            return
+        }
+            }
+
+            const result=await axiosPrivate.post('/author',{
+                name:author?.firstName+" "+author?.lastName,
+                email:author?.email,
+                designation:author?.designation,
+                bio:author?.bio,
+                specialization:author?.specializations,
+                photo:fileName
+            })
+
+
+            if(result?.status==201){
+                setNotification({message:'Author Created',status:'success',createdAt:moment()}) 
+                toggler(0)
+                setLoading(false)
+
+            }
+        
+
+    }catch(err){
+        console.log(err)
+        setLoading(false)
+        if(err?.response?.status==422){
+            setNotification({message:'Constraints Violated',status:'error',createdAt:moment()})
+        }
+        else{
+            setNotification({message:'Try again later',status:'error',createdAt:moment()})
+        }      
+        
+    }
     }
 
 
 
 
-return <div className="flex flex-col py-4 space-y-3 h-full tablet:space-y-6 desktop:space-y-3 ">
+return <div className="flex flex-col py-4 space-y-3 tablet:space-y-6 desktop:space-y-3 ">
+    
+    
     <h1 className="text-lg font-[600]">Create Author</h1>
 
 
-    <form className="flex flex-col  h-full py-4 space-y-4  tablet:space-y-12 w-full desktop:w-[650px] desktop:space-y-6" onSubmit={handleSubmit} >
+    <form className="flex flex-col  h-full space-y-4  tablet:space-y-12 w-full desktop:w-[650px] desktop:space-y-6" onSubmit={handleSubmit} >
 
     <Input id='upload-button' type='file' placeholder='upload' className='hidden' onChange={handleChange} />
     <label htmlFor="upload-button">
 
     <div  className="relative w-[100px]">
-    {account?.image?.url?<img src={account?.image?.url} className="w-[60px] h-[60px] rounded-full"/>:<Avatar name={`${account?.firstName} ${account?.lastName}`} size="md" />}
+    {author?.image?.url?<img src={author?.image?.url} className="w-[60px] h-[60px] rounded-full"/>:<Avatar name={`${author?.firstName} ${author?.lastName}`} size="md" />}
     <button type="button" className="">
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-6 h-6 absolute right-[40px] top-[30px] ">
   <path d="M12 9a3.75 3.75 0 100 7.5A3.75 3.75 0 0012 9z" />
@@ -64,18 +153,18 @@ return <div className="flex flex-col py-4 space-y-3 h-full tablet:space-y-6 desk
 
 
         <div className="flex   space-x-5 w-full">
-        <FormControl isRequired="true" isInvalid={errorFields[0]}>
-            <FormLabel className="text-secondary">First Name</FormLabel>
+        <FormControl  isInvalid={errorFields[0]}>
+            <FormLabel className="text-secondary">First Name <span className="text-red-500">*</span></FormLabel>
        
-            <Input variant="filled" type="text" value={account?.firstName} onChange={({target})=>{setAccount({...account,firstName:target.value})}}/>
+            <Input variant="filled" type="text" value={author?.firstName} onChange={({target})=>{setAuthor({...author,firstName:target.value}); if(target.value){setErrorFields((prev)=>{prev[2]=false; return prev})} }}/>
 
             {errorFields[0]&&<FormErrorMessage>First Name Required</FormErrorMessage>}
 
         </FormControl>
 
-        <FormControl isRequired="true" isInvalid={errorFields[1]}>
-        <FormLabel className="text-secondary">Last Name</FormLabel>
-            <Input variant="filled" type="text" value={account?.lastName} onChange={({target})=>{setAccount({...account,lastName:target.value})}}/>
+        <FormControl  isInvalid={errorFields[1]}>
+        <FormLabel className="text-secondary">Last Name  <span className="text-red-500">*</span></FormLabel>
+            <Input variant="filled" type="text" value={author?.lastName} onChange={({target})=>{setAuthor({...author,lastName:target.value}); if(target.value){setErrorFields((prev)=>{prev[1]=false; return prev})}}}/>
             
             {errorFields[1]&&<FormErrorMessage>Last Name Required</FormErrorMessage>}
             </FormControl>
@@ -84,36 +173,47 @@ return <div className="flex flex-col py-4 space-y-3 h-full tablet:space-y-6 desk
 
     </div>
     <div>
-    <FormControl isRequired="true" isInvalid={errorFields[2]}>
-        <FormLabel className="text-secondary">Email</FormLabel>
-            <Input variant="filled" type="email" value={account?.email} onChange={({target})=>{setAccount({...account,email:target.value})}}/>
+    <FormControl  isInvalid={errorFields[2]}>
+        <FormLabel className="text-secondary">Email  <span className="text-red-500">*</span></FormLabel>
+            <Input variant="filled" type="email" value={author?.email} onChange={({target})=>{setAuthor({...author,email:target.value}); if(target.value){setErrorFields((prev)=>{prev[2]=false; return prev})} } }/>
             {errorFields[2]&&<FormErrorMessage>A Valid Email is required</FormErrorMessage>}
 
             </FormControl>
 
             </div>
 
-    <FormControl isRequired="true" >
-        <FormLabel>Designation</FormLabel>
-        <Select variant="filled" value={account?.designation} onChange={({target})=>{setAccount({...account,designation:target.value})}} >
-            <option disabled></option>
-            <option value={'faculty'} >Faculty</option>
+    <FormControl  >
+        <FormLabel>Designation  <span className="text-red-500">*</span></FormLabel>
+        <Select variant="filled" value={author?.designation} onChange={({target})=>{setAuthor({...author,designation:target.value}); if(target.value){setErrorFields((prev)=>{prev[3]=false; return prev}) }} }>
+
+            <option value={'faculty'}>Faculty</option>
             <option value={'student'} >Student</option>
         </Select>
         {errorFields[3]&&<FormErrorMessage>No Designation selected</FormErrorMessage>}
     </FormControl>
-    <FormControl isRequired="true" isInvalid={errorFields[4]}>
-    <FormLabel>Bio</FormLabel>
-    <Textarea variant="filled" resize="none" rows={6} value={account?.bio} onChange={({target})=>{setAccount({...account,bio:target.value})}} />
+    <FormControl  isInvalid={errorFields[4]}>
+    <FormLabel>Bio  <span className="text-red-500">*</span></FormLabel>
+    <Textarea variant="filled" resize="none" rows={6} value={author?.bio} onChange={({target})=>{setAuthor({...author,bio:target.value}); if(target.value){setErrorFields((prev)=>{prev[4]=false; return prev}) }  }} />
     {errorFields[4]&&<FormErrorMessage>Bio is required</FormErrorMessage>}
     </FormControl>
 
     <FormControl>
         <FormLabel className="text-secondary">Specializations</FormLabel>
-            <Input variant="filled" value={account?.specializations} onChange={({target})=>{setAccount({...account,specializations:target.value})}}/>
+            <Input variant="filled" value={author?.specializations} onChange={({target})=>{setAuthor({...author,specializations:target.value})}}/>
     </FormControl>
 
-    <button type="submit" className={`p-2 w-full rounded-full flex justify-center font-[600] drop-shadow cursor-pointer drop-shadow items-center bg-gradient-to-r from-primary to-indigo-800 text-white `} >Save</button>
+    <button type="submit" className={`p-2 w-full rounded-full flex justify-center font-[500] drop-shadow cursor-pointer drop-shadow items-center bg-gradient-to-r from-primary to-indigo-800 text-white `} >
+        {loading?
+        <div className="space-x-3 flex">
+            <p>Please Wait...</p>
+            <Spinner color='white'/>
+        </div>:
+        <p>
+        Save
+        </p>
+        }
+        
+    </button>
 
     
     </form>

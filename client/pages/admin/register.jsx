@@ -1,4 +1,4 @@
-import {useState,useCallback} from 'react'
+import {useState} from 'react'
 
 import {
     Input,
@@ -19,30 +19,67 @@ import {
   import KeyIcon from '@mui/icons-material/Key';
   import Link  from "next/link"
 
+  import axios from '../../axios';
 
+  
+const Register=()=>{
 
-export default function Register(){
+ 
 
+    const [account,setAccount]=useState({})
+    const [success,setSuccess]=useState(false)
+    const [showPassword,setShowPassword]=useState(false)
 
-    const [showPassword, setShowPassword] = useState(false);
-    const [account, setAccount] = useState({
-      email: "",
-      password: "",
-    });
+    const handleSubmit=async(e)=>{
+      e.preventDefault()
+        if(!account.email||!account.password){
+          console.log("No  email or password")
+          
+        }
+        else if(account?.password!==account?.confirm){
+          console.log("Password and Confirm password not match")
+           
+        }
 
-    const handleSubmit=()=>{
+        else{
+          try{
+          const result=await axios.post('/auth/register',{
+            email: account.email,
+            password: account.password
+          })
+          console.log(result)
+          
+          if(result?.status==200){
+            setSuccess(true)
+          }
 
+        } 
+        catch(err){
+          if(err?.response?.status==401){
+            console.log('No Password Or Username')
+          }
+          else if(err?.response?.status==409){
+            console.log('Account already exists')
+
+          }
+          else{
+            console.log('Internal server error')
+          }
+        }
+
+        }
     }
 
 
 
-    return     <div className="  min-h-screen tablet:bg-gradient-to-r from-primary to-blue-800 flex flex-col w-full  justify-center tablet:items-center">
-    <form onSubmit={handleSubmit}>
+    return (
+    <div className="min-h-screen tablet:bg-gradient-to-r from-primary to-blue-800 flex flex-col w-full justify-center  tablet:items-center">
+    
+<form onSubmit={handleSubmit}>
       <div className="fixed top-0 right-0 left-0  tablet:relative tablet:top-[-50px]">
-        {/* {notification.createdAt && <Notification options={notification} />} */}
       </div>
 
-      <div className="flex flex-col w-full bg-white p-5  space-y-5 tablet:px-10 tablet:py-20 tablet:drop-shadow-lg  tablet:rounded-md tablet:w-[560px]   desktop:space-y-8">
+      {!success?<div className="flex flex-col w-full bg-white p-5  space-y-5 tablet:px-10 tablet:py-20 tablet:drop-shadow-lg  tablet:rounded-md tablet:w-[560px]   desktop:space-y-8">
         <h1 className="text-2xl font-bold desktop:text-3xl">Create Account</h1>
 
         <FormControl>
@@ -57,7 +94,7 @@ export default function Register(){
             />
             <Input
               variant="filled"
-              value={account.email}
+              value={account?.email}
               type="email"
               autoComplete="off"
               onChange={(e) => {
@@ -79,7 +116,7 @@ export default function Register(){
               />
               <Input
                 variant="filled"
-                value={account.password}
+                value={account?.password}
                 type={showPassword ? "text" : "password"}
                 onChange={(e) => {
                   setAccount({ ...account, password: e.target.value });
@@ -91,9 +128,10 @@ export default function Register(){
                   <button
                     type="button"
                     className="text-slate-500 "
-                    onClick={useCallback(() => {
+                    onClick={()=>{
                       setShowPassword(!showPassword);
-                    })}
+                    }
+                    }
                   >
                     {showPassword ? (
                       <VisibilityIcon />
@@ -122,7 +160,7 @@ export default function Register(){
               />
               <Input
                 variant="filled"
-                value={account.confirm}
+                value={account?.confirm}
                 type={"password"}
                 onChange={(e) => {
                   setAccount({ ...account, confirm: e.target.value });
@@ -148,9 +186,33 @@ export default function Register(){
           className="bg-gradient-to-r from-indigo-900 to-primary font-semibold text-white p-2 font-xl rounded-full">
           Continue
         </button>
-      </div>
+        </div>:
+      <div className="flex flex-col w-full justify-center  bg-white p-5  space-y-12 tablet:px-10 tablet:py-20 tablet:drop-shadow-lg  tablet:rounded-md tablet:w-[560px]   desktop:space-y-8">
+      <div className='text-2xl'>
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-14 h-14 text-green-600">
+  <path fillRule="evenodd" d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12zm13.36-1.814a.75.75 0 10-1.22-.872l-3.236 4.53L9.53 12.22a.75.75 0 00-1.06 1.06l2.25 2.25a.75.75 0 001.14-.094l3.75-5.25z" clipRule="evenodd" />
+</svg>
+
+</div>
+
+      <h1 className="text-2xl font-bold desktop:text-3xl">Success</h1>
+      <p className='text-xl '>Request for new account submitted.Status will initimated through email</p>
+
+      
+      <Link href='/'>
+      <button
+          className="bg-gradient-to-r from-indigo-900 drop-shadow to-primary font-semibold text-white p-2 w-full font-xl rounded-full">
+          Back to Home
+        </button>
+        </Link>
+      </div>}
+
+      
+
     </form>
-  </div>
+  </div>)
 
 
 }
+
+export default Register
