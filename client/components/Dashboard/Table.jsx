@@ -174,7 +174,7 @@ export const TableHeader = ({headers}) => {
                 <h1 className="font-[500]">{e.name}</h1>
               </Th>
             })}
-         
+          
           </Tr>
         );
       };
@@ -242,10 +242,22 @@ export const TableHeader = ({headers}) => {
             
             if(e.type=="nested"){
 
-              const nestedOject=e[e.name]
+              const nestedOject=element[e.name]
 
-              print(nestedOject)
-         
+              return<div className="py-2 space-y-2 flex flex-col justify-center"> 
+                
+                {nestedOject.map((author)=>{
+
+                  return <div className="flex space-x-1">
+                    {author?.photo?<img src={`${process.env.NEXT_PUBLIC_BACKEND_IMAGE_URL}/${author?.photo}`} className="w-[35px] rounded-full h-[35px]"/>:<Avatar name={`${author?.name}`} size="sm"/>}
+                    <p>{author?.name}</p>
+                    </div>
+
+              })
+
+            }
+              </div>
+
             }
             if(e.type=="icon"){
 

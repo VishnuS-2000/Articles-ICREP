@@ -159,7 +159,7 @@ export const EditArticle=()=>{
 
 
     const handleCollabrators=()=>{
-        if(!collabrators.includes(collabrator)){
+        if(collabrator&&!collabrators.includes(collabrator)){
             
                 setCollabrators([...collabrators,collabrator])
 

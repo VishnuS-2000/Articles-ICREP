@@ -135,7 +135,7 @@ const axiosPrivate=useAxiosPrivate()
 
 
     const handleCollabrators=()=>{
-        if(!collabrators.includes(collabrator)){
+        if(collabrator&&!collabrators.includes(collabrator)){
             
                 setCollabrators([...collabrators,collabrator])
 

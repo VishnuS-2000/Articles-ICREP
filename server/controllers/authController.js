@@ -441,10 +441,11 @@ const getAccount = async (req, res) => {
 
 const sendVerifyEmailOTP= async (req, res) => {
   try {
-    if (!req.body.email||req.body.newEmail) return res.sendStatus(400);
+    console.log(req.body)
+    if (!req.body.email||!req.body.newEmail) return res.sendStatus(400);
 
     const account = await Account.findOne(
-      { where: { username: req?.params.email } },
+      { where: { username: req?.body.email } },
       { fields: ["username"] }
     );
 
@@ -453,11 +454,11 @@ const sendVerifyEmailOTP= async (req, res) => {
       
     const otp=generateOTP()
 
-    const token=jwt.sign({otp},process.env.RESET_EMAIL_SECRET,{
+    const token=jwt.sign({otp,newUsername:req.body.newEmail},process.env.RESET_EMAIL_SECRET,{
       expiresIn:'5min'
     })
 
-    const foundToken=await Token.findOne({where:{[Op.and]:[{username:req.body.username},{purpose:'reset-email'}]}})
+    const foundToken=await Token.findOne({where:{[Op.and]:[{username:req.body.email},{purpose:'reset-email'}]}})
 
     if(foundToken){
       foundToken.set({jwt:token,status:'pending'})
@@ -465,14 +466,14 @@ const sendVerifyEmailOTP= async (req, res) => {
     }
 
     else{
-        const newToken=await Token.build({username:foundAccount.username,newUsername:req.body.newEmail,purpose:'reset-email',jwt:token,status:'pending'})
+        const newToken=await Token.build({username:req.body.email,purpose:'reset-email',jwt:token,status:'pending'})
         await newToken.save()
       }
 
     
    const emailResetMail={
     from:`ICREP CUSAT <>${process.env.EMAIL}<>`,
-    to:`${foundAccount.username}`,
+    to:`${req.body.newEmail}`,
     subject:`Verify Email ICREP JIS`,
     text:`Hi,a email change request for your ICREP JIS account has been received,please use otp ${otp}
     OTP valid for only 5 mins.
@@ -498,14 +499,16 @@ const sendVerifyEmailOTP= async (req, res) => {
     res.sendStatus(500)
 
   }
-  
+
 };
 
 const changeEmail=async(req,res)=>{
 
 try{
 
-if(!req.body.otp || !req.body.username){
+  console.log(req.body)
+
+if(!req.body.code || !req.body.username){
   return res.sendStatus(400)
 }
 
@@ -522,16 +525,10 @@ jwt.verify(foundToken.jwt,process.env.RESET_EMAIL_SECRET,async(err,decoded)=>{
 
 
   // console.log(decoded)
-  if(decoded.otp===Number(req.body.otp)){
-    const account = await Account.findOne({ username: req.body.username });
-
-    if (!account) {
-      return res.sendStatus(401);
-    }
-      account.set({
-        username:decoded.newUsername
-      });
-      await account.save();
+  if(decoded.otp===Number(req.body.code)){
+    await Account.update({username:decoded?.newUsername},{where:{
+      username:req.body.username
+    }})
       await foundToken.destroy()
       return res.sendStatus(200);
     
