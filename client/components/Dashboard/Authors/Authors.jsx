@@ -44,8 +44,12 @@ fields:[
 search:{placeholder:'Author Name or Email'}
 
 }
- 
-const subTabs=[<DataTable initials={authorFormat} args={args} changeArgs={setArgs}/>,<CreateAuthor toggler={setActive}/>,<EditAuthor  />]
+
+const toggler=(id)=>{
+    setActive(id)
+}
+
+const subTabs=[<DataTable initials={authorFormat} args={args} changeArgs={setArgs}/>,<CreateAuthor toggler={setActive}/>,<EditAuthor toggler={toggler}  />]
 
 
 return <CurrentProvider> <Layout heading={'Authors'}>

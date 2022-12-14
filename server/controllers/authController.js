@@ -17,7 +17,7 @@ const register = async (req, res) => {
 
     // console.log(req.body)
 
-    if (!req.body.email || !req.body.password) {
+    if (!req.body.email || !req.body.password || !req.body.role) {
       return res.status(400).json({ success: false, message: "Invalid response" });
     }
     const account = await Account.findOne({ where: { username: req.body.email } });
@@ -26,7 +26,7 @@ const register = async (req, res) => {
       return res.sendStatus(409)
     } else {
 
-     const token=jwt.sign({username:req.body.email,password:req.body.password},process.env.REGISTER_SECRET,{
+     const token=jwt.sign({username:req.body.email,password:req.body.password,role:req.body.role},process.env.REGISTER_SECRET,{
         expiresIn:'2min'
      })
 
@@ -36,12 +36,12 @@ const register = async (req, res) => {
         from:`ICREP CUSAT <>${process.env.EMAIL}<>`,
         to:`ICREP CUSAT <>${process.env.EMAIL}<>`,
         subject:`Verify Register Account ${req.body.email}`,
-        text:`Hi,A Register request for new account has been received,please click the below link to approve ${process.env.CLIENT_URL}/admin/approve/register?verify=${token}
+        text:`Hi,A Register request for new account for ${req.body.role} has been received,please click the below link to approve ${process.env.CLIENT_URL}/admin/approve/register?verify=${token}
         
         Link valid for only 2 mins.
         `,
         html:`<div>
-        Hi,A Register request for new account has been received,please click the below link to approve ${process.env.CLIENT_URL}/admin/approve/register?verify=${token}
+        Hi,A Register request for new account for ${req.body.role} has been received,please click the below link to approve ${process.env.CLIENT_URL}/admin/approve/register?verify=${token}
         Link valid for only 2 mins.
         </div>`
      }
@@ -75,12 +75,12 @@ const verifyRegister=async(req,res)=>{
         jwt.verify(req.params.token,process.env.REGISTER_SECRET,async(err,decoded)=>{
             if (err) return res.sendStatus(403)
 
-            const {username,password} =decoded
+            const {username,password,role} =decoded
             console.log(decoded)
 
             const {salt,hash}=generatePassword(password)
             const account=await Account.build({
-                salt,hash,username,role:'administrator',settings:{}
+                salt,hash,username,role,settings:{}
             })
 
             await account.save()
@@ -147,6 +147,7 @@ const handleLogin = async (req, res) => {
           username: account.username,
           accessToken,
           refreshToken,
+          role:account.role,
           displayName: account.displayName,
         });
       } else {
@@ -341,6 +342,7 @@ const handleRefreshToken = async (req, res) => {
 
         res.json({
           accessToken,
+          role:foundAccount.role,
           username: foundAccount.username,
           displayName: foundAccount.displayName,
         });

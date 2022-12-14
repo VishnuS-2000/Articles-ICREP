@@ -24,6 +24,13 @@ Account.init({
         type:DataTypes.STRING,
         unique:true
     },
+    photo:{
+        type:DataTypes.STRING
+    }
+    ,
+    bio:{
+        type:DataTypes.STRING,
+    },
     salt:{
         type:DataTypes.STRING,
         allowNull:false

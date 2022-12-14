@@ -31,7 +31,7 @@ export default function Dashboard(){
 
     return <PersistLogin>
     <AuthRequired>
-    <Notification options={notification}/>
+    {notification?.createdAt&&<Notification options={notification}/>}
     <div className="flex flex-col min-h-screen w-full ">
             <div className="flex">
                   <Sidebar toggler={toggler} active={active}/>

@@ -2,22 +2,23 @@ const Article=require("../model/article")
 const {QueryTypes,Op}=require('sequelize')
 const {sequelize}=require("../config/database")
 const Author=require("../model/author")
-
+const {Grant}=require("../model/article")
 
 
 module.exports.getArticles=async(req,res)=>{
 
-        // console.log(req.headers.offset,req.headers.limit)
-            await Article.findAndCountAll({offset:req.headers.offset?req.headers.offset:0,limit:req.headers.limit?req.headers.limit:null,include:[Author],order:[[req.headers.orderfield?req.headers.orderfield:'title',req.headers.ordertype?req.headers.ordertype:'ASC']]}).then((result)=>{
+            await Article.findAndCountAll({
+                offset:req.headers.offset?req.headers.offset:0,limit:req.headers.limit?req.headers.limit:null,include:[Author],order:[[req.headers.orderfield?req.headers.orderfield:'title',req.headers.ordertype?req.headers.ordertype:'ASC']],attributes:req.headers.attributes?req.headers.attributes.split(','):null}).then((result)=>{
                 res.status(200).json({result,message:"Data loaded successfully"})
             }).catch((err)=>{
                 console.log(err)
                 res.status(404).json({error:err,message:"Unkown Error Occured"})}
 
             )
-            
-         
+
 }
+        
+
 
 
 
@@ -68,80 +69,31 @@ module.exports.getTopics=async(req,res)=>{
 
 module.exports.getArticlesByQuery=async(req,res)=>{
 
-
-   if(req.query.term){
-      await  Article.findAndCountAll({
-        where:{
-            [Op.or]:[{title:{
-                [Op.iLike]:`${req.query.term}%`
-            }},
-                {topic:{
-                    [Op.iLike]:`${req.query.term}%`}}               
-            
-        ],
-          
-        }   ,  include:[Author] 
-   }).then((result)=>{
-       res.status(200).json({success:true,result:result,message:'Query Processed'})
-
-   }).catch((err)=>{
-       res.status(401).json({success:false,error:err,message:'Query Failed'})
-   })
-
-}
-
-else if(req.query.topic){
-
-    await Article.findAndCountAll({
-
-        where:{
-            topic:{
-                [Op.like]:req.query.topic?`%${req.query.topic}%`:'% %'
+    const query = {
+        [Op.or]:[
+            {[Op.and]:[{},{}]},{
+                
             }
-          
-            
-        },include:[Author]
+        ]
+    }
 
-   }).then((result)=>{
-
-    
-       res.status(200).json({success:true,result:result,message:'Query Processed'})
-   }).catch((err)=>{
-            res.status(401).json({success:false,error:err,message:'Query Failed'})
-   })
-
-
-}
-
-else{
-
-await Article.findAndCountAll({
-    where:{
-        title:{
-            [Op.iLike]:req.query.title?`%${req.query.title}%`:'% %'
-        },
-          content:{
-              [Op.iLike]:req.query.keyword?`%${req.query.keyword}%`:'% %'}
-       
-        
-    },include:[{
+    const author={
         model:Author,
         where:{
             name:{
-                [Op.iLike]:req.query.author?`%${req.query.author}%`:'% %'
+                [Op.iLike]:``
             }
-        }
-    }]
-
-}).then((result)=>{
+        }        
+    }
 
 
-   res.status(200).json({success:true,result:result,message:'Query Processed'})
-}).catch((err)=>{
-        res.status(401).json({success:false,error:err,message:'Query Failed'})
-})
+    const result=await Article.findAndCountAll({
+        offset: req.query.offset,
+        limit: req.query.limit,
+        where:query,
+        attributes:req.query.attributes?req.query.attributes:null
+    })
 
-}
 
 }
 
@@ -151,18 +103,28 @@ await Article.findAndCountAll({
 
 module.exports.createArticle=async(req,res)=>{
     
-    console.log(req.body)
+    console.log(req.body.type)
 
     try{
     const article= await Article.build({
         title:req.body.title,
         topic:req.body.topic,
+        type:req.body.type,
         content:req.body.content,
         richText:req.body.richText,
-        authorId:req.body.authorId
     })
 
     await article.save()
+
+    const associations=[]
+
+    req.body.authors.map((author)=>{
+        associations.push({articleId:article?.id,authorId:author})
+
+    })
+
+    await Grant.bulkCreate(associations)
+    
 
     res.status(200).json({result:article})
 
@@ -177,21 +139,45 @@ catch(err){
 
 
 module.exports.updateArticle=async(req,res)=>{
-    const article=await Article.findOne({where:{id:req.params.id}}).then((article)=>{
+    
+    console.log(req.body.authors)
+    
+    try{
+    const article=await Article.findOne({where:{id:req.params.id}})
 
-        article.set(req.body)
+    if(!article) return res.sendStatus(404);
 
-        return article
-       
-    }).catch((err)=>{
-        
-        res.status(422).json({error:err,message:"Article with given id not found"})
 
+        article.set({
+            title:req.body.title,
+            topic:req.body.topic,
+            type:req.body.type,
+            content:req.body.content,
+            richText:req.body.richText,
+                     
+        })
+
+    
+    await Grant.destroy({where:{articleId:article.id}})
+
+    const newAssociations=[]
+
+    req.body.authors.map((author)=>{
+        newAssociations.push({articleId:article?.id,authorId:author})
     })
 
-    article.save().then((article)=>{
-        res.status(200).json({success:true,result:article,message:"Article Updated"})
-    })
+    await Grant.bulkCreate(newAssociations)
+
+    article.save()
+    res.status(200).json({result:article})
+}
+catch(err){
+
+console.log(err)
+res.sendStatus(500)
+
+}
+
 
 }
 

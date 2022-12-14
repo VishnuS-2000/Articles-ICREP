@@ -3,26 +3,28 @@ import useSWR from "swr"
 import axios from "../../axios"
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
-import { Avatar, Input} from '@chakra-ui/react'
+import { Avatar, Input, Spinner} from '@chakra-ui/react'
 
 import { useEffect, useState } from "react";
 import { useDisclosure,Modal,ModalOverlay,ModalContent,ModalHeader,ModalCloseButton,ModalBody,ModalFooter,Button } from "@chakra-ui/react";
 import useAxiosPrivate from "../../hooks/useAxiosPrivate";
 
+import useNotification from "../../hooks/useNotification";
+
+import moment from "moment";
+
 import {
   Table,
-  Thead,
-  Tbody,
-  Tfoot,
   Tr,
   Th,
   Td,
-  TableCaption,
   TableContainer,
 } from '@chakra-ui/react'
 
+
 export const DataTable=({initials,args,changeArgs})=>{
 
+  const {notification,setNotification}=useNotification()
 
     console.log(args)
 
@@ -58,17 +60,18 @@ export const DataTable=({initials,args,changeArgs})=>{
     <TableControl name={initials?.name} count={data?.count} args={args} setArgs={changeArgs} controls={initials?.controls}/>
 
     <TableContainer>
-    <Table  variant="simple">
+    {data?.rows &&data.count>0 && !error?
+<Table  variant="simple">
     
     <TableHeader headers={initials?.headers}/>
-    {data?.rows &&data.count>0 && !error?
-      data?.rows.map((e)=>{
-        return <TableRow element={e} name={initials?.name} args={args} fields={initials?.fields} addSelected={addSelected} removeSelected={removeSelected} selected={selected} toggler={initials.controls.edit.toggle}/>
-      }):isValidating?<div className="flex p-2  mt-3">
+      {data?.rows.map((e)=>{
+        return <TableRow setNotification={setNotification} element={e} name={initials?.name} args={args} fields={initials?.fields} addSelected={addSelected} removeSelected={removeSelected} selected={selected} toggler={initials.controls.edit.toggle}/>
+      })}
+      
+      </Table>:isValidating?<div className="flex p-3 justify-center  mt-3">
       <h1 className="italic">Loading...</h1></div>:<div className="flex p-3 justify-center mt-3">
         <h1 className="italic">No {initials?.name+'s'} available</h1></div>
     }
-      </Table>
       </TableContainer>
     </div>
   
@@ -183,12 +186,20 @@ export const TableHeader = ({headers}) => {
     addSelected,
     removeSelected,
     fields,toggler,name,
-    args
+    args,
+    setNotification
   }) => {
 
     const axiosPrivate=useAxiosPrivate()
 
     const {current,setCurrent}=useCurrent()
+
+    const [loading,setLoading]=useState(false)    
+    
+     
+
+    console.log(element)
+
     const handleSelection = () => {
       if (!selected.includes(element?.id)) {
         addSelected(element?.id);
@@ -199,24 +210,22 @@ export const TableHeader = ({headers}) => {
 
     const handleEdit=()=>{setCurrent({...current,[name]:element}); toggler();}
 
+
+
     const handleDelete=async()=>{
       try{
-     
-        const response=await axiosPrivate.delete(`${args.url}/${element.id}`)
+        setLoading(true)
+        const response=await axiosPrivate.delete(`${name}/${element.id}`)
 
         if(response.status==200){
+          setLoading(false)
+          setNotification({status:'warning',message:`${name} Deleted`,created:moment()})
           onClose()
-          alert("Successfully deleted author")
         }
       }
       catch(err){
-        if(err?.response?.status==403){
-          console.log(err)
-        }
-        else{
-
-          console.log("Internal Server error",err)
-        }
+        setLoading(false)
+        setNotification({status:'error',message:'Try Again Later',created:moment()})
       }
 
     }
@@ -233,18 +242,14 @@ export const TableHeader = ({headers}) => {
             
             if(e.type=="nested"){
 
-              const nestedObject=element[e.name]
-              
-              return <Td className={`text-base`}>
-                
-              {nestedObject?.photo?<img src={`${process.env.NEXT_PUBLIC_BACKEND_IMAGE_URL}/${nestedObject?.photo}`} className="w-[35px] rounded-full h-[35px]"/>:<Avatar name={`${nestedObject[e.subfields[0]]}`} size="sm"/>}
-              <h1 className="text-gray-700">{nestedObject[e.subfields[0]]?.length>e.limit?nestedObject[e.subfields[0]].slice(0,e.limit):nestedObject[e.subfields[0]]}</h1>
+              const nestedOject=e[e.name]
 
-            </Td>
+              print(nestedOject)
+         
             }
             if(e.type=="icon"){
 
-              return <Td className={`flex items-center  space-x-3 text-base`}>
+              return <Td className={`flex p-2 items-center  space-x-3 text-base`}>
                 
               {element?.photo?<img src={`${process.env.NEXT_PUBLIC_BACKEND_IMAGE_URL}/${element?.photo}`} className="w-[35px] rounded-full h-[35px]"/>:<Avatar name={`${element[e.name]}`} size="sm"/>}
               <h1 className="text-gray-700">{element[e.name]?.length>e.limit?element[e.name].slice(0,e.limit):element[e.name]}</h1>
@@ -275,8 +280,8 @@ export const TableHeader = ({headers}) => {
         })}
        
   
-  
-        <div class=" text-lg">
+        <Td>
+        <div class="">
           <button
             className="rounded-full  p-1  hover:bg-slate-200"
             onClick={handleEdit}
@@ -291,7 +296,7 @@ export const TableHeader = ({headers}) => {
             <DeleteIcon />
           </button>
         </div>
-
+        </Td>
 
 
           {/*Delete confirmation Modal*/}
@@ -309,7 +314,7 @@ export const TableHeader = ({headers}) => {
             <Button colorScheme='blue' variant='ghost' mr={3} onClick={onClose}>
               Close
             </Button>
-            <Button colorScheme='red' variant='ghost' onClick={handleDelete}>Delete</Button>
+            {loading?<Spinner color="red"/>:<Button colorScheme='red' variant='ghost' onClick={handleDelete}>Delete</Button>}
           </ModalFooter>
         </ModalContent>
       </Modal>

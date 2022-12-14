@@ -6,7 +6,10 @@ import { useCurrent } from "../useCurrent"
 import useAxiosPrivate from "../../../hooks/useAxiosPrivate"
 import { Spinner } from "@chakra-ui/react"
 
-export const EditAuthor=()=>{
+import useNotification from "../../../hooks/useNotification"
+import moment from "moment"
+
+export const EditAuthor=({toggler})=>{
     const {current}=useCurrent()
     const axiosPrivate=useAxiosPrivate()
 
@@ -33,6 +36,7 @@ export const EditAuthor=()=>{
         
     })
 
+    const {setNotification}=useNotification()
     
     const [loading,setLoading]=useState(false)
 
@@ -46,7 +50,7 @@ export const EditAuthor=()=>{
             setChanges({...changes,image:{raw,url}})
         }   
         else{
-            alert("Invalid file type" )
+            setNotification({message:'Invalid File type',createdAt:moment(),status:'error'})
         }
     }
 
@@ -70,7 +74,7 @@ export const EditAuthor=()=>{
                 fileName=imageResult?.data?.result
             }
             else{
-                alert("File Upload Failed")
+                setNotification({message:'File upload Failed',createdAt:moment(),status:'error'})
                 return
             }
                 }
@@ -85,12 +89,15 @@ export const EditAuthor=()=>{
             })
             if(response?.status==200){
                 setLoading(false)
-                alert("Successfully updated author")
+                setNotification({message:'Author Updated',createdAt:moment(),status:'success'})
+                toggler(0)
             }
 
         }   
         catch(err){ 
             setLoading(false)
+            setNotification({message:'Try Again Later',createdAt:moment(),status:'error'})
+
             console.error(err)
             
         }

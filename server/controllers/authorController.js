@@ -28,7 +28,7 @@ module.exports.getAuthorByQuery=async(req,res)=>{
     await Author.findAndCountAll({where:{
        [Op.or]:[{name:{[Op.iLike]:`${req.query.term}%`} },{email:{[Op.iLike]:`${req.query.term}%`}}]
     },limit:req.query.limit,offset:req.query.offset,include:req.query.include?[Article]:null}).then((authors)=>{
-        
+        +
         console.log(authors)
         res.status(200).json({result:authors});
     

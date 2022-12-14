@@ -4,7 +4,7 @@ import { useState, useEffect } from "react"
 export const Notification=({options})=>{
 
   const [show,setShow]=useState(false)
-  const statusColors={success:'bg-green-500',error:'bg-red-500'}
+  const statusColors={success:'bg-green-500',error:'bg-red-500',warning:'bg-amber-500'}
 
 
   useEffect(()=>{
@@ -21,7 +21,7 @@ export const Notification=({options})=>{
 
 
   return <>
-  {show ? <div className={`duration-500  text-white min-w-[150px] desktop:px-8  py-4 rounded-md flex ${statusColors[options?.status]} bottom-[50px] fixed desktop:right-[100px]`}>
+  {show ? <div className={`duration-500 z-[50]  text-white min-w-[150px] desktop:px-8  py-4 rounded-md flex ${statusColors[options?.status]} bottom-[50px] fixed desktop:right-[100px]`}>
             <h1>{options?.title}</h1>
             <p>{options?.message}</p>
             <button className="font-[600] absolute top-[5px] right-[5px]" onClick={()=>{setShow(false)}}>
@@ -30,7 +30,7 @@ export const Notification=({options})=>{
 </svg>
 
             </button>
-  </div>:<div className="duration-100 desktop:px-8 py-4  min-w-[150px] text-white bottom-[-50px] fixed desktop:right-[100px] ">
+  </div>:<div className="duration-100 z-[50] desktop:px-8 py-4  min-w-[150px] text-white bottom-[-50px] fixed desktop:right-[100px] ">
   <h1>{options?.title}</h1>
   <p>{options?.message}</p>
 <button className="font-[600] absolute top-[5px] right-[5px]" onClick={()=>{setShow(false)}}>

@@ -12,6 +12,10 @@ Article.init({
         allowNull:false,
         primaryKey:true
     },
+    type:{
+        type:DataTypes.STRING,
+        allowNull:false,
+    },
     title:{
         type:DataTypes.STRING,
         allowNull:false
@@ -34,15 +38,21 @@ Article.init({
     sequelize,
     modelName:'article'
 })
-Author.hasMany(Article,{
-    foreignKey:'authorId',
-    onDelete:'CASCADE'
-})
-Article.belongsTo(Author)
+
+const Grant = sequelize.define('grant', {
+  }, { timestamps: false });
+
+
+
+
+Article.belongsToMany(Author,{through:Grant})
+Author.belongsToMany(Article,{through:Grant})
+
 
 const syncModel=async()=>{
 try{
     await Article.sync()
+    await Grant.sync()
 }
 catch(err){
 console.log(err)
@@ -53,3 +63,4 @@ console.log(err)
 syncModel()
 
 module.exports=Article
+module.exports.Grant=Grant

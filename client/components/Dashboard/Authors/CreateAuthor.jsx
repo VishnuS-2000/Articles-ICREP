@@ -52,9 +52,10 @@ export const CreateAuthor=({toggler})=>{
         let valid=true
         fields.map((field,index)=>{
             if(!author[field]){
+                valid=false
                 setErrorFields((prev)=>{
                         prev[index]=true
-                        valid=false
+                        
                         return prev
                 })
                 setNotification({message:`Missing Fields`,status:'error',createdAt:moment()})
@@ -70,9 +71,8 @@ export const CreateAuthor=({toggler})=>{
             
             // Checking Error Fields
 
-        if(!validateFields()){
-            return
-        }
+        if(validateFields()){
+        
 
         setLoading(true)
 
@@ -110,7 +110,7 @@ export const CreateAuthor=({toggler})=>{
 
             }
         
-
+        }
     }catch(err){
         console.log(err)
         setLoading(false)
@@ -156,7 +156,7 @@ return <div className="flex flex-col py-4 space-y-3 tablet:space-y-6 desktop:spa
         <FormControl  isInvalid={errorFields[0]}>
             <FormLabel className="text-secondary">First Name <span className="text-red-500">*</span></FormLabel>
        
-            <Input variant="filled" type="text" value={author?.firstName} onChange={({target})=>{setAuthor({...author,firstName:target.value}); if(target.value){setErrorFields((prev)=>{prev[2]=false; return prev})} }}/>
+            <Input variant="filled" type="text" value={author?.firstName} onChange={({target})=>{setAuthor({...author,firstName:target.value}); if(target.value && errorFields[0]){setErrorFields((prev)=>{prev[0]=false; return prev})} }}/>
 
             {errorFields[0]&&<FormErrorMessage>First Name Required</FormErrorMessage>}
 
@@ -164,7 +164,7 @@ return <div className="flex flex-col py-4 space-y-3 tablet:space-y-6 desktop:spa
 
         <FormControl  isInvalid={errorFields[1]}>
         <FormLabel className="text-secondary">Last Name  <span className="text-red-500">*</span></FormLabel>
-            <Input variant="filled" type="text" value={author?.lastName} onChange={({target})=>{setAuthor({...author,lastName:target.value}); if(target.value){setErrorFields((prev)=>{prev[1]=false; return prev})}}}/>
+            <Input variant="filled" type="text" value={author?.lastName} onChange={({target})=>{setAuthor({...author,lastName:target.value}); if(target.value && errorFields[1] ){setErrorFields((prev)=>{prev[1]=false; return prev})}}}/>
             
             {errorFields[1]&&<FormErrorMessage>Last Name Required</FormErrorMessage>}
             </FormControl>
@@ -175,7 +175,7 @@ return <div className="flex flex-col py-4 space-y-3 tablet:space-y-6 desktop:spa
     <div>
     <FormControl  isInvalid={errorFields[2]}>
         <FormLabel className="text-secondary">Email  <span className="text-red-500">*</span></FormLabel>
-            <Input variant="filled" type="email" value={author?.email} onChange={({target})=>{setAuthor({...author,email:target.value}); if(target.value){setErrorFields((prev)=>{prev[2]=false; return prev})} } }/>
+            <Input variant="filled" type="email" value={author?.email} onChange={({target})=>{setAuthor({...author,email:target.value}); if(target.value && errorFields[2]){setErrorFields((prev)=>{prev[2]=false; return prev})} } }/>
             {errorFields[2]&&<FormErrorMessage>A Valid Email is required</FormErrorMessage>}
 
             </FormControl>
@@ -184,7 +184,7 @@ return <div className="flex flex-col py-4 space-y-3 tablet:space-y-6 desktop:spa
 
     <FormControl  >
         <FormLabel>Designation  <span className="text-red-500">*</span></FormLabel>
-        <Select variant="filled" value={author?.designation} onChange={({target})=>{setAuthor({...author,designation:target.value}); if(target.value){setErrorFields((prev)=>{prev[3]=false; return prev}) }} }>
+        <Select variant="filled" value={author?.designation} onChange={({target})=>{setAuthor({...author,designation:target.value}); if(target.value && errorFields[3]){setErrorFields((prev)=>{prev[3]=false; return prev}) }} }>
 
             <option value={'faculty'}>Faculty</option>
             <option value={'student'} >Student</option>
@@ -193,7 +193,7 @@ return <div className="flex flex-col py-4 space-y-3 tablet:space-y-6 desktop:spa
     </FormControl>
     <FormControl  isInvalid={errorFields[4]}>
     <FormLabel>Bio  <span className="text-red-500">*</span></FormLabel>
-    <Textarea variant="filled" resize="none" rows={6} value={author?.bio} onChange={({target})=>{setAuthor({...author,bio:target.value}); if(target.value){setErrorFields((prev)=>{prev[4]=false; return prev}) }  }} />
+    <Textarea variant="filled" resize="none" rows={6} value={author?.bio} onChange={({target})=>{setAuthor({...author,bio:target.value}); if(target.value && errorFields[4]){setErrorFields((prev)=>{prev[4]=false; return prev}) }  }} />
     {errorFields[4]&&<FormErrorMessage>Bio is required</FormErrorMessage>}
     </FormControl>
 
@@ -202,7 +202,7 @@ return <div className="flex flex-col py-4 space-y-3 tablet:space-y-6 desktop:spa
             <Input variant="filled" value={author?.specializations} onChange={({target})=>{setAuthor({...author,specializations:target.value})}}/>
     </FormControl>
 
-    <button type="submit" className={`p-2 w-full rounded-full flex justify-center font-[500] drop-shadow cursor-pointer drop-shadow items-center bg-gradient-to-r from-primary to-indigo-800 text-white `} >
+    <button disabled={errorFields.includes(true)} type="submit" className={`p-2 w-full rounded-full flex justify-center font-[500] drop-shadow cursor-pointer drop-shadow items-center bg-gradient-to-r from-primary to-indigo-800 text-white `} >
         {loading?
         <div className="space-x-3 flex">
             <p>Please Wait...</p>

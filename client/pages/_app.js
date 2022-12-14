@@ -7,11 +7,11 @@ import AuthProvider from '../context/AuthProvider'
 
 function MyApp({ Component, pageProps }) {
   return <ChakraProvider>
+        <NotificationProvider>
     <AuthProvider>
-      <NotificationProvider>
       <Component {...pageProps} />
-      </NotificationProvider>
     </AuthProvider>
+    </NotificationProvider>
   </ChakraProvider> 
 }
 

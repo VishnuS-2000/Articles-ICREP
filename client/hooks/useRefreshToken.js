@@ -17,11 +17,12 @@ const useRefreshToken = ()=>{
             
            return  {
             ...prev,
-            accessToken:response?.data?.accessToken
+            accessToken:response?.data?.accessToken,
+            role:response?.data?.role,
+            username:response?.data?.username
         }
     
     })
-        console.log(response?.data?.accessToken)
         return response?.data?.accessToken
     }
 

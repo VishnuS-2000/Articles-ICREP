@@ -1,12 +1,24 @@
-import {useState,useContext} from "react"
+import {useState,useCallback} from "react"
 import { AuthorContext } from "../CurrentProvider"
 
-import { FormControl,FormLabel,Input,Select, FormHelperText, FormErrorMessage,InputRightElement,InputGroup } from "@chakra-ui/react"
+import { FormControl,FormLabel,Input,Select, FormHelperText, FormErrorMessage,InputRightElement,InputGroup, Spinner,RadioGroup,Radio } from "@chakra-ui/react"
 import { useCurrent } from "../useCurrent"
 import dynamic from 'next/dynamic'
 import { useEffect } from "react"
 import axios from "../../../axios"
+
+import useAxiosPrivate from "../../../hooks/useAxiosPrivate"
+
+import useNotification from "../../../hooks/useNotification"
+import moment from 'moment'
+
+
+import {convert} from 'html-to-text'
+
 const RichTextEditor= dynamic(() => import('@mantine/rte'), { ssr: false });
+
+
+
 
 export const EditArticle=()=>{
     const {current}=useCurrent()
@@ -17,14 +29,21 @@ export const EditArticle=()=>{
     const [createTopic,setCreateTopic]=useState()
 
 
+    const axiosPrivate=useAxiosPrivate()
+
+    const {notification,setNotification}=useNotification()
 
 
-    const [text,setText]=useState()
+    const [collabrator,setCollabrator]=useState(null)
+    const [collabrators,setCollabrators]=useState([])
+
+    const [type,setType]=useState(current?.article?.type)
+    const [text,setText]=useState(current?.article?.richText)
     
     const [article,setArticle]=useState({
         title:current?.article?.title,
         topic:current?.article?.topic,
-        author:current?.article?.author,
+        author:current?.article?.authorId,
         content:current?.article?.content
     })
 
@@ -37,7 +56,10 @@ export const EditArticle=()=>{
        content:null
     })
 
-    
+    const [loading,setLoading]=useState(false)
+
+
+    console.log("Article",current?.article);
     useEffect(()=>{
 
         const fetchAuthors=async()=>{
@@ -60,23 +82,115 @@ export const EditArticle=()=>{
 
         fetchTopics()
         fetchAuthors()
-    })
+    },[])
+
+    useEffect(()=>{
+
+    if(type=="individual"){
+        setCollabrator(current?.article?.authors[0]?.id)
+
+    }
+    else{
+      const  temp=[]
+
+        current?.article?.authors.map((author)=>{
+            temp.push(author?.id)
+        })
+
+        setCollabrators(temp)
+
+    }
+    },[])
 
 
-    const handleSubmit = (e)=>{
+
+    const handleSubmit =async (e)=>{
         e.preventDefault()
-        console.log(account)
-        alert('submitted')
+
+
+
+        if(!article?.title||!article?.topic||!type){
+            setNotification({message:'Missing Fields',status:'error',createdAt:moment()})
+            return 
+        }
+
+        else{
+
+            try{
+                setLoading(true)
+
+                const content=convert(text,{
+                    wordwrap:250
+                })
+
+                const response=await axiosPrivate.put(`/article/${current?.article?.id}`,{
+                    title:article?.title,
+                    type:type,
+                    topic:article?.topic,
+                    authors:type=="individual"?[collabrator]:collabrators,
+                    content:content,
+                    richText:text
+                   }
+                   )
+
+                   if(response?.status==200){
+                    setNotification({message:"Article Updated",status:'success',createdAt:moment()})
+                    setLoading(false)
+                    return
+
+                   }
+
+            }catch(err){
+                console.log(err)
+                setLoading(false)
+                if(err?.response?.status==400){
+                        setNotification({message:'Bad Request',status:'error',createdAt:moment()})
+                
+                }
+                else{
+                        setNotification({message:'Try Again Later',status:'error',createdAt:moment()})
+                }
+            }
+        }
+
+
+
     }
 
 
+    const handleCollabrators=()=>{
+        if(!collabrators.includes(collabrator)){
+            
+                setCollabrators([...collabrators,collabrator])
+
+        }
+        
+
+    }
+    const deleteCollabrator=(id)=>{
+
+
+        setCollabrators(collabrators.filter((e)=>{
+                return e!==id
+            }))
+    
+    }
+
+    const getCollabrator=useCallback((id)=>{
+
+     return authors?.filter((e)=>{
+        return e?.id===id
+     })[0]
+    },[authors,collabrator])
+
+
+    
 
 
 
 
 
-
-return <div className="flex flex-col py-4 h-full space-y-1 ">
+return <div className="flex flex-col py-4  space-y-1 ">
   
 
 
@@ -84,7 +198,12 @@ return <div className="flex flex-col py-4 h-full space-y-1 ">
 
 <div className="flex w-full justify-between">
 <h1 className="text-lg font-[600] ">Edit Article</h1>
-<button type="submit" className={`py-1 px-3 rounded-full flex justify-center font-[600] drop-shadow cursor-pointer drop-shadow items-center bg-gradient-to-r from-primary to-indigo-800 text-white `} >Save</button>
+
+{loading?<button  className={`py-1 px-3 rounded-full flex justify-center font-[600] drop-shadow cursor-pointer drop-shadow items-center bg-gradient-to-r from-primary to-indigo-800 text-white `} >
+    <Spinner color="white"/>
+</button>
+:<button type="submit" className={`py-1 px-3 rounded-full flex justify-center font-[600] drop-shadow cursor-pointer drop-shadow items-center bg-gradient-to-r from-primary to-indigo-800 text-white `} >Save</button>
+}
 </div>
 
 
@@ -140,21 +259,61 @@ return <div className="flex flex-col py-4 h-full space-y-1 ">
 
             </FormControl>
         
+
+            <FormControl>
+                <FormLabel>Type</FormLabel>
+            <RadioGroup className="space-x-3" value={type} onChange={setType}>
+                <Radio value={'individual'}>Individual</Radio>
+                <Radio value={'collabrated'}>Collabrated</Radio>
+            </RadioGroup>
+
+            </FormControl>
         
-            <FormControl isRequired="true" isInvalid={errorFields[2]}>
-        <FormLabel className="text-secondary">Author</FormLabel>
-            <Select variant="filled"  value={article?.author} onChange={({target})=>{setArticle({...article,author:target.value})}}>
-                <option disabled>Select an Author</option>
+</div>
+
+<div className="flex flex-col py-3 space-y-3">
+                <h1 className="my-2">Authors</h1>
+
+                
+            <FormControl >
+            <Select variant="filled"  value={collabrator} onChange={({target})=>{setCollabrator(target.value);}}>
+                <option>Select an Author</option>
                 {authors.map((author)=>{
                     return <option value={author?.id}>{`${author?.name}-${author?.email}`}</option>
                 }
                     )}
             </Select>
-            {errorFields[2]&&<FormErrorMessage>Author is required</FormErrorMessage>}
+
+
             </FormControl>
 
+            {type=="collabrated"&&<div>
+            <button type="button" className="bg-indigo-50 my-2 p-2 rounded-md max-w-[120px]" onClick={handleCollabrators}>Add Author</button>
 
 
+            {collabrators.map((e)=>{
+                const details=getCollabrator(e)
+                
+                return <div className="flex bg-slate-100 p-4 rounded-md justify-evenly">
+                
+                    <h1>{details?.name}</h1>
+                    <h1>{details?.email}</h1>
+                    <h1>{details?.bio}</h1>
+                    
+                    <button type="button" onClick={()=>deleteCollabrator(e)} className="">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
+  <path strokeLinecap="round" strokeLinejoin="round" d="M15 12H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z" />
+</svg>
+
+                    </button>
+                        
+                </div>
+                 
+            })}
+            </div>}
+
+        
+        
 
 </div>
 
@@ -163,10 +322,10 @@ return <div className="flex flex-col py-4 h-full space-y-1 ">
 
 <RichTextEditor controls={[
 ['bold', 'italic', 'underline', 'link', 'image'],
-['unorderedList', 'h1', 'h2', 'h3'],
+[ 'h1', 'h2', 'h3'],
 ['sup', 'sub'],
 ['alignLeft', 'alignCenter', 'alignRight'],
-]} value={text} onChange={setText} className='w-full sticky h-full overflow-y-auto text-lg border border-2 border-black'/>
+]} value={text} onChange={setText} stickyOffset={-20} className='w-full  h-full  text-lg border border-2 border-black'/>
 
 
 

@@ -24,6 +24,11 @@ import {
   import { useAuth } from '../../hooks/useAuth';
 
   import { useRouter } from 'next/router';
+  import { Notification } from '../../components/Notification';
+
+  import moment from "moment"
+
+  import useNotification from '../../hooks/useNotification';
 
 export default function Login(){
 
@@ -35,11 +40,15 @@ export default function Login(){
       password: "",
     });
 
+
+    const {notification,setNotification}=useNotification()
     const {auth,setAuth}=useAuth()
+
+
     const handleSubmit=async(e)=>{
       e.preventDefault();
         if(!account.email||!account.password){
-          alert("No Email or Password")
+          setNotification({status: 'error',message:'Missing Username/Password',createdAt: moment()});
           return;
         }
 
@@ -66,15 +75,18 @@ export default function Login(){
       catch(err){
         console.log(err)
         if(err?.response?.status==400){
-          alert("No Password or Username")
+          
+          setNotification({status: 'error',message:'Bad Request',createdAt: moment()});
 
         }
         else if(err?.response?.status==401){
-            alert("Unauthorized")
+          setNotification({status: 'error',message:'Unauthorized',createdAt: moment()});
+
 
         }
         else{
-          alert("Internal Server Error")
+          setNotification({status: 'error',message:'Try Again Later',createdAt: moment()});
+
         }
       
       }
@@ -87,11 +99,8 @@ export default function Login(){
 
     return     <div className=" min-h-screen tablet:bg-gradient-to-r from-primary to-blue-800 flex flex-col w-full  justify-center tablet:items-center">
     <form onSubmit={handleSubmit}>
-      <div className="fixed top-0 right-0 left-0  desktop:relative desktop:top-[-50px]">
-        
-        {/* {notification.createdAt && <Notification options={notification} />} */}
-      </div>
       
+      {notification?.createdAt&&<Notification options={notification}/>}
 
       <div className="flex flex-col w-full bg-white p-5  space-y-5 tablet:px-10 tablet:py-24 flex-[0.8] tablet:drop-shadow-lg  tablet:rounded-md tablet:w-[560px]   desktop:space-y-8">
         

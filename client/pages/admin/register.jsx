@@ -21,7 +21,13 @@ import {
 
   import axios from '../../axios';
 
-  
+  import { Radio, RadioGroup } from '@chakra-ui/react'  
+
+  import useNotification from '../../hooks/useNotification';
+import moment from 'moment';
+
+import { Notification } from '../../components/Notification';
+
 const Register=()=>{
 
  
@@ -29,23 +35,26 @@ const Register=()=>{
     const [account,setAccount]=useState({})
     const [success,setSuccess]=useState(false)
     const [showPassword,setShowPassword]=useState(false)
+    const [role,setRole]=useState(null)
+
+    const {notification,setNotification}=useNotification()
+
 
     const handleSubmit=async(e)=>{
       e.preventDefault()
-        if(!account.email||!account.password){
-          console.log("No  email or password")
-          
+        if(!account.email||!account.password||!role){
+          setNotification({status:'error',message:'Missing Fields',createdAt:moment()})
         }
         else if(account?.password!==account?.confirm){
-          console.log("Password and Confirm password not match")
-           
+          setNotification({status:'error',message:'Passwords do not match'})
         }
 
         else{
           try{
           const result=await axios.post('/auth/register',{
             email: account.email,
-            password: account.password
+            password: account.password,
+            role:role
           })
           console.log(result)
           
@@ -55,15 +64,16 @@ const Register=()=>{
 
         } 
         catch(err){
+          console.log(err)
           if(err?.response?.status==401){
-            console.log('No Password Or Username')
+            setNotification({status:'error',message:'Bad Request',createdAt:moment()})
           }
           else if(err?.response?.status==409){
-            console.log('Account already exists')
+            setNotification({status:'error',message:'Account already exists',createdAt:moment()})
 
           }
           else{
-            console.log('Internal server error')
+            setNotification({status:'error',message:'Internal Server Error',createdAt:moment()})
           }
         }
 
@@ -74,14 +84,25 @@ const Register=()=>{
 
     return (
     <div className="min-h-screen tablet:bg-gradient-to-r from-primary to-blue-800 flex flex-col w-full justify-center  tablet:items-center">
-    
+      
+            {notification?.createdAt&&<Notification options={notification}/>}
+
+
 <form onSubmit={handleSubmit}>
       <div className="fixed top-0 right-0 left-0  tablet:relative tablet:top-[-50px]">
       </div>
-
-      {!success?<div className="flex flex-col w-full bg-white p-5  space-y-5 tablet:px-10 tablet:py-20 tablet:drop-shadow-lg  tablet:rounded-md tablet:w-[560px]   desktop:space-y-8">
+      
+      {!success?<div className="flex flex-col w-full bg-white p-5  space-y-5 tablet:px-10 tablet:py-20 tablet:drop-shadow-lg  tablet:rounded-md tablet:w-[560px]   desktop:space-y-6">
         <h1 className="text-2xl font-bold desktop:text-3xl">Create Account</h1>
 
+        <FormControl>
+          <FormLabel>Role</FormLabel>
+          <RadioGroup value={role} className="space-x-5" onChange={setRole}>
+            <Radio value={'editor'}>Editor</Radio>
+            <Radio value={'administrator'}>Administrator</Radio>
+            </RadioGroup>
+        </FormControl>
+        
         <FormControl>
           <FormLabel>Email</FormLabel>
           <InputGroup>

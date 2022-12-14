@@ -1,6 +1,6 @@
 import { useState } from "react"
 import {Layout} from "../Layout"
-import {Table} from "../Table"
+import {DataTable} from "../Table"
 import CurrentProvider from "../CurrentProvider"
 import { CreateArticle } from "./CreateArticle"
 import { EditArticle } from "./EditArticle"
@@ -24,21 +24,22 @@ export const Articles =()=>{
             },
         },
         headers:[
-            {name:'Title',width:25},
-            {name:'Author',width:20},
-            {name:'Topic',width:20},
-            {name:'Actions',width:10},
+            {name:'Title'},
+            {name:'Type'},
+            {name:'Topic'},
+            {name:'Author'},
+            {name:'Actions'},
         ],
         fields:[
-            {name:'title',width:20},
-            {name:'topic',width:20},
-            {name:'author',width:20,type:'nested',subfields:['name']},
-          
+            {name:'title'},
+            {name:'type'},
+            {name:'topic'},
+            {name:'authors',type:'nested',subfields:['name']},
         ],
         search:{placeholder:'Title or Topic'}
     }
 
-    const subTabs=[<Table initials={articleFormat} args={args} changeArgs={setArgs}/>,<CreateArticle/>,<EditArticle/>]
+    const subTabs=[<DataTable initials={articleFormat} args={args} changeArgs={setArgs}/>,<CreateArticle/>,<EditArticle/>]
 
      return <CurrentProvider>
      <Layout heading={'Articles'}>
