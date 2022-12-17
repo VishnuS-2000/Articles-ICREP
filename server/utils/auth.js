@@ -32,6 +32,18 @@ const issueJWT=(username)=>{
 
 }
 
+const createRandomPassword=(length)=>{
+
+    const chars="abcdefghijklmnopqrstuvwxyzABCDEFGHIKJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()"
+    let password=""
+    for (var i=0;i<length;i++){
+        password+=chars.charAt(Math.floor(Math.random()*chars.length));
+        
+    }
+    return password
+    
+}
+
 
 const generateOTP=()=>{
     const max=1000000
@@ -44,3 +56,4 @@ module.exports.generatePassword=generatePassword;
 module.exports.verifyPassword=verifyPassword;
 module.exports.issueJWT=issueJWT;
 module.exports.generateOTP=generateOTP;
+module.exports.createRandomPassword=createRandomPassword;

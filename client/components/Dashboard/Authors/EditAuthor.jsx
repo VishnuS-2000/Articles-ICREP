@@ -21,7 +21,7 @@ export const EditAuthor=({toggler})=>{
         designation:current?.author.designation,
         bio:current?.author?.bio,
         specialization:current?.author.specialization,
-        image:current?.author.photo
+        image:current?.author.photo?{url:`${process.env.NEXT_PUBLIC_BACKEND_IMAGE_URL}/${current?.author.photo}`}:null
     })
 
     const [errorFields,setErrorFields]=useState([false,false,false,false,false])
@@ -79,13 +79,15 @@ export const EditAuthor=({toggler})=>{
             }
                 }
 
+
+            const imageURL=account?.image?.url.replace('${process.env.NEXT_PUBLIC_BACKEND_IMAGE_URL}/','')
             const response=await axiosPrivate.put(`/author/${current?.author?.id}`,{
                 name:account.firstName+' '+account.lastName,
                 email:account.email,
                 designation:account.designation,
                 bio:account.bio,
                 specialization:account.specialization,
-                photo:fileName?fileName:account?.image
+                photo:fileName?fileName:imageURL
             })
             if(response?.status==200){
                 setLoading(false)
@@ -117,7 +119,7 @@ return <div className="flex flex-col py-4 space-y-3  tablet:space-y-6 desktop:sp
 
     <div  className="relative w-[100px] flex">
 
-    {changes?.image?.url?<img src={changes?.image?.url} className="w-[60px] h-[60px] rounded-full"/>:account?.image?.url?<img src={account?.image?.url} className="w-[60px] h-[60px] rounded-full"/>:<Avatar name={`${account?.firstName} ${account?.lastName}`} size="md" />}
+    {changes?.image?.url?<img src={changes?.image?.url} className="w-[60px] h-[60px] rounded-full"/>:account?.image.url?<img src={account?.image?.url} className="w-[60px] h-[60px] rounded-full"/>:<Avatar name={`${account?.firstName} ${account?.lastName}`} size="md" />}
     
     {changes?.image?.raw&&<div className="flex mr-3 items-center">
                 <button type="button" className="text-green-600 p-1" onClick={()=>{setAccount({...account,image:changes?.image}); setChanges({...changes,image:null})}}>

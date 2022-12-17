@@ -2,7 +2,7 @@ require("dotenv").config();
 
 const Account = require("../model/account");
 const Token=require("../model/token");
-const { generatePassword, verifyPassword, issueJWT,generateOTP } = require("../utils/auth");
+const { generatePassword, verifyPassword, issueJWT,generateOTP,createRandomPassword} = require("../utils/auth");
 const jwt = require("jsonwebtoken");
 
 const {sendMail}=require("../config/nodemailer")
@@ -17,7 +17,7 @@ const register = async (req, res) => {
 
     // console.log(req.body)
 
-    if (!req.body.email || !req.body.password || !req.body.role) {
+    if (!req.body.email || !req.body.role || !req.body.name) {
       return res.status(400).json({ success: false, message: "Invalid response" });
     }
     const account = await Account.findOne({ where: { username: req.body.email } });
@@ -26,7 +26,7 @@ const register = async (req, res) => {
       return res.sendStatus(409)
     } else {
 
-     const token=jwt.sign({username:req.body.email,password:req.body.password,role:req.body.role},process.env.REGISTER_SECRET,{
+     const token=jwt.sign({name:req.body.name,username:req.body.email,role:req.body.role},process.env.REGISTER_SECRET,{
         expiresIn:'2min'
      })
 
@@ -75,12 +75,13 @@ const verifyRegister=async(req,res)=>{
         jwt.verify(req.params.token,process.env.REGISTER_SECRET,async(err,decoded)=>{
             if (err) return res.sendStatus(403)
 
-            const {username,password,role} =decoded
+            const {username,role,name} =decoded
             console.log(decoded)
 
+            const password=createRandomPassword(8)
             const {salt,hash}=generatePassword(password)
             const account=await Account.build({
-                salt,hash,username,role,settings:{}
+                salt,hash,username,role,settings:{},name,displayName:name,
             })
 
             await account.save()
@@ -88,12 +89,14 @@ const verifyRegister=async(req,res)=>{
             const userMail={
                 from:`ICREP CUSAT <>${process.env.EMAIL}<>`,
                 to:`${account?.username}`,
-                subject:`Account Verified ICREP JIS`,
-                text:`Hi,Your Account has been successfully verified.Please Login to continue.
+                subject:`Account Created ICREP JIS`,
+                text:`Hi,Your Account has been successfully created.Please Login to continue.
+                password: ${password}
                 `,
                 html:`<div>
                 <p>
-                Hi,Your Account has been successfully verified.Please Login to continue.
+                Hi,Your Account has been successfully created.Please Login to continue.
+                password : ${password}
                 </p>
                 </div>`
              }
@@ -383,13 +386,15 @@ const handleLogout = async (req, res) => {
   res.sendStatus(200);
 };
 
-const changePassword = async () => {
+const changePassword = async (req,res) => {
   try {
-    if (!req.body.password || !req.body.newPassword) {
+    console.log(req.body)
+    if (!req.body.password || !req.body.newPassword ||!req.body.username) {
       return res.sendStatus(400);
     }
 
-    const account = await Account.findOne({ username: req.user });
+    const account = await Account.findOne({where:{ username: req.body.username} });
+
 
     if (!account) {
       return res.sendStatus(401);
@@ -410,10 +415,11 @@ const changePassword = async () => {
       await account.save();
       return res.sendStatus(200);
     } else {
+      console.log("No match")
       return res.sendStatus(401);
     }
   } catch (err) {
-    // console.log(err.message);
+    console.log(err)
     res.sendStatus(500);
   }
 };
@@ -422,22 +428,52 @@ const changePassword = async () => {
 
 const getAccount = async (req, res) => {
   try {
-    console.log(req?.headers.email);
+    console.log(req?.user);
     const account = await Account.findOne({
-      where: { email: req?.headers.email },
+      where: { username: req?.headers?.username },
+      attributes:['id','name','displayName','bio','photo']
     });
 
     if (!account) return res.sendStatus(404);
 
-    const { id, name, email, settings, createdAt, updatedAt } = account;
     res
       .status(200)
-      .json({ result: { id, name, email, settings, createdAt, updatedAt } });
+      .json({ result: account });
   } catch (err) {
-    // console.log(err);
+   console.log(err);
     res.sendStatus(500);
   }
 };
+
+const updateAccount =async(req,res)=>{
+
+  try {
+
+    console.log(req.body)
+    if(!req.body.username) return res.sendStatus(400)
+
+    const account = await Account.findOne({where:{username:req.body.username}});
+
+    console.log(account)
+    if(!account) return res.sendStatus(404)
+
+
+    account.set({
+        displayName:req.body.displayName,
+        bio:req.body.bio,
+        photo:req.body.photo
+    })
+
+    await account.save()
+
+    res.sendStatus(200)
+
+  } catch (err) {
+   console.log(err);
+    res.sendStatus(500);
+  }
+
+}
 
 const sendVerifyEmailOTP= async (req, res) => {
   try {
@@ -566,4 +602,4 @@ module.exports.sendOTP= sendOTP;
 module.exports.verifyOTP=verifyOTP
 module.exports.sendVerifyEmailOTP=sendVerifyEmailOTP
 module.exports.changeEmail=changeEmail
-
+module.exports.updateAccount=updateAccount

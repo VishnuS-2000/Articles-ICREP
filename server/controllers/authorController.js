@@ -71,7 +71,7 @@ module.exports.updateAuthor=async(req,res)=>{
         author.set(req.body)
         return author
 
-    }).catch((err)=>res.sendStatus(404) )
+    }).catch((err)=>{console.log(err); res.sendStatus(404) })
 
     await author.save().then((author)=>{
 

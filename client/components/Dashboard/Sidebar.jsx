@@ -24,6 +24,9 @@ export const Sidebar=({active,toggler})=>{
 
     }   
 
+
+    
+
     return <div className="flex z-[50] fixed bottom-0 overflow-x-auto border-t border-slate-200 bg-white  p-2 justify-between w-full desktop:justify-start desktop:flex-col desktop:h-screen desktop:w-[20%] desktop:space-y-3 desktop:border-r desktop:border-slate-200 desktop:px-3">
         
         <div className="hidden desktop:flex justify-center select-none">

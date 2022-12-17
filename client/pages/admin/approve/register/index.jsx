@@ -44,7 +44,7 @@ const VerifyRegister=({data})=>{
 </div>
 
       <h1 className="text-2xl font-bold desktop:text-3xl">Timeout/Failure</h1>
-      <p className='text-xl '>Request for new account has timed out or failed</p>
+      <p className='text-xl italic'>Request for new account has timed out or failed</p>
 
       
       <Link href='/'>
