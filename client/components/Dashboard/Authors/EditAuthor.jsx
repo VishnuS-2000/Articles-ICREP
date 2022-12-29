@@ -32,8 +32,7 @@ export const EditAuthor=({toggler})=>{
         designation:null,
         bio:null,
         specialization:null,
-        image:null
-        
+        image:{}      
     })
 
     const {setNotification}=useNotification()
@@ -119,7 +118,7 @@ return <div className="flex flex-col py-4 space-y-3  tablet:space-y-6 desktop:sp
 
     <div  className="relative w-[100px] flex">
 
-    {changes?.image?.url?<img src={changes?.image?.url} className="w-[60px] h-[60px] rounded-full"/>:account?.image.url?<img src={account?.image?.url} className="w-[60px] h-[60px] rounded-full"/>:<Avatar name={`${account?.firstName} ${account?.lastName}`} size="md" />}
+    {changes?.image?<img src={changes?.image} className="w-[60px] h-[60px] rounded-full"/>:account?.image.url?<img src={account?.image?.url} className="w-[60px] h-[60px] rounded-full"/>:<Avatar name={`${account?.firstName} ${account?.lastName}`} size="md" />}
     
     {changes?.image?.raw&&<div className="flex mr-3 items-center">
                 <button type="button" className="text-green-600 p-1" onClick={()=>{setAccount({...account,image:changes?.image}); setChanges({...changes,image:null})}}>
@@ -247,6 +246,8 @@ return <div className="flex flex-col py-4 space-y-3  tablet:space-y-6 desktop:sp
             <option disabled></option>
             <option value={'faculty'} >Faculty</option>
             <option value={'student'} >Student</option>
+            <option value={'student'}>Others</option>
+
         </Select>
         {errorFields[3]&&<FormErrorMessage>No Designation selected</FormErrorMessage>}
     </FormControl>

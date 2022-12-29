@@ -1,6 +1,12 @@
 import {useState,useEffect} from 'react'
+import axios from "../axios"
+import { useRouter } from 'next/router'
+import Link from 'next/link'
+
 const TopicBar=()=>{
     const [topics,setTopics]=useState([])
+    
+    const router=useRouter()
     useEffect(()=>{
         const uniqueTopics=[]
      
@@ -8,20 +14,16 @@ const TopicBar=()=>{
     
         try{
 
-            const response=await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/articles`)
+            const response=await axios.get(`article/topics`)
+                
+            if(response){
+                setTopics(response?.data.result?.rows)
 
-            response.data.result.rows.map((e)=>{
-                if(!uniqueTopics.includes(e.topic)){
-                    uniqueTopics.push(e.topic)
-                }
-            })
-            
-        
-            setTopics(uniqueTopics)
+            }
 
         }
         catch(err){
-            // console.log(err)
+            console.log(err)
         }
     
 
@@ -31,12 +33,6 @@ const TopicBar=()=>{
 
 
     },[])
-
-    const handleTopic=(e)=>{
-        e.preventDefault()
-            
-        // router.push(`/search?topic=${e.target.value}`)        
-        }
 
 
 
@@ -53,9 +49,11 @@ return <div className="hidden fixed top-[13.5%] desktop:flex  right-0 w-[20%]  b
 
 <div className='flex flex-wrap  w-full drop-shadow font-[500]'>
 {topics.map((topic,index)=>{
-            return<button key={index}  className="rounded-[20px] my-1 mx-1 bg-line p-2 text-secondary text-sm " name='topic' onClick={handleTopic} value={topic} >
-                {topic}
+            return <Link href={{pathname:'/',query:{topic:topic?.topic}}}>
+            <button key={index}  className="rounded-[20px] my-1 mx-1 bg-line p-2 text-secondary text-sm " name='topic' >
+                {topic?.topic}
             </button>
+            </Link>
         })}
 </div>
 

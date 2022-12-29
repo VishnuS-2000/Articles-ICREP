@@ -12,15 +12,11 @@ Article.init({
         allowNull:false,
         primaryKey:true
     },
-    type:{
-        type:DataTypes.STRING,
-        allowNull:false,
-    },
     title:{
         type:DataTypes.STRING,
         allowNull:false
     },
-    topic:{
+    mode:{
         type:DataTypes.STRING,
         allowNull:false
     },
@@ -30,7 +26,23 @@ Article.init({
     richText:{
         type:DataTypes.TEXT
     },
-    image:{
+    type:{
+        type:DataTypes.STRING,
+        allowNull:false
+    },
+    year:{
+        type:DataTypes.INTEGER,
+        allowNull:false
+    },
+    issue:{
+        type:DataTypes.INTEGER,
+        allowNull:false
+    },
+    volume:{
+        type:DataTypes.STRING,
+        allowNull:false
+    },
+    keywords:{
         type:DataTypes.ARRAY(DataTypes.STRING)
     }
     

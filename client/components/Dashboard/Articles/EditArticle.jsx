@@ -14,6 +14,7 @@ import moment from 'moment'
 
 
 import {convert} from 'html-to-text'
+import { start_date,volumeData } from "../Dates";
 
 const RichTextEditor= dynamic(() => import('@mantine/rte'), { ssr: false });
 
@@ -24,7 +25,7 @@ export const EditArticle=()=>{
     const {current}=useCurrent()
 
 
-    const [topics,setTopics]=useState([])
+    const [types,setTypes]=useState([])
     const [authors,setAuthors]=useState([])
     const [createTopic,setCreateTopic]=useState()
 
@@ -37,21 +38,32 @@ export const EditArticle=()=>{
     const [collabrator,setCollabrator]=useState(null)
     const [collabrators,setCollabrators]=useState([])
 
-    const [type,setType]=useState(current?.article?.type)
+    const [mode,setMode]=useState(current?.article?.mode)
     const [text,setText]=useState(current?.article?.richText)
+
+
+    const [extras,setExtras]=useState()
+
+    const [keywords,setKeywords]=useState(current?.article?.keywords)
+    const [keyword,setKeyword]=useState('')
+    
     
     const [article,setArticle]=useState({
         title:current?.article?.title,
-        topic:current?.article?.topic,
+        type:current?.article?.type,
         author:current?.article?.authorId,
-        content:current?.article?.content
+        content:current?.article?.content,
+        year:current?.article?.year,
+        issue:current?.article?.issue,
+        volume:current?.article?.volume,
+
     })
 
     const [errorFields,setErrorFields]=useState([false,false,false,false,false])
    
     const [changes,setChanges]=useState({
        title:null,
-       topic:null,
+       type:null,
        author:null,
        content:null
     })
@@ -71,22 +83,22 @@ export const EditArticle=()=>{
            }
         } 
 
-        const fetchTopics=async()=>{
+        const fetchTypes=async()=>{
 
-            const response=await axios.get('/article/topics')
+            const response=await axios.get('/article/types')
 
             if(response){
-                setTopics(response?.data?.result?.rows)
+                setTypes(response?.data?.result?.rows)
             }
         }
 
-        fetchTopics()
+        fetchTypes()
         fetchAuthors()
     },[])
 
     useEffect(()=>{
 
-    if(type=="individual"){
+    if(mode=="individual"){
         setCollabrator(current?.article?.authors[0]?.id)
 
     }
@@ -103,13 +115,42 @@ export const EditArticle=()=>{
     },[])
 
 
+    useEffect(()=>{
+        const current_date=moment()
+
+        const year_diff=current_date.diff(start_date,'year')
+
+        var year=start_date.year()
+
+        var total_volume=current_date.diff(start_date,'quarter')
+        var remaining_volumes=Math.floor(total_volume%4)
+
+
+
+
+        const volumes={}
+        for(var i=0;i<year_diff;i++){
+            
+            volumes[year]=volumeData
+            year+=1
+        }   
+        
+
+        
+        volumes[year]=volumeData.slice(0,remaining_volumes)
+        setExtras({years:Object.keys(volumes),volumes})
+    
+
+    },[])
+
+
 
     const handleSubmit =async (e)=>{
         e.preventDefault()
 
 
 
-        if(!article?.title||!article?.topic||!type){
+        if(!article?.title||!article?.type||!mode){
             setNotification({message:'Missing Fields',status:'error',createdAt:moment()})
             return 
         }
@@ -125,11 +166,16 @@ export const EditArticle=()=>{
 
                 const response=await axiosPrivate.put(`/article/${current?.article?.id}`,{
                     title:article?.title,
-                    type:type,
-                    topic:article?.topic,
-                    authors:type=="individual"?[collabrator]:collabrators,
+                    mode:mode,
+                    type:article?.type,
+                    authors:mode=="individual"?[collabrator]:collabrators,
                     content:content,
-                    richText:text
+                    richText:text,
+                    year:article?.year,
+                    issue:article?.issue,
+                    volume:article?.volume,
+                    keywords:keywords
+
                    }
                    )
 
@@ -155,6 +201,22 @@ export const EditArticle=()=>{
 
 
 
+    }
+
+    const handleKeywords=()=>{
+
+        if(keyword && !keywords.includes(keyword)){
+            setKeywords([...keywords,keyword])
+            setKeyword('')
+        }
+
+
+    }
+
+
+    const deleteKeywords=(element)=>{
+        setKeywords(keywords.filter((e)=>{
+                return e!==element       }))
     }
 
 
@@ -240,29 +302,29 @@ return <div className="flex flex-col py-4  space-y-1 ">
 
         <FormControl isRequired="true" isInvalid={errorFields[1]}>
         <div  className="flex space-x-5">
-        <FormLabel className="text-secondary">Topic
+        <FormLabel className="text-secondary">Publication Type
         </FormLabel>
 
         <div>
-        <button type="button" className="ml-2 text-primary  underline" onClick={()=>setCreateTopic(!createTopic)}>{createTopic?'Existing Topics':'Create Topic'} ?</button>
+        <button type="button" className="ml-2 text-primary  underline" onClick={()=>setCreateTopic(!createTopic)}>{createTopic?'Existing Types':'Create Type'} ?</button>
         </div>
 
         </div>
-        {createTopic?<Input variant="filled" value={article?.topic} onChange={({target})=>setArticle({...article,topic:target.value})}/>:<Select variant="filled"  value={article?.topic} onChange={({target})=>{setArticle({...article,topic:target.value})}}>
-                <option disabled>Select a Topic</option>
+        {createTopic?<Input variant="filled" value={article?.type} onChange={({target})=>setArticle({...article,type:target.value})}/>:<Select variant="filled"  value={article?.type} onChange={({target})=>{setArticle({...article,type:target.value})}}>
+                <option disabled>Publication Type</option>
 
-                {topics.map((topic)=>{
-                    return <option value={topic?.topic}>{topic?.topic}</option>
+                {types.map((type)=>{
+                    return <option value={type?.type}>{type?.type}</option>
                 })}
             </Select>}
-            {errorFields[1]&&<FormErrorMessage>Topic is required</FormErrorMessage>}
+            {errorFields[1]&&<FormErrorMessage>Type is required</FormErrorMessage>}
 
             </FormControl>
         
 
             <FormControl>
-                <FormLabel>Type</FormLabel>
-            <RadioGroup className="space-x-3" value={type} onChange={setType}>
+                <FormLabel>Mode</FormLabel>
+            <RadioGroup className="space-x-3" value={mode} onChange={setMode}>
                 <Radio value={'individual'}>Individual</Radio>
                 <Radio value={'collabrated'}>Collabrated</Radio>
             </RadioGroup>
@@ -270,6 +332,77 @@ return <div className="flex flex-col py-4  space-y-1 ">
             </FormControl>
         
 </div>
+
+
+
+<div className="flex  py-3 space-x-3">
+
+
+<FormControl  >
+        <FormLabel>Year</FormLabel>
+        <Select value={article?.year} variant="filled" onChange={(e)=>{setArticle({...article,year:e.target.value,issue:extras.years.indexOf(e.target.value)+1}); console.log(extras.years.indexOf(e.target.value))}}>
+        <option>Select an Year</option>
+
+            {extras?.years?.map((year)=>{
+                return <option value={year}>{year}</option>
+            })}
+        </Select>
+    </FormControl>
+
+
+    <FormControl >
+        <FormLabel>Issue</FormLabel>
+        <Input value={article?.issue} variant="filled" disabled/>
+    </FormControl>
+
+    <FormControl >
+        <FormLabel>Volume</FormLabel>
+
+        <Select value={article?.volume} variant="filled" onChange={(e)=>{setArticle({...article,volume:e.target.value})}}>
+           
+        <option>Select a Volume</option>
+
+            {extras?.volumes[article?.year]?.map((volume)=>{
+                return <option value={volume}>
+                        {volume}
+                </option>
+            })}
+        </Select>
+    </FormControl>
+
+
+
+
+
+</div>
+
+<FormControl>
+    <FormLabel>Keywords</FormLabel>
+    
+    <div className="flex flex-wrap w-full py-4 space-x-3">
+    {keywords.map((element) =>{
+        return <p className="bg-slate-200 relative p-2 rounded-md ">{element}
+         <button  type="button" className="font-[600] absolute top-[-5px] right-0  desktop:top-[-10px] desktop:right-[-10px]" onClick={()=>deleteKeywords(element)}>
+<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
+<path strokeLinecap="round" strokeLinejoin="round" d="M9.75 9.75l4.5 4.5m0-4.5l-4.5 4.5M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+</svg>
+
+</button>
+        </p>
+    })}
+    </div>
+    <Input value={keyword} variant="filled" onChange={(e)=>setKeyword(e.target.value)}/>                
+    <button type="button" className="bg-indigo-50 my-2 p-2 rounded-md max-w-[220px]" onClick={handleKeywords}>Add Keyword</button>
+
+</FormControl>
+
+
+
+
+
+
+
+
 
 <div className="flex flex-col py-3 space-y-3">
                 <h1 className="my-2">Authors</h1>
@@ -287,7 +420,7 @@ return <div className="flex flex-col py-4  space-y-1 ">
 
             </FormControl>
 
-            {type=="collabrated"&&<div>
+            {mode=="collabrated"&&<div>
             <button type="button" className="bg-indigo-50 my-2 p-2 rounded-md max-w-[120px]" onClick={handleCollabrators}>Add Author</button>
 
 

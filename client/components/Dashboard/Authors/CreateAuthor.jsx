@@ -64,6 +64,8 @@ export const CreateAuthor=({toggler})=>{
         return valid
     }
 
+    console.log(author)
+
     const handleSubmit = async(e)=>{
         e.preventDefault()
         console.log(author)
@@ -75,7 +77,6 @@ export const CreateAuthor=({toggler})=>{
         
 
         setLoading(true)
-
 
         let fileName=null
         if(author?.image?.raw){
@@ -188,6 +189,7 @@ return <div className="flex flex-col py-4 space-y-3 tablet:space-y-6 desktop:spa
 
             <option value={'faculty'}>Faculty</option>
             <option value={'student'} >Student</option>
+            <option value={'student'}>Others</option>
         </Select>
         {errorFields[3]&&<FormErrorMessage>No Designation selected</FormErrorMessage>}
     </FormControl>

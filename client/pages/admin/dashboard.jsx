@@ -5,8 +5,6 @@ import { Authors} from "../../components/Dashboard/Authors/Authors"
 import { Articles } from "../../components/Dashboard/Articles/Articles";
 
 import {Contributions} from "../../components/Dashboard/Contributions"
-import {Editors} from "../../components/Dashboard/Editors/Editors"
-import {About} from "../../components/Dashboard/About"
 import { Settings } from "../../components/Dashboard/Settings"
 
 import {Sidebar} from "../../components/Dashboard/Sidebar"
@@ -15,6 +13,8 @@ import { PersistLogin } from "../../components/Auth/persistLogin";
 
 import { Notification } from "../../components/Notification";
 import useNotification from "../../hooks/useNotification";
+import  Head from "next/head"
+
 export default function Dashboard(){
 
 
@@ -22,14 +22,19 @@ export default function Dashboard(){
     const [active,setActive]=useState(0)
     const {notification}=useNotification()
 
-    const tabs=[<Home/>,<Authors/>,<Articles/>,<Contributions/>,<Editors/>,<About/>,<Settings/>]
+    const tabs=[<Home/>,<Authors/>,<Articles/>,<Contributions/>,<Settings/>]
     const toggler=(id)=>{
         setActive(id)
     }
 
 
 
-    return <PersistLogin>
+    return <>
+    <Head>
+        <title>Dashboard</title>
+    </Head>
+    
+    <PersistLogin>
     <AuthRequired>
     {notification?.createdAt&&<Notification options={notification}/>}
     <div className="flex flex-col min-h-screen w-full ">
@@ -44,4 +49,5 @@ export default function Dashboard(){
     </div>
     </AuthRequired>
     </PersistLogin>
+    </>
 }

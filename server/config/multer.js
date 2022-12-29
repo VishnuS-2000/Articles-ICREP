@@ -25,16 +25,17 @@ const documentStorage=multer.diskStorage({
     },
     filename:(req,file,cb)=>{
         var fileType='' 
-        if(file.mimetype=="application/doc"){
+        console.log(file.mimetype)
+        if(file.mimetype=="application/msword"){
             fileType='doc'
          }
-         else if(file.mimetype=="application/docx"){
+         else if(file.mimetype=="application/vnd.openxmlformats-officedocument.wordprocessingml.document"){
             fileType='docx'
          }
-         else if(file.mimetype=="application/odt"){
+         else if(file.mimetype=="application/vnd.oasis.opendocument.text"){
             fileType='odt'
          }
-         cb(null,'image-'+Date.now()+'.'+fileType)
+         cb(null,'document-'+Date.now()+'.'+fileType)
 
     }
 })

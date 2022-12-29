@@ -33,7 +33,6 @@ export const DataTable=({initials,args,changeArgs})=>{
         headers:args.options
       })
 
-      console.log(response?.data?.result)
       return response?.data?.result
     }
 
@@ -119,10 +118,10 @@ export const TableControl=({name,count,controls,args,setArgs})=>{
 
 console.log(args)
 
-return <div className="flex w-full py-4  items-center justify-between ">
+return <div className="flex w-full py-4  items-center justify-between font-[500]">
     
     <div className="flex space-x-5 items-center">
-    <p className="text-lg ">All({count?count:'0'})</p>
+    <p className=" ">All({count?count:'0'})</p>
     <button className="flex text-base justify-evenly py-1  drop-shadow px-3 rounded-full text-white bg-gradient-to-r from-primary to-indigo-800 items-center" onClick={()=>{controls.create.toggle(); setCurrent({...current,[name]:{firstName:'Vishnu S',lastName:'S'}})}}>
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-5 h-5">
 <path d="M10.75 4.75a.75.75 0 00-1.5 0v4.5h-4.5a.75.75 0 000 1.5h4.5v4.5a.75.75 0 001.5 0v-4.5h4.5a.75.75 0 000-1.5h-4.5v-4.5z" />
@@ -131,11 +130,7 @@ return <div className="flex w-full py-4  items-center justify-between ">
 
         Create</button>
 
-    {/* <button>
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-6 h-6">
-  <path fillRule="evenodd" d="M16.5 4.478v.227a48.816 48.816 0 013.878.512.75.75 0 11-.256 1.478l-.209-.035-1.005 13.07a3 3 0 01-2.991 2.77H8.084a3 3 0 01-2.991-2.77L4.087 6.66l-.209.035a.75.75 0 01-.256-1.478A48.567 48.567 0 017.5 4.705v-.227c0-1.564 1.213-2.9 2.816-2.951a52.662 52.662 0 013.369 0c1.603.051 2.815 1.387 2.815 2.951zm-6.136-1.452a51.196 51.196 0 013.273 0C14.39 3.05 15 3.684 15 4.478v.113a49.488 49.488 0 00-6 0v-.113c0-.794.609-1.428 1.364-1.452zm-.355 5.945a.75.75 0 10-1.5.058l.347 9a.75.75 0 101.499-.058l-.346-9zm5.48.058a.75.75 0 10-1.498-.058l-.347 9a.75.75 0 001.5.058l.345-9z" clipRule="evenodd" />
-</svg>
-</button> */}
+
 
 </div>
 
@@ -170,7 +165,7 @@ export const TableHeader = ({headers}) => {
         
             {headers?.map((e)=>{
                  
-                return <Th class={`py-3  text-base`}>
+                return <Th class={`py-3  `}>
                 <h1 className="font-[500]">{e.name}</h1>
               </Th>
             })}
@@ -235,7 +230,7 @@ export const TableHeader = ({headers}) => {
 
 
   
-    return (<Tr className="border border-slate-200 items-center">
+    return (<Tr className=" items-center">
  
 
         {fields.map((e)=>{
@@ -244,26 +239,26 @@ export const TableHeader = ({headers}) => {
 
               const nestedOject=element[e.name]
 
-              return<div className="py-2 space-y-2 flex flex-col justify-center"> 
+              return<div className="space-y-2 py-2 justify-center flex flex-col overflow-y-auto max-h-[100px]"> 
                 
                 {nestedOject.map((author)=>{
 
-                  return <div className="flex space-x-1">
-                    {author?.photo?<img src={`${process.env.NEXT_PUBLIC_BACKEND_IMAGE_URL}/${author?.photo}`} className="w-[35px] rounded-full h-[35px]"/>:<Avatar name={`${author?.name}`} size="sm"/>}
+                  return <div className="flex space-x-3">
+                    {author?.photo?<img src={`${process.env.NEXT_PUBLIC_BACKEND_IMAGE_URL}/${author?.photo}`} className="w-[30px] rounded-full h-[30px]"/>:<Avatar name={`${author?.name}`} size="sm"/>}
                     <p>{author?.name}</p>
                     </div>
 
               })
 
             }
-              </div>
+              </div> 
 
             }
             if(e.type=="icon"){
 
-              return <Td className={`flex p-2 items-center  space-x-3 text-base`}>
+              return <Td className={`flex items-center  space-x-3 `}>
                 
-              {element?.photo?<img src={`${process.env.NEXT_PUBLIC_BACKEND_IMAGE_URL}/${element?.photo}`} className="w-[35px] rounded-full h-[35px]"/>:<Avatar name={`${element[e.name]}`} size="sm"/>}
+              {element?.photo?<img src={`${process.env.NEXT_PUBLIC_BACKEND_IMAGE_URL}/${element?.photo}`} className="w-[30px] rounded-full h-[30px]"/>:<Avatar name={`${element[e.name]}`} size="sm"/>}
               <h1 className="text-gray-700">{element[e.name]?.length>e.limit?element[e.name].slice(0,e.limit):element[e.name]}</h1>
 
             </Td>
@@ -272,7 +267,7 @@ export const TableHeader = ({headers}) => {
 
             else if(e.type=="count"){
 
-              return <Td className={`text-base`}>
+              return <Td className={``}>
 
               <h1 className="text-gray-700">{element[e.name]?.length}</h1>
 
@@ -282,7 +277,7 @@ export const TableHeader = ({headers}) => {
             }
 
             else{
-            return <Td className={`text-base`}>
+            return <Td className={``}>
               <h1 className="text-gray-700">{element[e.name]?.length>e.limit?element[e.name].slice(0,e.limit)+'...':element[e.name]}</h1>
 
             </Td>
@@ -314,7 +309,8 @@ export const TableHeader = ({headers}) => {
           {/*Delete confirmation Modal*/}
 
         <Modal isOpen={isOpen} onClose={onClose}>
-        <ModalOverlay />
+        <ModalOverlay  bg='blackAlpha.300'
+      backdropFilter='blur(10px)'/>
         <ModalContent>
           <ModalHeader>Confirm Delete</ModalHeader>
           <ModalCloseButton />

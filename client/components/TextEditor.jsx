@@ -1,12 +1,30 @@
-
+import dynamic from 'next/dynamic'
 import { useEffect } from "react"
-import Quill from "quill"
-import "quill/dist/quill.snow.css"
+import Script from 'next/script'
 
-const TextEditor=()=>{
+export const TextEditor=()=>{
 
+        useEffect(()=>{
+
+            const createTextEditor=async()=>{
+
+                const Quill=await import("quill");
+
+
+
+            }
+
+        
+        },[])
+   
     
 
 
-    return 
+
+
+
+    return <>
+        
+
+    </>
 }

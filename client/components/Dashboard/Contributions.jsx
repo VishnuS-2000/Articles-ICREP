@@ -1,105 +1,290 @@
+import {
+  Table,
+  Thead,
+  Tbody,
+  Tr,
+  Th,
+  Td,
+  TableContainer,
+  useDisclosure,
+  Modal,
+  ModalOverlay,
+  ModalCloseButton,
+  ModalHeader,
+  ModalBody,
+  ModalContent,
+  ModalFooter,
+  Button,
+  Spinner
+} from '@chakra-ui/react'
 import { Layout } from "./Layout"
+import useSWR from 'swr'
+import axios from '../../axios'
+import { useState } from 'react'
+
+import DeleteIcon from '@mui/icons-material/Delete';
+import VisibilityIcon from '@mui/icons-material/Visibility';
+import moment from 'moment'
+import useNotification from '../../hooks/useNotification'
+import Link from 'next/link'
 
 export const Contributions=()=>{
 
+  const [args,setArgs]=useState({
+    url:'/app/contribution',
+    options:{
+      offset:0,
+      limit:8
+    }
+  })
 
 
-    const initials={ 
-        name:'editor',
-        controls:{
-            create:{
-                toggle:()=>{setActive(1)}
-            },
-            edit:{
-                toggle:()=>{setActive(2); }
-            },
-            view:{
-                toggle:()=>{setActive(3)}
-    
-            },
-        }  ,
-        headers:[
-        {name:'Contributor',width:0.3},
-        {name:'Email',width:0.2},
-        {name:'Mobile Number',width:0.3},
-        {name:'Actions',width:0.2}
-    ]
 
-}
 
-const data={}
+
+
+  const fetcher=async(args)=>{
+
+      const response=await axios.get(args.url,{
+        headers:args.options
+      })
+      console.log(response?.data)
+      return response?.data?.result
+  }  
+
+  const {data,isValidating,error} = useSWR(args,fetcher)
 
 
 
     return <Layout heading="Contributions">
-        
-    <div className="my-8 ">
-        <TableControl/>
-      <TableHeader headers={initials?.headers}/>
-    {data?.rows && !error?
-      data?.rows.map((e)=>{
-        return <TableRow element={e} name={initials?.name} fields={initials?.fields} addSelected={addSelected} removeSelected={removeSelected} selected={selected} toggler={initials.controls.edit.toggle}/>
-      }):<div className="flex p-3 justify-center mt-3">
-        <h1 className="italic">No contributions available</h1></div>
-    }
-    </div>
-            
+
+
+        <TableContainer className='py-8'>
+        <TableControl count={data?.count} args={args} setArgs={setArgs}/>
+
+            <Table >
+
+                <Thead>
+                  <Tr className='bg-indigo-50 py-3 text-base border-tl border-slate-200  rounded-md border border-gray-200'>
+                  <Th>Name</Th>
+                  <Th>Email</Th>
+                  <Th>Mobile Number</Th>
+                  <Th>File</Th>
+                  <Th>Actions</Th>
+
+                  </Tr>
+                </Thead>
+
+                {data?.rows&&data?.count>0&&!error?<Tbody>
+                    
+                    {data?.rows.map((element)=>{
+                        return   <TableRow element={element} />
+                    })
+                  
+}
+                </Tbody>:isValidating?<div className="flex p-3 justify-center  mt-3">
+      <h1 className="italic">Loading...</h1></div>:<Tr className="flex p-3 justify-center mt-3">
+        <h1 className="italic">No contributors available</h1></Tr>}
+            </Table>
+        </TableContainer>
+
 
     </Layout>
 }
 
 
-export const TableControl=()=>{
+const TableControl=({count,args,setArgs})=>{
 
+  const handlePrevious=()=>{
+    if(args.options.offset-args?.options?.limit>=0){  
+    setArgs({...args,options:{offset:args.options.offset-args?.options.limit>=0?args?.options.offset-args?.options.limit:0,limit:args?.options.limit,include:true}})
+    }
+  }
 
-    return <div className="flex w-full py-4  items-center justify-between ">
-    
-    <div className="flex space-x-5 items-center">
-    <p className="text-lg ">All(100)</p>
- 
+  const handleNext=()=>{
+    if(args.options.offset+args.options?.limit<=count){
+    setArgs({...args,options:{offset:args.options.offset+args?.options?.limit,limit:args.options.limit,include:true}})    
+      
+    }
+  } 
 
-    <button>
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-6 h-6">
-  <path fillRule="evenodd" d="M16.5 4.478v.227a48.816 48.816 0 013.878.512.75.75 0 11-.256 1.478l-.209-.035-1.005 13.07a3 3 0 01-2.991 2.77H8.084a3 3 0 01-2.991-2.77L4.087 6.66l-.209.035a.75.75 0 01-.256-1.478A48.567 48.567 0 017.5 4.705v-.227c0-1.564 1.213-2.9 2.816-2.951a52.662 52.662 0 013.369 0c1.603.051 2.815 1.387 2.815 2.951zm-6.136-1.452a51.196 51.196 0 013.273 0C14.39 3.05 15 3.684 15 4.478v.113a49.488 49.488 0 00-6 0v-.113c0-.794.609-1.428 1.364-1.452zm-.355 5.945a.75.75 0 10-1.5.058l.347 9a.75.75 0 101.499-.058l-.346-9zm5.48.058a.75.75 0 10-1.498-.058l-.347 9a.75.75 0 001.5.058l.345-9z" clipRule="evenodd" />
-</svg>
-</button>
-
-</div>
-
-
-<div className="flex space-x-8">
-    <button className="rounded-full bg-indigo-100 p-1 flex items-center justify-center">
+return  <div className='flex items-center justify-between font-[500] p-2'>
+  <h1>All({count?`${count}`:0})</h1>
+  
+  <div className="flex hidden space-x-8 desktop:flex items-center">
+<p>{`Showing Entries ${args.options.offset}-${args.options.offset+args.options.limit>=count?count:args.options.offset+args.options.limit}`}</p>
+   
+   
+    <button disabled={args.options.offset-args?.options?.limit>=0?false:true} className={`rounded-full ${args.options.offset-args?.options?.limit>=0?'bg-indigo-100':'bg-gray-200 text-white'}  p-1 flex items-center justify-center`} onClick={handlePrevious}>
     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
   <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" />
 </svg>
 
     </button>
 
-    <button className="rounded-full p-1 bg-indigo-100 flex items-center justify-center">
+    <button  disabled={args.options.offset+args?.options?.limit<=count?false:true} className={`rounded-full p-1 ${args.options.offset+args?.options?.limit<=count?'bg-indigo-100':'bg-gray-200 text-white'} flex items-center justify-center`} onClick={handleNext}>
     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
   <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
 </svg>
 
         </button>
 
-</div>
+</div> 
+  
+  
+  </div>
+ 
+}
+
+const TableRow=({element})=>{
+
+
+
+  const {isOpen,onOpen,onClose}=useDisclosure()
+  const [viewOpen,setViewOpen]=useState(false)
+
+  const googleDriveLink=`https://drive.google.com/file/d/${element?.file}/view`
+
+
+
+  const handleViewOpen=()=>{
+    setViewOpen(true)
+  }
+
+  const handleViewClose=()=>{
+    setViewOpen(false)
+  }
+
+  return <Tr>
+  <Td>{element?.name}</Td> 
+  <Td>{element?.email}</Td>  
+  <Td>{element?.contact}</Td> 
+  <Td>
+
+
+    <Link href={googleDriveLink} legacyBehavior>
+
+  <a target="_blank">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-6 h-6">
+<path d="M5.625 1.5c-1.036 0-1.875.84-1.875 1.875v17.25c0 1.035.84 1.875 1.875 1.875h12.75c1.035 0 1.875-.84 1.875-1.875V12.75A3.75 3.75 0 0016.5 9h-1.875a1.875 1.875 0 01-1.875-1.875V5.25A3.75 3.75 0 009 1.5H5.625z" />
+<path d="M12.971 1.816A5.23 5.23 0 0114.25 5.25v1.875c0 .207.168.375.375.375H16.5a5.23 5.23 0 013.434 1.279 9.768 9.768 0 00-6.963-6.963z" />
+</svg>
+</a>
+    </Link>
+    </Td>   
+    <Td>
+      <div>
+      <div class="">
+<button
+className="rounded-full  p-1  hover:bg-slate-200"
+onClick={handleViewOpen}
+>
+<VisibilityIcon />
+</button>
+
+<button
+className="rounded-full  p-1  hover:bg-slate-200"
+
+>
+<DeleteIcon onClick={onOpen}/>
+</button>
 
 </div>
+      </div>
+      </Td>   
+      <DeleteContributionModal  element={element} onClose={onClose} isOpen={isOpen} onOpen={onOpen}/>
+      <ViewContributionModal element={element} onClose={handleViewClose} isOpen={viewOpen}/>
+</Tr>
+}
+
+
+
+
+
+
+
+const DeleteContributionModal=({element,isOpen,onClose})=>{
+
+  const {notification,setNotification}=useNotification()
+
+
+
+  const [loading,setLoading]=useState(false)
+  const handleDelete=async()=>{
+
+    try{
+      
+      setLoading(true)
+      
+      const response=await axios.delete(`/app/contribution/${element?.id}`)
+
+      if(response?.status==200){
+      setNotification({status: 'warning', message: 'Contribution Deleted',createdAt:moment()})
+      setLoading(false)
+      onClose()
+      }
+      
+    }catch(err){
+      console.log(err)
+      setLoading(false)
+      setNotification({status: 'error', message: 'Try again later',createdAt:moment()})
+    }
+  }
+
+  return <Modal isOpen={isOpen} onClose={onClose}>
+  <ModalOverlay  bg='blackAlpha.300'
+backdropFilter='blur(10px)'/>
+  <ModalContent>
+    <ModalHeader>Confirm Delete</ModalHeader>
+    <ModalCloseButton />
+    <ModalBody>
+      <p><span className='font-[600]'>{element?.name}</span>'s contribution will be permanantely deleted</p>
+    </ModalBody>
+
+    <ModalFooter>
+      <Button colorScheme='blue' variant='ghost' mr={3} onClick={onClose}>
+        Close
+      </Button>
+      {loading?<Spinner color="red"/>:<Button colorScheme='red' variant='ghost' onClick={handleDelete}>Delete</Button>}
+    </ModalFooter>
+  </ModalContent>
+</Modal>
 
 }
 
-export const TableHeader = ({headers}) => {
-    
-    return (
-      <div className="hidden desktop:flex flex-[1] bg-indigo-50 border-tl border-slate-200 justify-between items-center rounded-md p-3 border border-gray-200">
-        <input type="checkbox" className="h-[20px] w-[20px] " />
-        {headers?.map((e)=>{
-             
-            return <div class={`flex-[${e.width}] flex justify-center text-base`}>
-            <h1 className="font-[500]">{e.name}</h1>
-          </div>
-        })}
-     
-      </div>
-    );
-  };
+
+const ViewContributionModal=({element,isOpen,onClose})=>{
+
+
+  return <Modal isOpen={isOpen} onClose={onClose}>
+  <ModalOverlay  bg='blackAlpha.300'
+backdropFilter='blur(10px)'/>
+  <ModalContent>
+    <ModalHeader>Contribution</ModalHeader>
+    <ModalCloseButton />
+    <ModalBody>
+        <div className="flex justify-between font-[500]">
+        <h1 >Full Name</h1>
+        <h1>{element?.name}</h1>
+        </div>
+
+        <div className="flex justify-between font-[500]">
+        <h1>Email</h1>
+        <h1>{element?.email}</h1>
+        </div>
+        
+        <div className='flex justify-between font-[500]'>
+        <h1>Contact</h1>
+        <h1>{element?.contact}</h1>
+        </div>
+        
+        <p className='mt-4'>{element?.bio}</p>
+    </ModalBody>
+
+    <ModalFooter>
+ 
+    </ModalFooter>
+  </ModalContent>
+</Modal>
+
+}

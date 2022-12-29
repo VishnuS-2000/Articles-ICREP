@@ -124,7 +124,7 @@ const ForgotPassword=()=>{
     
     
 
-    return <div className=" min-h-screen tablet:bg-gradient-to-r from-primary to-blue-800 flex flex-col w-full  justify-center tablet:items-center">
+    return <div className=" min-h-screen tablet:bg-gradient-to-r from-primary to-black flex flex-col w-full  justify-center tablet:items-center">
 
 
         <div className='fixed top-0 right-0 left-0  desktop:relative tablet:top-[-50px]'>

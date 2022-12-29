@@ -13,8 +13,13 @@ const credentials=require('./middleware/credentials')
 const {AuthRouter}=require('./routes/auth')
 const {AuthorRouter}=require('./routes/author')
 const {ArticlesRouter}=require('./routes/articles')
+const {AccountsRouter}=require('./routes/account')
+const {GeneralRouter}=require('./routes/general')
+
 const path=require('path')
 
+
+const {getPublicURLFromGoogleDrive,downloadFromGoogleDrive}=require('./utils/drive')
 
 
 app.use(credentials)
@@ -30,6 +35,9 @@ app.use(cookieParser())
 app.use(`${process.env.BASE_PATH}/auth`,AuthRouter)
 app.use(`${process.env.BASE_PATH}/author`,AuthorRouter)
 app.use(`${process.env.BASE_PATH}/article`,ArticlesRouter)
+app.use(`${process.env.BASE_PATH}/account`,AccountsRouter)
+app.use(`${process.env.BASE_PATH}/app`,GeneralRouter)
+
 
 
 app.get('/',(req,res)=>{
@@ -44,6 +52,8 @@ app.get('/',(req,res)=>{
         res.status(500).json({message:'Error sending email'})
     }
 })
+
+
 
 
 app.listen(port,()=>console.log('Server listening on port 4000'))

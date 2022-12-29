@@ -26,14 +26,16 @@ export const Articles =()=>{
         headers:[
             {name:'Title'},
             {name:'Type'},
-            {name:'Topic'},
+            {name:'Issue'},
+            {name:'Volume'},
             {name:'Author'},
             {name:'Actions'},
         ],
         fields:[
-            {name:'title'},
+            {name:'title',limit:40},
             {name:'type'},
-            {name:'topic'},
+            {name:'issue'},
+            {name:'volume'},
             {name:'authors',type:'nested',subfields:['name']},
         ],
         search:{placeholder:'Title or Topic'}

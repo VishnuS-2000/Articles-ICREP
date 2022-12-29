@@ -1,5 +1,5 @@
 const Article=require("../model/article")
-const {QueryTypes,Op}=require('sequelize')
+const {QueryTypes,Op, where}=require('sequelize')
 const {sequelize}=require("../config/database")
 const Author=require("../model/author")
 const {Grant}=require("../model/article")
@@ -20,13 +20,10 @@ module.exports.getArticles=async(req,res)=>{
         
 
 
-
-
-
 module.exports.getArticleById=async(req,res)=>{
 
 
-        await Article.findOne({where:{id:req.params.id},include:[Author]}).then((article)=>{
+        await Article.findOne({where:{id:req.params.id},include:[Author],distinct:true,attributes:req.headers.attributes?req.headers.attributes.split(','):null}).then((article)=>{
 
             res.status(200).json({result:article,message:"Data loaded successfully"})
         }).catch((err)=>res.status(404).json({error:err,message:"Article with given id was not found"}))
@@ -52,11 +49,11 @@ module.exports.getAuthors=async(req,res)=>{
 }
 
 
-module.exports.getTopics=async(req,res)=>{
+module.exports.getTypes=async(req,res)=>{
 
         try{
-                const topics=await Article.findAndCountAll({attributes:['topic'],group:['topic']})
-                res.status(200).json({result:topics})
+                const types=await Article.findAndCountAll({attributes:['type'],group:['type']})
+                res.status(200).json({result:types})
         }
         catch(err){
                 res.sendStatus(404)
@@ -69,49 +66,73 @@ module.exports.getTopics=async(req,res)=>{
 
 module.exports.getArticlesByQuery=async(req,res)=>{
 
-    const query = {
-        [Op.or]:[
-            {[Op.and]:[{},{}]},{
-                
-            }
-        ]
-    }
-
-    const author={
+    try{    
+    const query={}
+    const authorQuery={
         model:Author,
         where:{
-            name:{
-                [Op.iLike]:``
-            }
-        }        
+
+        }
     }
 
+    Object.keys(req.query).map((field)=>{
+        if(field=="type"||field=="year"||field=="issue"||field=="volume"){
+        query[field] = req.query[field]
+        }
+        else if(field=="title"){
+            query[field] ={[Op.iLike]:`${req.query[field]}%`}
+        }
+        else if(field=="keywords"){
+            const keywords=req.query[field].split(',')
+            console.log(keywords)
+            query[field] = {[Op.contains]: keywords}
+        }
 
-    const result=await Article.findAndCountAll({
-        offset: req.query.offset,
-        limit: req.query.limit,
-        where:query,
-        attributes:req.query.attributes?req.query.attributes:null
+        else if(field=="author"){
+            authorQuery['where']={
+                name:{
+                    [Op.iLike]:`${req.query[field]}%`
+                }
+            }
+        }
+
     })
+    
+    
 
+    const results=await Article.findAndCountAll({where:query,limit:req.headers.limit,offset:req.headers.offset,include:authorQuery,distinct:true,attributes:req.headers.attributes?req.headers.attributes.split(','):null})
+
+
+    res.status(200).json({result:results})
+
+}catch(err){
+    console.log(err)
+    res.sendStatus(500)
 
 }
 
 
+   
+ }
+ 
 
 
 
 module.exports.createArticle=async(req,res)=>{
     
-    console.log(req.body.type)
 
     try{
     const article= await Article.build({
         title:req.body.title,
         topic:req.body.topic,
+        mode:req.body.mode,
         type:req.body.type,
         content:req.body.content,
         richText:req.body.richText,
+        year:req.body.year,
+        issue:req.body.issue,
+        volume:req.body.volume,
+        keywords:req.body.keywords
     })
 
     await article.save()
@@ -140,8 +161,7 @@ catch(err){
 
 module.exports.updateArticle=async(req,res)=>{
     
-    console.log(req.body.authors)
-    
+    console.log(req.body)
     try{
     const article=await Article.findOne({where:{id:req.params.id}})
 
@@ -151,9 +171,14 @@ module.exports.updateArticle=async(req,res)=>{
         article.set({
             title:req.body.title,
             topic:req.body.topic,
+            mode:req.body.mode,
             type:req.body.type,
             content:req.body.content,
             richText:req.body.richText,
+            year:req.body.year,
+            issue:req.body.issue,
+            volume:req.body.volume,
+            keywords:req.body.keywords
                      
         })
 

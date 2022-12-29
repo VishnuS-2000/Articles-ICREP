@@ -1,6 +1,6 @@
 const router=require('express').Router()
 
-const {getArticles,getArticleById,getArticlesByQuery,createArticle,updateArticle,deleteArticle,getTopics,getAuthors}=require('../controllers/articleController')
+const {getArticles,getArticleById,getArticlesByQuery,createArticle,updateArticle,deleteArticle,getTypes,getAuthors}=require('../controllers/articleController')
 
 const verifyJWT = require('../middleware/verify-jwt')
 
@@ -8,7 +8,7 @@ const verifyJWT = require('../middleware/verify-jwt')
 
 router.get('/',getArticles)
 
-router.get('/topics',getTopics)
+router.get('/types',getTypes)
 router.get('/authors',getAuthors)
 router.get('/search',getArticlesByQuery)
 

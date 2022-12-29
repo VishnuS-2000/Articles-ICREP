@@ -32,6 +32,9 @@ Account.init({
         type:DataTypes.STRING
     }
     ,
+    note:{
+        type:DataTypes.STRING
+    },
     bio:{
         type:DataTypes.STRING,
     },
@@ -44,12 +47,12 @@ Account.init({
         allowNull:false
     },
     refreshToken:{
-        type:DataTypes.STRING,
+        type:DataTypes.STRING
 
 
     },
-    settings:{
-        type:DataTypes.JSON,
+    permissions:{
+        type:DataTypes.ARRAY(DataTypes.INTEGER),
         allowNull:false
     }
 },{sequelize,modelName:'account'})

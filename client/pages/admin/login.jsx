@@ -30,6 +30,9 @@ import {
 
   import useNotification from '../../hooks/useNotification';
 
+  import  Head from "next/head"
+
+
 export default function Login(){
 
 
@@ -97,7 +100,11 @@ export default function Login(){
 
 
 
-    return     <div className=" min-h-screen tablet:bg-gradient-to-r from-primary to-blue-800 flex flex-col w-full  justify-center tablet:items-center">
+    return<>  
+           <Head>
+        <title>Admin Login</title>
+        </Head>
+      <div className=" min-h-screen tablet:bg-gradient-to-r from-primary to-black flex flex-col w-full  justify-center tablet:items-center">
     <form onSubmit={handleSubmit}>
       
       {notification?.createdAt&&<Notification options={notification}/>}
@@ -105,7 +112,7 @@ export default function Login(){
       <div className="flex flex-col w-full bg-white p-5  space-y-5 tablet:px-10 tablet:py-24 flex-[0.8] tablet:drop-shadow-lg  tablet:rounded-md tablet:w-[560px]   desktop:space-y-8">
         
     
-        <h1 className="text-2xl font-[700] desktop:text-3xl">Login</h1>
+        <h1 className="text-2xl font-[700] desktop:text-3xl">Admin Login</h1>
 
         <FormControl>
           <FormLabel>Username</FormLabel>
@@ -170,11 +177,7 @@ export default function Login(){
           </FormControl>
 
           <div className="flex w-full justify-between">
-          <Link href="/admin/register">
-              <p className="text-gray-600 cursor-pointer text-sm">
-                Create Account
-              </p>
-            </Link>
+    
             <Link href="/admin/forgotpassword">
               <p className="text-gray-600 cursor-pointer text-sm">
                 Forgot Password
@@ -191,6 +194,6 @@ export default function Login(){
       </div>
     </form>
   </div>
-
+</>
 
 }

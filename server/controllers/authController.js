@@ -17,6 +17,8 @@ const register = async (req, res) => {
 
     // console.log(req.body)
 
+
+
     if (!req.body.email || !req.body.role || !req.body.name) {
       return res.status(400).json({ success: false, message: "Invalid response" });
     }
@@ -67,6 +69,10 @@ const register = async (req, res) => {
 const verifyRegister=async(req,res)=>{
     try{
 
+      const permissions={
+        'administrator':[100,101,102,103],
+        'editor':[100]
+      }
       // console.log(req.params)
         if(!req.params.token){
             res.sendStatus(401)
@@ -76,27 +82,27 @@ const verifyRegister=async(req,res)=>{
             if (err) return res.sendStatus(403)
 
             const {username,role,name} =decoded
-            console.log(decoded)
 
             const password=createRandomPassword(8)
             const {salt,hash}=generatePassword(password)
             const account=await Account.build({
-                salt,hash,username,role,settings:{},name,displayName:name,
+                salt,hash,username,role,permissions:permissions[role],name,displayName:name,
+                bio:' ',note:' '
             })
 
             await account.save()
 
             const userMail={
                 from:`ICREP CUSAT <>${process.env.EMAIL}<>`,
-                to:`${account?.username}`,
+                to:`ICREP CUSAT <>${process.env.EMAIL}<>`,
                 subject:`Account Created ICREP JIS`,
                 text:`Hi,Your Account has been successfully created.Please Login to continue.
-                password: ${password}
+                <b>Password: ${password}</b>
                 `,
                 html:`<div>
                 <p>
                 Hi,Your Account has been successfully created.Please Login to continue.
-                password : ${password}
+                <b>Password : ${password}</b>
                 </p>
                 </div>`
              }
@@ -402,7 +408,7 @@ const changePassword = async (req,res) => {
 
     const match = verifyPassword(
       req.body.password,
-      account.password,
+      account.hash,
       account.salt
     );
 
@@ -431,7 +437,7 @@ const getAccount = async (req, res) => {
     console.log(req?.user);
     const account = await Account.findOne({
       where: { username: req?.headers?.username },
-      attributes:['id','name','displayName','bio','photo']
+      attributes:['id','name','displayName','bio','photo','note']
     });
 
     if (!account) return res.sendStatus(404);
@@ -461,7 +467,8 @@ const updateAccount =async(req,res)=>{
     account.set({
         displayName:req.body.displayName,
         bio:req.body.bio,
-        photo:req.body.photo
+        photo:req.body.photo,
+        note:req.body.note
     })
 
     await account.save()
