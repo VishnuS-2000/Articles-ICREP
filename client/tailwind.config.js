@@ -23,5 +23,24 @@ module.exports = {
       fontFamily:{
         'poppins':`'Poppins', sans-serif`
       },
+      keyframes:{
+        'image-exit':{
+          '20%,100%':{
+            'opacity':'0',
+            'transform': 'translate(-520px, 0)'
+          }},
+          'image-enter':{
+            '0%':{
+              'opacity':0
+            },
+            '100%':{
+              'opacity':'1',
+          
+            }
+          }
+    
+     
+      
+    }
     }},
   plugins: []}

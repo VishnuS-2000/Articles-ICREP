@@ -2,7 +2,7 @@ import {useState,useCallback} from "react"
 import dynamic from 'next/dynamic'
 const RichTextEditor= dynamic(() => import('@mantine/rte'), { ssr: false });
 
-import { FormControl,FormLabel,Input,Textarea,Avatar,Select, FormHelperText, FormErrorMessage, Switch,RadioGroup,Radio } from "@chakra-ui/react"
+import { FormControl,FormLabel,Input,Textarea,Avatar,Select, FormHelperText, FormErrorMessage, Switch,RadioGroup,Radio, TableContainer,Table,Thead,Tr,Th, Tbody,Td } from "@chakra-ui/react"
 import { useEffect } from "react";
 import axios from "../../../axios"
 import useAxiosPrivate from "../../../hooks/useAxiosPrivate"
@@ -16,7 +16,8 @@ import {convert} from "html-to-text"
 
 import { start_date,volumeData } from "../Dates";
 
-
+const folderId="1tuIhE6V8kE-F6oMBvaoaSpBXbLBS82FA"
+const { v4: uuidv4 } = require('uuid');
 
 export const CreateArticle=()=>{
 
@@ -54,6 +55,9 @@ const axiosPrivate=useAxiosPrivate()
     const [keyword,setKeyword]=useState('')
     const [keywords,setKeywords]=useState([])
 
+    const [footNotes,setFootNotes]=useState([])
+    const [footNoteFiles,setFootNoteFiles]=useState([])
+
     const validateFields=()=>{
         let valid=true
         fields.map((field,index)=>{
@@ -88,6 +92,7 @@ const axiosPrivate=useAxiosPrivate()
             })
 
 
+
             const response=await axiosPrivate.post('/article',{
             title:article?.title,
             mode:mode,
@@ -98,7 +103,8 @@ const axiosPrivate=useAxiosPrivate()
             year:article?.year,
             issue:article?.issue,
             volume:article?.volume,
-            keywords:keywords
+            keywords:keywords,
+            footnotes:footNotes
 
             })
 
@@ -175,6 +181,42 @@ const axiosPrivate=useAxiosPrivate()
 
 
 
+    useEffect(()=>{
+
+        const fetchFootNoteFiles=async()=>{
+
+            try{
+           const response=await axios.get(`/app/folder/files/${folderId}`)
+           if(response){
+
+
+
+            console.log(response?.data?.result?.files)
+            const files=response?.data?.result?.files.filter((element)=>{
+
+                return element.mimeType=="application/vnd.google-apps.spreadsheet"
+            
+            })
+
+            console.log(files)
+
+            setFootNoteFiles(files)
+
+
+        }
+        
+        }
+            catch(error){
+                console.log(error)
+            }
+
+        }
+
+        fetchFootNoteFiles()
+        },[])
+
+
+
     const handleCollabrators=()=>{
         if(collabrator&&!collabrators.includes(collabrator)){
             
@@ -195,11 +237,15 @@ const axiosPrivate=useAxiosPrivate()
 
     const handleKeywords=()=>{
 
-        if(keyword && !keywords.includes(keyword)){
-            setKeywords([...keywords,keyword])
-            setKeyword('')
-        }
+    
+        const words=keyword.split('-').filter((word)=>{
+            if(word && !keywords.includes(word)){
+                return word
+            }
+        })
 
+        setKeywords([...keywords,...words])
+        setKeyword('')
 
     }
 
@@ -217,6 +263,61 @@ const axiosPrivate=useAxiosPrivate()
 
 
 
+    const handleFootNotes=async(e)=>{
+
+        console.log(e.target.value)
+
+        if(!e.target.value==null||e.target.value=="Select a Filename"){
+            setFootNotes(null)
+            return
+        }
+     const response= await axios.get(`/app/file/${e.target.value}`,{
+            headers:{
+                format:'text/csv'
+            }
+        })
+
+
+        if(response){
+        console.log(response?.data)
+        const footNotesData=response?.data?.result?.split('\r\n').map((element,index)=>{
+            const data=element.split(',')
+            return {serial:index+1, word:data[0],reference:data.slice(1,data?.length).join().replaceAll(`"`,''),id:uuidv4()}
+        })
+
+
+        setFootNotes(footNotesData)
+
+
+
+
+
+
+        }
+
+    
+
+    }
+
+
+
+    const handleFootNotesLink=()=>{ 
+        var richText = text
+     
+        var randomId ;
+        
+        if(!footNotes&&!richText){
+                    return
+                }
+
+        footNotes.map((element)=>{
+            richText=richText.replace(`${element?.word}`,`<a>${element?.word}<sup>[${element?.serial}]</sup></a>`)
+        
+        })
+        
+        setText(richText)
+
+    }
 
 return <div className="flex flex-col py-4  space-y-1 ">
   
@@ -343,9 +444,11 @@ return <div className="flex flex-col py-4  space-y-1 ">
             </FormControl>
 
 
+     
+
 
             <div className="flex flex-col py-3 space-y-3">
-                <h1 className="my-2">Authors</h1>
+                <h1 className="my-2 font-[500]">Authors</h1>
 
                 
             <FormControl >
@@ -367,11 +470,17 @@ return <div className="flex flex-col py-4  space-y-1 ">
             {collabrators.map((e)=>{
                 const details=getCollabrator(e)
                 
-                return <div className="flex bg-slate-100 p-4 rounded-md justify-evenly">
+                return <div className="flex bg-slate-100 p-4 rounded-md justify-between">
                 
+                    <div className="w-[250px]">
                     <h1>{details?.name}</h1>
+                    </div>
+                    <div className="flex ">
                     <h1>{details?.email}</h1>
+                    </div>
+                    <div>
                     <h1>{details?.bio}</h1>
+                    </div>
                     
                     <button type="button" onClick={()=>deleteCollabrator(e)} className="">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
@@ -392,6 +501,7 @@ return <div className="flex flex-col py-4  space-y-1 ">
 
   
 
+
     
     </form>
 
@@ -402,6 +512,57 @@ return <div className="flex flex-col py-4  space-y-1 ">
     ['alignLeft', 'alignCenter', 'alignRight'],
   ]} value={text} onChange={setText} stickyOffset={10} className='w-full  text-lg border border-2 border-black'/>
 
+
+<div className="flex flex-col py-3 space-y-3">
+                <h1 className="font-[500]">Footnotes</h1>
+                <div>
+                    <Select variant="filled" rows={12} onChange={handleFootNotes}>
+
+                        <option value={null} >Select a Filename</option>
+                           {footNoteFiles.map((file)=>{
+                               return <option key={file?.id} value={file?.id}>{file?.name}</option>
+                           })}
+                        </Select>
+                </div>
+            </div>
+
+
+
+{footNotes?.length>0&&<TableContainer>
+    <div className="">
+    <button type="button" className="bg-indigo-50 my-2 p-2 rounded-md max-w-[220px]" onClick={handleFootNotesLink}>Link Table</button>
+</div>
+        <Table>
+                <Thead>
+                    <Tr>
+                                            <Th>SlNo.</Th>
+                                            <Th>Word</Th>
+                                            <Th>Reference</Th>
+                                        </Tr>
+
+
+                </Thead>
+
+
+    
+                <Tbody>
+                    {footNotes?.map((element, index)=>{
+                        return (
+                            <Tr key={index}>
+                                <Td>{index + 1}</Td>
+                                <Td>{element.word}</Td>
+                                <Td>{element.reference}</Td>
+                            </Tr>
+                        )
+                    })}
+
+
+                </Tbody>
+
+        </Table>
+        
+    
+    </TableContainer>}
 
     
 </div>

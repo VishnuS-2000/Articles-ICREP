@@ -15,19 +15,26 @@ export default function NotFound(){
   
 
       <div className="flex  w-full h-screen bg-slate-50 flex-col desktop:flex-row p-8 tablet:p-16 desktop:p-20 ">
-               <div className="flex flex-col space-y-5">
-                <h1 className="text-6xl desktop:text-8xl font-[800] text-primary">Error 404</h1>
-                <h1 className="text-4xl desktop:text-4xl font-[500] text-secondary">Page Not Found</h1>
+               <div className="flex flex-col space-y-3">
+                <h1 className="text-6xl desktop:text-6xl font-[800] text-primary">Error 404</h1>
+
+                <div>
+                <h1 className="text-2xl desktop:text-2xl font-[500] text-secondary">Page Not Found</h1>
 
                 <Link href={{pathname:'/'}} className="">
-                <button className=" desktop:text-2xl py-5 text-secondary text-white font-[600] flex items-center">Go Home
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-8 h-8">
-  <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
+                <button className=" desktop:text-lg py-5 text-secondary  font-[600] flex items-center space-x-5">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
+  <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" />
 </svg>
+                  Go Home
+             
 
                 
                 </button>
                 </Link>
+
+
+           </div>
                 </div>
       </div>
 

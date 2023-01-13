@@ -60,8 +60,37 @@ catch(e){
 
 }
 
+const listFile=async(req, res)=>{
+    try{
+        const data=await listFilesFromGoogleDrive(req.params.id)
+        if(data){
+            return res.status(200).json({result:data})
+        }
+        res.sendStatus(404)
+    }
+    catch(err){
+        console.log(err)
+        res.sendStatus(500)
+
+    }
+}
 
 
+const getFile=async(req,res) =>{
+    try{
+
+
+        const exportResult=await downloadFromGoogleDrive(req.params.id,req.headers.format)
+
+        return res.status(200).json({result:exportResult})
+    }
+    catch(err){
+        console.log(err)
+        res.sendStatus(500)
+
+    }
+
+}
 
 
 
@@ -132,7 +161,8 @@ const createContribution=async(req,res)=>{
             email: req.body.email,
             contact:req.body.contact,
             file: req.body.file,
-            bio: req.body.bio
+            bio: req.body.bio,
+            
         })
 
 
@@ -192,5 +222,6 @@ module.exports ={
     uploadFile,
     createContribution,
     getContributions,
-    deleteContribution
+    deleteContribution,
+    getFile,listFile
 }

@@ -49,6 +49,8 @@ module.exports.getAuthors=async(req,res)=>{
 }
 
 
+
+
 module.exports.getTypes=async(req,res)=>{
 
         try{
@@ -60,7 +62,36 @@ module.exports.getTypes=async(req,res)=>{
         }
 
 }
+module.exports.getYears =async(req, res)=>{
+    try{
+        const years=await Article.findAndCountAll({attributes:['year'],group:['year']})
+        res.status(200).json({result:years})
+}
+catch(err){
+        res.sendStatus(404)
+}
+}
 
+module.exports.getIssues =async(req, res)=>{
+    try{
+        const issues=await Article.findAndCountAll({attributes:['issue'],group:['issue']})
+        res.status(200).json({result:issues})
+}
+catch(err){
+        res.sendStatus(404)
+}
+}
+
+
+module.exports.getVolumes=async(req, res)=>{
+    try{
+        const volumes=await Article.findAndCountAll({attributes:['volume'],group:['volume']})
+        res.status(200).json({result:volumes})
+}
+catch(err){
+        res.sendStatus(404)
+}
+}
 
 
 
@@ -69,38 +100,45 @@ module.exports.getArticlesByQuery=async(req,res)=>{
     try{    
     const query={}
     const authorQuery={
-        model:Author,
-        where:{
-
-        }
+   
     }
 
+
     Object.keys(req.query).map((field)=>{
-        if(field=="type"||field=="year"||field=="issue"||field=="volume"){
+
+        if(field=="year"||field=="issue"||field=="volume"){
         query[field] = req.query[field]
         }
         else if(field=="title"){
             query[field] ={[Op.iLike]:`${req.query[field]}%`}
         }
-        else if(field=="keywords"){
+        else if(field=="type"){
+            const types=req.query[field].split(',')
+            console.log(types)
+            query[field] = {[Op.in]: types}
+        }
+        else if(field=="keywords"){ 
             const keywords=req.query[field].split(',')
             console.log(keywords)
             query[field] = {[Op.contains]: keywords}
         }
 
         else if(field=="author"){
-            authorQuery['where']={
-                name:{
-                    [Op.iLike]:`${req.query[field]}%`
-                }
-            }
+            authorQuery['name']={[Op.iLike]:`${req.query[field]}%`}
         }
 
+        else if(field=="designation"){
+            const categories=req.query[field].split(',')
+            console.log(categories)
+            authorQuery['designation']={[Op.in]:categories}
+        }
     })
     
+    console.log(query,authorQuery)
+
     
 
-    const results=await Article.findAndCountAll({where:query,limit:req.headers.limit,offset:req.headers.offset,include:authorQuery,distinct:true,attributes:req.headers.attributes?req.headers.attributes.split(','):null})
+    const results=await Article.findAndCountAll({where:query,limit:req.headers.limit,offset:req.headers.offset,include:{model:Author,where:authorQuery},distinct:true,attributes:req.headers.attributes?req.headers.attributes.split(','):null,order:[[req.headers.orderfield?req.headers.orderfield:'title',req.headers.ordertype?req.headers.ordertype:'ASC']]})
 
 
     res.status(200).json({result:results})
@@ -132,7 +170,8 @@ module.exports.createArticle=async(req,res)=>{
         year:req.body.year,
         issue:req.body.issue,
         volume:req.body.volume,
-        keywords:req.body.keywords
+        keywords:req.body.keywords,
+        footnotes:req.body.footnotes
     })
 
     await article.save()

@@ -206,61 +206,8 @@ const General=({role,lastLogin,username})=>{
 
       
 
-        <FormControl>
-        <FormLabel>Bio</FormLabel>
 
-        <InputGroup>
-        <Textarea rows={6} resize="none"  variant="filled" disabled={changes?.bio?false:true} value={changes?.bio?changes?.bio:account?.bio} onChange={({target})=>{setChanges({...changes,bio:target.value})}}/>
-
-<InputRightElement children={changes?.bio?<div className="flex mr-3 items-center">
-<button type="button" className="text-green-600 p-1" onClick={()=>{setAccount({...account,bio:changes?.bio}); setChanges({...changes,bio:null})}}>
-<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
-<path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" />
-</svg>
-</button>
-<button type="button" className="text-red-600" onClick={()=>{setChanges({...changes,bio:null})}}>
-<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
-<path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
-</svg>
-
-</button>
-</div>:<button type="button" onClick={()=>{setChanges({...changes,bio:account?.bio})}}>
-<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
-<path strokeLinecap="round" strokeLinejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10" />
-</svg>
-
-</button>} />   
-</InputGroup>
-
-        </FormControl>
-
-        <FormControl>
-            <FormLabel>Note</FormLabel>
-            <InputGroup>
-            <Textarea resize="none" rows={6}  variant="filled" disabled={changes?.note?false:true} value={changes?.note?changes?.note:account?.note} onChange={({target})=>{setChanges({...changes,note:target.value})}}/>
-
-                <InputRightElement children={changes?.note?<div className="flex mr-3 items-center">
-                <button type="button" className="text-green-600 p-1" onClick={()=>{setAccount({...account,note:changes?.note}); setChanges({...changes,note:null})}}>
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
-  <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" />
-</svg>
-                </button>
-                <button type="button" className="text-red-600" onClick={()=>{setChanges({...changes,note:null})}}>
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
-  <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
-</svg>
-
-                </button>
-            </div>:<button type="button" onClick={()=>{setChanges({...changes,note:account?.note})}}>
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
-    <path strokeLinecap="round" strokeLinejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10" />
-    </svg>
-
-            </button>} />   
-
-            </InputGroup>       
-        </FormControl>
-
+       
 
            <FormControl>
                 <FormLabel>Role</FormLabel>

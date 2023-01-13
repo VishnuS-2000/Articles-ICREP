@@ -13,7 +13,7 @@ export const ArticleCard=({data})=>{
     
     
     <Link href={`/d/${data?.id}`}>
-    <h1 className="text-sm decoration-indigo-800 text-justify  desktop:text-lg font-[600] cursor-pointer my-2 hover:underline duration-400">{data.title}</h1>
+    <h1 className="text-sm text-primary font-[600] text-justify  desktop:text-base font-[500] cursor-pointer my-1 hover:underline duration-400">{data.title}</h1>
     </Link>
     <div className='flex space-x-2 text-sm text-slate-600 '>
         <p>{data?.type}</p>

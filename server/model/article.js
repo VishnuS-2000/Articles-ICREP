@@ -44,8 +44,10 @@ Article.init({
     },
     keywords:{
         type:DataTypes.ARRAY(DataTypes.STRING)
-    }
-    
+    },
+    footnotes:{
+        type:DataTypes.ARRAY(DataTypes.JSON)     
+       }
 },{
     sequelize,
     modelName:'article'
@@ -53,10 +55,7 @@ Article.init({
 
 const Grant = sequelize.define('grant', {
   }, { timestamps: false });
-
-
-
-
+  
 Article.belongsToMany(Author,{through:Grant})
 Author.belongsToMany(Article,{through:Grant})
 

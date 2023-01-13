@@ -1,6 +1,6 @@
 import Head from "next/head"
 import NavBar from "../../components/navbar"
-import { InputGroup,Input } from "@chakra-ui/react"
+import { InputGroup,Input,RadioGroup,Stack,Radio } from "@chakra-ui/react"
 import Link from "next/link"
 import { ArticleContainer } from "../../components/articles/Container"
 import { ArticleCard } from "../../components/articles/ArticleCard"
@@ -11,14 +11,17 @@ import { FilterBar } from "../../components/FilterBar"
 import {useState,useEffect} from "react"
 import { useRouter } from 'next/router'
 
-const perPageLimit=1
+import { EmptyResponse } from "../../components/EmptyResponse"
+import { Alert, FormControl } from "@mui/material"
+
+const perPageLimit=2
 
 export default function Publications({data}){
 
-    console.log(data)
 
     const [term,setTerm]=useState('')
     const [pageOptions,setPageOptions]=useState({})
+
     const router = useRouter()
 
     const handleTerm=({target})=>{
@@ -27,20 +30,113 @@ export default function Publications({data}){
     }
 
 
-    const {title,page}=router.query
+    const {title,page,sorted}=router.query
+
+    const [sort,setSort]=useState()
 
 
     useEffect(()=>{
 
         if(!page){
+            console.log(true)
             setPageOptions({pageNumber:1,offset:0})
         }
         else{
-            setPageOptions({pageNumber:0,offset:(page-1)*perPageLimit})
+            setPageOptions({pageNumber:Number(page),offset:(page-1)*perPageLimit})
         }
 
 
-    },[])
+    },[router])
+
+
+    useEffect(()=>{
+
+        if(!sorted){
+            setSort("name")
+        }
+        else{
+            setSort(sorted)
+        }
+
+        console.log(sorted)
+
+    },[router])
+
+
+
+    const handleNext=()=>{
+        const pathname=router.pathname
+        const query=router.query
+        var {page}=query
+        
+
+        console.log(query)
+    if(!page){
+        page=1
+    }
+        var url=pathname
+        url+='?'
+
+
+        if(query){
+        Object.keys(query).map((field)=>{
+            if(field!='page')
+            url+=`${field}=${query[field]}&`
+        })
+
+    }
+
+    url+=`page=${Number(page)+1}`
+    
+    router.push(url)
+
+    }
+
+    const handlePrevious=()=>{  
+        const pathname=router.pathname
+        const query=router.query
+        var {page}=query
+    if(!page){
+        page=1
+    }
+        var url=pathname
+        url+='?'
+
+
+        if(query){
+        Object.keys(query).map((field)=>{
+            if(field!='page')
+            url+=`${field}=${query[field]}&`
+        })
+
+    }
+
+    url+=`page=${Number(page)-1}`
+    
+    router.push(url)
+    
+    }
+    
+
+    const handleSort=(e)=>{
+        const pathname=router.pathname
+        const query=router.query
+
+        var url=pathname
+        url+='?'
+
+        Object.keys(query).map((field)=>{
+            if(field!='sorted')
+            url+=`${field}=${query[field]}&`
+        })
+
+        url+=`sorted=${e.target.value}`
+
+        router.push(url)
+
+
+    }
+
 
 
 
@@ -50,23 +146,27 @@ export default function Publications({data}){
     </Head>
     <NavBar/>
 
-    <div className="flex flex-col w-full bg-gradient-to-r from-primary to-secondary h-[200px]   items-center    justify-center text-black">
+    <div className="flex flex-col w-full bg-gradient-to-r from-primary to-secondary h-[140px]   items-center    justify-start text-black">
     <div className="w-full  tablet:w-[60%] flex flex-col items-center font-[600]">
         
             
-        <InputGroup className="relative px-5 font-[400]">
-        <Input className="bg-white text-sm placeholder:text-gray-500  tablet:w-full text-base placeholder:text-sm tablet:placeholder:text-base bg-slate-100" variant="" placeholder="Filter by Publication Title" onChange={handleTerm}  value={term}/>
+    <InputGroup className="relative px-5 font-[400]">
+        <Input className="bg-white text-xs mt-8 tablet:w-full rounded-full  placeholder:text-xs tablet:placeholder:text-sm " variant="" placeholder="What do you want to explore" onChange={(e)=>{setTerm(e.target.value)}}/>
 
-    <Link href={{pathname:`/publications`,query:{title:term}}}>
-    <button className="bg-gray-100 text-gray-500 text-base px-3 h-[40px] rounded-r-[5px] absolute right-[20px] bottom-0">
+    <Link href={`/publications?title=${title}`}>
 
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
+
+    <button className="bg-indigo-800 text-sm text-white px-3 h-[42px] rounded-sm absolute right-[20px] desktop:right-[20px] bottom-[-1px]" >
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
   <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" />
 </svg>
 
-        </button>
+    </button>
     </Link>
+
         </InputGroup>
+
+
 
         <div className="">
 
@@ -74,13 +174,13 @@ export default function Publications({data}){
 
 
 
-        <div className="flex w-full justify-start px-5 py-2 desktop:px-5" >
-            <Link href={'/search'}>
-            <button className="hover:underline  text-gray-200 underline-offset-4 decoration-2	text-xs tablet:text-sm  font-[400] decoration-indigo-900">
+        <div className="flex w-full justify-start px-5 " >
+            <Link href={`/search`}>
+            <button className="hover:underline underline-offset-4 text-white decoration-2 mt-3	text-xs tablet:text-sm text-gray-200 font-[400] decoration-yellow-200">
                 Advanced Search
                 </button>
                 </Link>
-                </div>   
+                </div>
     
     </div>
     
@@ -95,18 +195,31 @@ export default function Publications({data}){
 <div className="flex w-full">
     <FilterBar/>
 <div className="flex flex-col w-full">
-<div className="flex flex-col  tablet:flex-row items-between tablet:justify-between  px-5 tablet:px-8 desktop:px-12 py-3 tablet:pt-12">
+<div className="flex flex-col  tablet:flex-row items-between tablet:justify-between  px-5 tablet:px-8 desktop:px-12 py-8 tablet:pt-12">
 {title?
-    <h1 className="text-base tablet:text-lg desktop:text-xl font-[600]">
+    <h1 className="text-base font-[600]">
         {`Search Results for " ${title?.length>25?`${title?.slice(0,50)}...`:title} "`}
         </h1>:
-<h1 className="text-base tablet:text-lg desktop:text-xl font-[600] ">
+<h1 className="text-base  font-[600] ">
     All Publications
     </h1>}
 <div className="flex items-center space-x-5 text-sm tablet:text-base">   
-        <h1 className="font-[500]">Sorted By</h1>
-        <button className="text-secondary">Relevance</button>
-        <button className="text-secondary">Date</button>
+    <Stack direction='row' className="mt-1 desktop:mt-0" >
+       
+        
+        <form className="flex space-x-1">
+        <label for="sorted"> <h1 className="text-sm font-[500] mr-5">Sorted By</h1></label>
+
+        <input type="radio" id="sorted" value="name" onChange={handleSort} checked={sort=="name"}/>
+        <label className="text-sm">Relavance</label>
+
+        <input type="radio" id="sorted" value="date" onChange={handleSort} checked={sort=="date"}/>
+        <label className="text-sm">Date</label>
+
+        </form>
+
+      </Stack>
+
 </div>
 
 
@@ -114,39 +227,33 @@ export default function Publications({data}){
 
 </div>
 
-{data?.rows?<ArticleContainer>
+{data?.rows?.length>0?<ArticleContainer>
     {data?.rows?.map((row)=>{
         return <ArticleCard data={row}/>
     })}
-</ArticleContainer>:<div>
+</ArticleContainer>:<EmptyResponse/>}
 
 
-</div>}
-
-
-<div className="flex py-6 absolute text-sm  w-full justify-center  space-x-8 tablet:px-8  tablet:right-0 tablet:text-base items-center flex-[1] tablet:justify-end   bottom-0 ">
+<div className="flex py-8 absolute text-sm  w-full justify-center  space-x-8 tablet:px-8  tablet:right-0 tablet:text-sm items-center flex-[1] tablet:justify-end   bottom-0 ">
 
 {!((pageOptions?.offset-perPageLimit)<0)&&
-<Link href={`${router.pathname}&&page=${pageOptions.page-1}`}>
-<button className="flex font-[500] items-center">
+<button className="flex font-[500] items-center" onClick={handlePrevious}>
 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-4 h-4">
   <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" />
 </svg>
         Previous
         </button>
-        </Link>
+
         }
        
         <p>Page {pageOptions?.pageNumber} of {Math.ceil(data?.count/perPageLimit)}</p>
         {!((pageOptions?.offset+perPageLimit)>=data?.count)&&
-        <Link href={`/publications`}>
-        <button className="flex items-center font-[500] ">
+        <button className="flex items-center font-[500] " onClick={handleNext}>
         Next
         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-4 h-4">
   <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
 </svg>  
         </button>
-        </Link>
         }
 </div>
 
@@ -176,21 +283,37 @@ export default function Publications({data}){
 export async function  getServerSideProps({query}){
 
     var url="/article"
+    var orderField=query?.sorted=="name"? "title":"createdAt"
+    var orderType=query?.sorted=="name" ? "ASC":"DESC"
 
-    if(query?.title){
+    if(query?.title||query?.type||query?.designation){
         url=`/article/search?`
+
+        if(query?.title){
         const keys=Object.keys(query)
 
         keys.map((key)=>{
             url+=`${key}=${query[key]}`
         })
+
+    }
+    if(query?.type){
+        url+=`type=${query?.type}&`
+    }
+
+    if(query?.designation){
+        url+=`designation=${query?.designation}&`
+    }
+
     }
 
     const response=await axios.get(url,{
         headers:{
             offset:query?.page?(query?.page-1)*perPageLimit:0,
             limit:perPageLimit,
-            attributes:'id,title,year,issue,volume,type'
+            attributes:'id,title,year,issue,volume,type,createdAt',
+            orderfield:orderField,
+            ordertype:orderType
         }
 
     })
