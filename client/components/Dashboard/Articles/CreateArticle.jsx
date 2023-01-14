@@ -362,8 +362,8 @@ return <div className="flex flex-col py-4  space-y-1 ">
             {createType?<Input variant="filled" value={article?.type} onChange={({target})=>{setArticle({...article,type:target.value}); if(target.value && errorFields[1]){setErrorFields((prev)=>{prev[1]=false; return prev})} } }/>:<Select variant="filled"  value={article?.type} onChange={({target})=>{setArticle({...article,type:target.value}); if(target.value && errorFields[1]){setErrorFields((prev)=>{prev[1]=false; return prev})} }}>
                 <option disabled value={null}>Select a Type</option>
 
-                {types.map((type)=>{
-                    return <option value={type?.type}>{type?.type}</option>
+                {types.map((type,index)=>{
+                    return <option key={index} value={type?.type}>{type?.type}</option>
                 })}
             </Select>}
             {errorFields[1]&&<FormErrorMessage>Type is required</FormErrorMessage>}
@@ -394,7 +394,7 @@ return <div className="flex flex-col py-4  space-y-1 ">
                     <FormLabel>Year</FormLabel>
                     <Select value={article?.year} variant="filled" onChange={(e)=>{setArticle({...article,year:e.target.value,issue:extras.years.indexOf(e.target.value)+1}); console.log(extras.years.indexOf(e.target.value))}}>
                         {extras.years?.map((year)=>{
-                            return <option value={year}>{year}</option>
+                            return <option key={index} value={year}>{year}</option>
                         })}
                     </Select>
                 </FormControl>
@@ -410,7 +410,7 @@ return <div className="flex flex-col py-4  space-y-1 ">
 
                     <Select value={article?.volume} variant="filled" onChange={(e)=>{setArticle({...article,volume:e.target.value})}}>
                         {extras.volumes[article?.year]?.map((volume)=>{
-                            return <option value={volume}>
+                            return <option key={index} value={volume}>
                                     {volume}
                             </option>
                         })}
@@ -427,8 +427,8 @@ return <div className="flex flex-col py-4  space-y-1 ">
                 <FormLabel>Keywords</FormLabel>
                 
                 <div className="flex flex-wrap w-full py-4 space-x-3">
-                {keywords.map((element) =>{
-                    return <p className="bg-slate-200 relative p-2 rounded-md ">{element}
+                {keywords.map((element,index) =>{
+                    return <p key={index} className="bg-slate-200 relative p-2 rounded-md ">{element}
                      <button  type="button" className="font-[600] absolute top-[-5px] right-0  desktop:top-[-10px] desktop:right-[-10px]" onClick={()=>deleteKeywords(element)}>
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
   <path strokeLinecap="round" strokeLinejoin="round" d="M9.75 9.75l4.5 4.5m0-4.5l-4.5 4.5M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -454,8 +454,8 @@ return <div className="flex flex-col py-4  space-y-1 ">
             <FormControl >
             <Select variant="filled"  value={collabrator} onChange={({target})=>{setCollabrator(target.value);}}>
                 <option>Select an Author</option>
-                {authors.map((author)=>{
-                    return <option value={author?.id}>{`${author?.name}-${author?.email}`}</option>
+                {authors.map((author,index)=>{
+                    return <option key={index} value={author?.id}>{`${author?.name}-${author?.email}`}</option>
                 }
                     )}
             </Select>
@@ -467,10 +467,10 @@ return <div className="flex flex-col py-4  space-y-1 ">
             <button type="button" className="bg-indigo-50 my-2 p-2 rounded-md max-w-[120px]" onClick={handleCollabrators}>Add Author</button>
 
 
-            {collabrators.map((e)=>{
+            {collabrators.map((e,index)=>{
                 const details=getCollabrator(e)
                 
-                return <div className="flex bg-slate-100 p-4 rounded-md justify-between">
+                return <div key={index} className="flex bg-slate-100 p-4 rounded-md justify-between">
                 
                     <div className="w-[250px]">
                     <h1>{details?.name}</h1>

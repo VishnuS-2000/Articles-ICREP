@@ -37,8 +37,8 @@ export const ArticlePagination=({count,args,setArgs,itemsPerTab})=>{
         <div className="flex z-30 desktop:z-50 px-8 py-5 justify-start overflow-x-auto  bg-white top-[60px]  space-x-5 font-[500] desktop:space-x-8 desktop:top-[90px] w-full  desktop:py-2 desktop:max-w-[40%]">
       
     
-      {tabs.map((element)=>{
-          return <button className={`px-4 py-2  rounded-full ${current==element?'bg-indigo-400':'bg-indigo-50'}`} onClick={()=>{         setArgs({...args,options:{offset:args?.options?.limit*(element-1),limit:args?.options.limit,include:true}}); setCurrent(element); }}>
+      {tabs.map((element,index)=>{
+          return <button key={index} className={`px-4 py-2  rounded-full ${current==element?'bg-indigo-400':'bg-indigo-50'}`} onClick={()=>{         setArgs({...args,options:{offset:args?.options?.limit*(element-1),limit:args?.options.limit,include:true}}); setCurrent(element); }}>
                   {element}
               </button>
         })}

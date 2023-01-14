@@ -237,8 +237,8 @@ return <>
         <Select  variant="" value={params?.issue} className="border border-slate-400" onChange={(e)=>{setParams({...params,issue:e.target.value})}}>
                 
                 <option value={``}>Select an Issue</option>
-                {issues?.map((issue)=>{
-                        return  <option value={issue?.issue}>{issue?.issue}</option>
+                {issues?.map((issue,index)=>{
+                        return  <option key={index} value={issue?.issue}>{issue?.issue}</option>
                 })}
               
         </Select>       
@@ -250,8 +250,8 @@ return <>
         <Select   variant="" value={params?.volume} className="border border-slate-400" onChange={(e)=>{setParams({...params,volume:e.target.value})}}>
         <option value={``}>Select a Volume</option>
 
-                {volumes?.map((volume)=>{
-                        return  <option value={volume?.volume}>{volume?.volume}</option>
+                {volumes?.map((volume,index)=>{
+                        return  <option key={index} value={volume?.volume}>{volume?.volume}</option>
                 })}
               
         </Select>
@@ -263,8 +263,8 @@ return <>
         <Select   variant="" value={params?.year} className="border border-slate-400" onChange={(e)=>{setParams({...params,year:e.target.value})}}>
         <option value={``}>Select a Year</option>
 
-                {years?.map((year)=>{
-                        return  <option value={year?.year}>{year?.year}</option>
+                {years?.map((year,index)=>{
+                        return  <option key={index} value={year?.year}>{year?.year}</option>
                 })}
               
         </Select>
@@ -349,8 +349,8 @@ return <>
 </div>
 
 {data?.rows?.length>0?<ArticleContainer>
-    {data?.rows?.map((row)=>{
-        return <ArticleCard data={row}/>
+    {data?.rows?.map((row,index)=>{
+        return <ArticleCard key={index} data={row}/>
     })}
 </ArticleContainer>:<EmptyResponse/>}
 

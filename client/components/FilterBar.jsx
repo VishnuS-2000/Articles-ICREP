@@ -93,10 +93,10 @@ export const FilterBar=({filteredData,setFilteredData})=>{
             <h1 className="text-sm font-[600] ">Filter Results</h1>
              <div className="flex flex-col space-y-5 text-justify">
 
-                {filterOptions?.map((filter)=>{
+                {filterOptions?.map((filter,index)=>{
 
 
-                    return <div className="text-sm py-5 font-[500]">
+                    return <div key={index} className="text-sm py-5 font-[500]">
                             <h1>{filter?.title}</h1>
                             
                     

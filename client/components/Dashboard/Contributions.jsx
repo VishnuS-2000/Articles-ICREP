@@ -77,8 +77,8 @@ export const Contributions=()=>{
 
                 {data?.rows&&data?.count>0&&!error?<Tbody>
                     
-                    {data?.rows.map((element)=>{
-                        return   <TableRow element={element} />
+                    {data?.rows.map((element,index)=>{
+                        return   <TableRow key={index} element={element} />
                     })
                   
 }

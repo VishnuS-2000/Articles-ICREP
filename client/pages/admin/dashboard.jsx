@@ -14,6 +14,7 @@ import { PersistLogin } from "../../components/Auth/persistLogin";
 import { Notification } from "../../components/Notification";
 import useNotification from "../../hooks/useNotification";
 import  Head from "next/head"
+import {v4 as uuidv4} from "uuid"
 
 export default function Dashboard(){
 
@@ -22,7 +23,7 @@ export default function Dashboard(){
     const [active,setActive]=useState(0)
     const {notification}=useNotification()
 
-    const tabs=[<Home/>,<Authors/>,<Articles/>,<Contributions/>,<Settings/>]
+    const tabs=[<Home key={uuidv4()}/>,<Authors key={uuidv4()}/>,<Articles key={uuidv4()}/>,<Contributions key={uuidv4()}/>,<Settings key={uuidv4()}/>]
     const toggler=(id)=>{
         setActive(id)
     }

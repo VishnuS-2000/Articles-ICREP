@@ -190,7 +190,7 @@ export default function Article({data}){
                         <ul className="flex flex-col items-start py-5 px-2">
 
 {outlines?.map((element,index)=>{
-    return <button  onClick={()=>handleOutline(element?.id,element?.term)}>
+    return <button key={index}  onClick={()=>handleOutline(element?.id,element?.term)}>
     <li className="text-secondary text-sm tablet:text-base mt-1 font-[500] underline">{index+1}.{element?.term}</li>
     </button>
 

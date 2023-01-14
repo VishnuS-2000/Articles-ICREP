@@ -313,8 +313,8 @@ return <div className="flex flex-col py-4  space-y-1 ">
         {createTopic?<Input variant="filled" value={article?.type} onChange={({target})=>setArticle({...article,type:target.value})}/>:<Select variant="filled"  value={article?.type} onChange={({target})=>{setArticle({...article,type:target.value})}}>
                 <option disabled>Publication Type</option>
 
-                {types.map((type)=>{
-                    return <option value={type?.type}>{type?.type}</option>
+                {types.map((type,index)=>{
+                    return <option key={index} value={type?.type}>{type?.type}</option>
                 })}
             </Select>}
             {errorFields[1]&&<FormErrorMessage>Type is required</FormErrorMessage>}
@@ -344,7 +344,7 @@ return <div className="flex flex-col py-4  space-y-1 ">
         <option>Select an Year</option>
 
             {extras?.years?.map((year)=>{
-                return <option value={year}>{year}</option>
+                return <option key={index} value={year}>{year}</option>
             })}
         </Select>
     </FormControl>
@@ -362,8 +362,8 @@ return <div className="flex flex-col py-4  space-y-1 ">
            
         <option>Select a Volume</option>
 
-            {extras?.volumes[article?.year]?.map((volume)=>{
-                return <option value={volume}>
+            {extras?.volumes[article?.year]?.map((volume,index)=>{
+                return <option key={index} value={volume}>
                         {volume}
                 </option>
             })}
@@ -380,8 +380,8 @@ return <div className="flex flex-col py-4  space-y-1 ">
     <FormLabel>Keywords</FormLabel>
     
     <div className="flex flex-wrap w-full py-4 space-x-3">
-    {keywords.map((element) =>{
-        return <p className="bg-slate-200 relative p-2 rounded-md ">{element}
+    {keywords.map((element,index) =>{
+        return <p key={index} className="bg-slate-200 relative p-2 rounded-md ">{element}
          <button  type="button" className="font-[600] absolute top-[-5px] right-0  desktop:top-[-10px] desktop:right-[-10px]" onClick={()=>deleteKeywords(element)}>
 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
 <path strokeLinecap="round" strokeLinejoin="round" d="M9.75 9.75l4.5 4.5m0-4.5l-4.5 4.5M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -412,7 +412,7 @@ return <div className="flex flex-col py-4  space-y-1 ">
             <Select variant="filled"  value={collabrator} onChange={({target})=>{setCollabrator(target.value);}}>
                 <option>Select an Author</option>
                 {authors.map((author)=>{
-                    return <option value={author?.id}>{`${author?.name}-${author?.email}`}</option>
+                    return <option key={index} value={author?.id}>{`${author?.name}-${author?.email}`}</option>
                 }
                     )}
             </Select>

@@ -7,9 +7,9 @@ export const AuthorBarMobile=({authors})=>{
 return <div className="flex flex-[1] flex-col ">
 
         <div className="space-y-2 py-5">
-            {authors?.map((author)=>{
+            {authors?.map((author,index)=>{
 
-                return <div className="flex space-x-3 items-center">
+                return <div key={index} className="flex space-x-3 items-center">
                     {author?.photo?<Avatar src={author?.photo} />:<>
 
                     <div className="flex tablet:hidden">

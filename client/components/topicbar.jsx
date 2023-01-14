@@ -49,7 +49,7 @@ return <div className="hidden fixed top-[13.5%] desktop:flex  right-0 w-[20%]  b
 
 <div className='flex flex-wrap  w-full drop-shadow font-[500]'>
 {topics.map((topic,index)=>{
-            return <Link href={{pathname:'/',query:{topic:topic?.topic}}}>
+            return <Link key={index} href={{pathname:'/',query:{topic:topic?.topic}}}>
             <button key={index}  className="rounded-[20px] my-1 mx-1 bg-line p-2 text-secondary text-sm " name='topic' >
                 {topic?.topic}
             </button>

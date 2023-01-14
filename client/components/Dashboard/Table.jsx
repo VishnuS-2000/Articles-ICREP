@@ -63,8 +63,8 @@ export const DataTable=({initials,args,changeArgs})=>{
 <Table  variant="simple">
     
     <TableHeader headers={initials?.headers}/>
-      {data?.rows.map((e)=>{
-        return <TableRow setNotification={setNotification} element={e} name={initials?.name} args={args} fields={initials?.fields} addSelected={addSelected} removeSelected={removeSelected} selected={selected} toggler={initials.controls.edit.toggle}/>
+      {data?.rows.map((e,index)=>{
+        return <TableRow key={index} setNotification={setNotification} element={e} name={initials?.name} args={args} fields={initials?.fields} addSelected={addSelected} removeSelected={removeSelected} selected={selected} toggler={initials.controls.edit.toggle}/>
       })}
       
       </Table>:isValidating?<div className="flex p-3 justify-center  mt-3">
@@ -163,9 +163,9 @@ export const TableHeader = ({headers}) => {
         return (
           <Tr className="bg-indigo-50 border-tl border-slate-200  rounded-md border border-gray-200">
         
-            {headers?.map((e)=>{
+            {headers?.map((e,index)=>{
                  
-                return <Th class={`py-3  `}>
+                return <Th key={index} class={`py-3  `}>
                 <h1 className="font-[500]">{e.name}</h1>
               </Th>
             })}
@@ -241,9 +241,9 @@ export const TableHeader = ({headers}) => {
 
               return<div className="space-y-2 py-2 justify-center flex flex-col overflow-y-auto max-h-[100px]"> 
                 
-                {nestedOject.map((author)=>{
+                {nestedOject.map((author,index)=>{
 
-                  return <div className="flex space-x-3">
+                  return <div key={index} className="flex space-x-3">
                     {author?.photo?<img src={`${process.env.NEXT_PUBLIC_BACKEND_IMAGE_URL}/${author?.photo}`} className="w-[30px] rounded-full h-[30px]"/>:<Avatar name={`${author?.name}`} size="sm"/>}
                     <p>{author?.name}</p>
                     </div>

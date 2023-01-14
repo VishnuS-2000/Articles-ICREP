@@ -68,7 +68,7 @@ export const PhotoGallery=()=>{
 
 
                     
-                    return<div className={`cursor-pointer relative bg-black rounded-md`}>
+                    return<div key={index} className={`cursor-pointer relative bg-black rounded-md`}>
                         <img src={`https://drive.google.com/uc?id=${image}`} className="w-full h-full rounded-md hover:opacity-[0.5] duration-300" onClick={()=>{setExpanded(true); onOpen();setActive(index)}}  />
                         
                     </div>

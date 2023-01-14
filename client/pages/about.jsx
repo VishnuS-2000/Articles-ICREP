@@ -31,8 +31,8 @@ export default function About({data}){
                 {data?.images&&<Carousel showArrows={true} showIndicators={true} duration={100} infiniteLoop={true}>
                     {data?.images?.map((fileId)=>{
 
-                        return <div>
-                        <img src={`${viewLink}${fileId}`} className="rounded-md max-w-[250px] max-h-[250px] tablet:max-w-[400px] tablet:max-h-[400px]"/>
+                        return <div key={index}>
+                        <img src={`${viewLink}${fileId}`}  className="rounded-md max-w-[250px] max-h-[250px] tablet:max-w-[400px] tablet:max-h-[400px]"/>
                         </div>  
                     })}
 
