@@ -61,7 +61,7 @@ export const PhotoGallery=()=>{
 
 
     
-    <div className="grid gap-1  tablet:grid-cols-2 desktop:grid-cols-3 w-full  desktop:max-w-[65%]  relative p-5 tablet:p-8 desktop:p-10 ">
+    <div className="grid gap-1  tablet:grid-cols-2 desktop:grid-cols-3 w-full    relative p-5 tablet:p-8 desktop:p-10 ">
 
 
         {images?.map((image,index)=>{
@@ -69,7 +69,7 @@ export const PhotoGallery=()=>{
 
                     
                     return<div className={`cursor-pointer relative bg-black rounded-md`}>
-                        <img src={`https://drive.google.com/uc?id=${image}`} className=" w-[350px] h-[250px] rounded-md hover:opacity-[0.5] duration-300" onClick={()=>{setExpanded(true); onOpen();setActive(index)}}  />
+                        <img src={`https://drive.google.com/uc?id=${image}`} className="w-full h-full rounded-md hover:opacity-[0.5] duration-300" onClick={()=>{setExpanded(true); onOpen();setActive(index)}}  />
                         
                     </div>
 

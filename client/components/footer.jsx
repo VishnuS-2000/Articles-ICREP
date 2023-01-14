@@ -19,8 +19,12 @@ const Footer = ()=>{
          <p>Contact Us</p>
       </Link>
 
+      <Link href={'/gallery'}>
+         <p>Gallery</p>
+      </Link>
+
       <Link href={'/privacy'}>
-         <p>Privacy policy</p>
+         <p>Privacy Policy</p>
       </Link>
    </div>
 

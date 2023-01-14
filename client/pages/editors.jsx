@@ -13,6 +13,8 @@ export default function Editors({data}){
     const [editors,setEditors] = useState([])
 
 
+    console.log(editors)
+
     useEffect(()=>{
     
         data?.exports.map((element)=>{
@@ -24,9 +26,10 @@ export default function Editors({data}){
                     const editorDetails=editor.split(',')
                     const name=editorDetails[0]
                     const email=editorDetails[1]
-                    const designation=editorDetails.slice(2,editorDetails.length).join().replaceAll(`"`,'')
+                    const imageURL=editorDetails[2]
+                    const designation=editorDetails.slice(3,editorDetails.length).join().replaceAll(`"`,'')
 
-                    return {name,email,designation}
+                    return {name,email,imageURL,designation}
                 })
 
                setEditors(editorsData)                 
@@ -70,7 +73,7 @@ export default function Editors({data}){
 
             <h1 className="text-sm tablet:text-base desktop:text-base font-[600] text-slate-700">Cheif Editor</h1>
             <div className="grid grid-cols-1 tablet:grid-cols-2 desktop:grid-cols-3 gap-y-3 tablet:gap-2 desktop:gap-8 py-3 rounded-md">
-                <EditorCard name={editors[0]?.name} email={editors[0]?.email} bio={editors[0]?.designation}/>
+                <EditorCard name={editors[0]?.name} email={editors[0]?.email} photo={editors[0]?.imageURL} bio={editors[0]?.designation}/>
             </div>
 
             <h1 className="text-sm desktop:text-base text-slate-700 font-[600]">Members</h1>
@@ -78,7 +81,7 @@ export default function Editors({data}){
                 
                 {editors.slice(1,editors?.length).map((editor)=>{
 
-                    return <EditorCard name={editor?.name} email={editor?.email} bio={editor?.designation} />
+                    return <EditorCard name={editor?.name} email={editor?.email} bio={editor?.designation} photo={editor?.imageURL} />
                 })}
         
 
@@ -105,7 +108,7 @@ const EditorCard=({name,bio,photo,email})=>{
 
         <div className="flex  space-x-5">
 
-    {photo?<Avatar src={`${process.env.NEXT_BACKEND_URL}/${photo}`} size="sm"/>:<Avatar />}
+    {photo?<Avatar src={`https://drive.google.com/uc?id=${photo} `}/>:<Avatar />}
 
     <div>
 <h1 className="text-sm tablet:text-base  font-[600] ">{name}</h1>

@@ -22,12 +22,12 @@ export default function Contribute(){
   
       const fields = ['name','phone','email','bio']
       const [errorFields,setErrorFields]=useState([false,false,false,false])
-      
     
     
       const [file,setFile]=useState(null)
       const [accepted,setAccepted]=useState(false)
       const [imageAccepted,setImageAccepted]=useState(false)
+      const [image,setImage]=useState(null)
     
       const {notification,setNotification}=useNotification()
       
@@ -43,7 +43,7 @@ export default function Contribute(){
               })
             }
         })
-  
+        
         return valid
   
       }
@@ -74,48 +74,41 @@ export default function Contribute(){
 
 
       const handleImageUpload =({target})=>{
-
-
-        alert("Upload")
         setImageAccepted(false)
 
-   
-        
         if(target.files.length){
-          const raw=target.files[0]
+            const raw=target.files[0]
           
-          console.log(raw?.type)
-          if(raw.type== 'image/png' || raw.type=='image/jpg'||raw.type=='image/jpeg'){
-  
-            const url=URL.createObjectURL(target.files[0])
-            setImage({
-                raw:raw,
-                url:url
-            })
 
-
-            setImageAccepted(true)
-  
+            if(raw.type== 'image/png' || raw.type=='image/jpg'||raw.type=='image/jpeg'){
+    
+              const url=URL.createObjectURL(target.files[0])
+              setImage({
+                  raw:raw,
+                  url:url
+              })
+              setImageAccepted(true)
+    
+              console.log(url)
+            }
+    
           }
-  
-        }
+       
       }
     
 
-      console.log(image)
 
       const uploadDocument=async()=>{
     
         try{
     
-          const response=await axios.post(`/app/contribution/upload`,{file:file.raw},{
+          const response=await axios.post(`/app/contribution/image/upload`,{file:file.raw},{
             headers:{
                 "Content-Type": "multipart/form-data",
             }
           
         })
     
-        
         
         if(response.status==200){
   
@@ -131,6 +124,37 @@ export default function Contribute(){
         }
     
         }
+
+
+        const uploadImage=async()=>{
+    
+          try{
+      
+            const response=await axios.post(`/app/contribution/image/upload`,{file:image.raw},{
+              headers:{
+                  "Content-Type": "multipart/form-data",
+              }
+            
+          })
+      
+          
+          
+          if(response.status==200){
+    
+          return response?.data
+          
+          }
+    
+          }
+      
+          catch(err){
+              
+              setNotification({status:'error',message:'Document Upload Failed!',createdAt:moment()})
+          }
+      
+          }
+
+
     
      
 
@@ -147,21 +171,23 @@ export default function Contribute(){
           if(!file?.raw){
             return 
           }
+
   
         
-            var documentId={}
+            var documentId={},imageId={}
           
             
             documentId=await uploadDocument()
-  
-            console.log(documentId)
+            imageId=await uploadImage()
+            console.log(documentId,imageId)
             
             const response=await axios.post(`/app/contribution`,{ 
               name:manuscript.name,
               contact:'+91 '+manuscript.phone,
               email:manuscript.email,
               bio:manuscript.bio,
-              file:documentId?.id
+              file:documentId?.id,
+              image:imageId?.id
             })
   
             if(response.status==204){
@@ -182,7 +208,7 @@ export default function Contribute(){
   
             setAccepted(false)
             setFile(null)
-  
+            setImage(null)
         
     
         }
@@ -235,11 +261,11 @@ export default function Contribute(){
           </div>
     
 
-          <Input id='upload-button' type='file' placeholder='upload' className='hidden' onChange={handleImageUpload} />
-    <label htmlFor="upload-button">
+          <Input id='image-upload-button' type='file' placeholder='upload' className='hidden' onChange={handleImageUpload} />
+    <label htmlFor="image-upload-button">
         
           <div  className="relative w-[100px] ">
-    {image?.url?<img src={image?.url}/>:<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-12 h-12">
+    {image?.url?<img src={image?.url} className="w-[60px] h-[60px] rounded-full"/>:<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-12 h-12">
   <path fillRule="evenodd" d="M18.685 19.097A9.723 9.723 0 0021.75 12c0-5.385-4.365-9.75-9.75-9.75S2.25 6.615 2.25 12a9.723 9.723 0 003.065 7.097A9.716 9.716 0 0012 21.75a9.716 9.716 0 006.685-2.653zm-12.54-1.285A7.486 7.486 0 0112 15a7.486 7.486 0 015.855 2.812A8.224 8.224 0 0112 20.25a8.224 8.224 0 01-5.855-2.438zM15.75 9a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0z" clipRule="evenodd" />
 </svg>}
 
@@ -258,7 +284,7 @@ export default function Contribute(){
       <FormControl isInvalid={errorFields[0]}>
   
       <h1 className="text-sm tablet:text-base font-[500] mb-2">Full Name</h1>
-        <Input variant='' className="text-sm   tablet:text-sm border border-slate-400"   value={manuscript.name} onChange={(e)=>{setManuscript({...manuscript,name:e.target.value}); if(errorFields[0]&&e.target.value){setErrorFields((prev)=>{prev[0]=false; return prev})}}}/>
+        <Input  className="text-sm   tablet:text-sm border border-slate-400"   value={manuscript.name} onChange={(e)=>{setManuscript({...manuscript,name:e.target.value}); if(errorFields[0]&&e.target.value){setErrorFields((prev)=>{prev[0]=false; return prev})}}}/>
       {errorFields[0]&&<FormErrorMessage>Name of Contributor required</FormErrorMessage>}
       </FormControl>
   
@@ -268,7 +294,7 @@ export default function Contribute(){
   
       <h1 className="text-sm tablet:text-base font-[500] mb-2">Phone Number(+91 )</h1>
         <InputGroup>
-        <Input type='tel' variant='' className="text-sm   tablet:text-sm border border-slate-400"  value={manuscript.phone} onChange={(e)=>{setManuscript({...manuscript,phone:e.target.value}); if(errorFields[1]&&e.target.value){setErrorFields((prev)=>{prev[1]=false; return prev})}}}/>
+        <Input type='tel'  className="text-sm   tablet:text-sm border border-slate-400"  value={manuscript.phone} onChange={(e)=>{setManuscript({...manuscript,phone:e.target.value}); if(errorFields[1]&&e.target.value){setErrorFields((prev)=>{prev[1]=false; return prev})}}}/>
         </InputGroup>
     
         {errorFields[1]&&<FormErrorMessage>Phone Number required</FormErrorMessage>}
@@ -279,7 +305,7 @@ export default function Contribute(){
     <h1 className="text-sm tablet:text-base font-[500] mb-2">Email</h1>
         <InputGroup>
 
-        <Input type='email' className="text-sm   tablet:text-sm border border-slate-400"  variant=''   value={manuscript.email} onChange={(e)=>{setManuscript({...manuscript,email:e.target.value}); if(errorFields[2]&&e.target.value){setErrorFields((prev)=>{prev[2]=false; return prev})}}}/>
+        <Input type='email' className="text-sm   tablet:text-sm border border-slate-400"     value={manuscript.email} onChange={(e)=>{setManuscript({...manuscript,email:e.target.value}); if(errorFields[2]&&e.target.value){setErrorFields((prev)=>{prev[2]=false; return prev})}}}/>
         </InputGroup>
   
         {errorFields[2]&&<FormErrorMessage>Email required</FormErrorMessage>}
@@ -291,7 +317,7 @@ export default function Contribute(){
     <FormControl isInvalid={errorFields[3]}>
 
     <h1 className="text-sm tablet:text-base font-[500] mb-2">Bio</h1>
-        <Textarea  className="text-sm   tablet:text-sm border border-slate-400" resize="none" variant=""  value={manuscript.bio} onChange={(e)=>{setManuscript({...manuscript,bio:e.target.value}); if(errorFields[3]&&e.target.value){setErrorFields((prev)=>{prev[3]=false; return prev})}}}/>
+        <Textarea  className="text-sm   tablet:text-sm border border-slate-400" resize="none"   value={manuscript.bio} onChange={(e)=>{setManuscript({...manuscript,bio:e.target.value}); if(errorFields[3]&&e.target.value){setErrorFields((prev)=>{prev[3]=false; return prev})}}}/>
         {errorFields[3]&&<FormErrorMessage>Bio required</FormErrorMessage>}
   
     </FormControl>
@@ -300,7 +326,7 @@ export default function Contribute(){
   
     <FormControl>
     <h1 className="text-sm tablet:text-base font-[500] mb-2">File</h1>
-        <Input type='file' placeholder='document' variant='outline' required={true} onChange={handleChange} />
+        <Input type='file' placeholder='document'  required={true} onChange={handleChange} />
         {!accepted&&<p className='text-red-600 font-[500] text-sm'>File not accepted,Try Again</p>}
         <p className='text-slate-600 text-sm'>Accepted File types : .doc,.docx,.odt</p>
         </FormControl>

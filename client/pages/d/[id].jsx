@@ -36,7 +36,6 @@ export default function Article({data}){
     },[])
 
 
-    console.log(data)
 
 
     useEffect(()=>{
@@ -46,8 +45,8 @@ export default function Article({data}){
 
     data?.footnotes?.map((element)=>{
     for(var i=0;i<footNotes.length;i++){
-        console.log(footNotes[i].textContent,`[${element?.serial}]`)
         if(footNotes[i]?.textContent==`[${element?.serial}]`){
+            console.log(footNotes[i].match(`https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)`))
             footNotes[i].setAttribute('id',`${element?.id}`)
             break;
         }
@@ -71,7 +70,6 @@ export default function Article({data}){
         
     
         for(var i=0;i<outlines.length;i++){
-            console.log(outlines[i]?.parentNode?.parentNode)
 
             randomId=uuidv4()
             outlines[i].setAttribute('id',`${randomId}`)

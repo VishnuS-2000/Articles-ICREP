@@ -29,9 +29,10 @@ export const EditorsNote=()=>{
                     const editorDetails=editors[0].split(',')
                     const name=editorDetails[0]
                     const email=editorDetails[1]
-                    const designation=editorDetails.slice(2,editorDetails.length).join().replaceAll(`"`,'')
+                    const photo=editorDetails[2]
+                    const designation=editorDetails.slice(3,editorDetails.length).join().replaceAll(`"`,'')
                     
-                    temp['editor']={name,email,designation}
+                    temp['editor']={name,email,photo,designation}
                     
 
                     
@@ -90,7 +91,7 @@ export const EditorsNote=()=>{
 
         <div className="flex flex-col items-end text-right p-2  w-full ">
 
-        <img src="https://articles-app-five.vercel.app/_next/image?url=%2Fassets%2Feditors%2Feditor.png&w=384&q=75" className="tablet:w-[60px] tablet:h-[60px] h-[50px] w-[50px] rounded-full"/>
+        <img src={formattedData?.editor?.photo} className="tablet:w-[60px] tablet:h-[60px] h-[50px] w-[50px] rounded-full"/>
         
         <div>
         

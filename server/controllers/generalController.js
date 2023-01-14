@@ -94,6 +94,27 @@ const getFile=async(req,res) =>{
 
 
 
+const uploadImage=async(req,res)=>{
+    try{
+
+        const response=await uploadToGoogleDrive({
+            name:req.file.originalname,
+            parents: ["14A_PMj3X_17brGQVvCoAZlZqSwYx65Wx"]
+        },req.file)
+
+        
+      fs.unlink(req.file.path,()=>{
+    })
+    
+    res.status(200).json({ id: response?.data.id });
+
+    }catch(err){
+        console.log(err)
+        res.sendStatus(500)
+    }
+
+}
+
 
 const uploadFile = async (req, res) => {
     try {
@@ -150,7 +171,13 @@ const createContribution=async(req,res)=>{
         const existing=await Contribution.findOne({where:{[Op.or]:[{email:req.body.email},{contact:req.body.contact}]}})
 
         if(existing){
+            if(req.body.file){
             await deleteFromGoogleDrive(req.body.file)
+            }
+            if(req.body.image){
+                await deleteFromGoogleDrive(req.body.image)
+
+            }
             return res.sendStatus(204)
         }
 
@@ -162,6 +189,7 @@ const createContribution=async(req,res)=>{
             contact:req.body.contact,
             file: req.body.file,
             bio: req.body.bio,
+            image:req.body.image
             
         })
 
@@ -223,5 +251,5 @@ module.exports ={
     createContribution,
     getContributions,
     deleteContribution,
-    getFile,listFile
+    getFile,listFile,uploadImage
 }
