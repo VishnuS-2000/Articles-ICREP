@@ -4,7 +4,7 @@ import {DataTable} from "../Table"
 import CurrentProvider from "../CurrentProvider"
 import { CreateArticle } from "./CreateArticle"
 import { EditArticle } from "./EditArticle"
-
+import {v4 as uuidv4} from "uuid"
 export const Articles =()=>{
     const [active,setActive]=useState(0)
     const [args,setArgs]=useState({url:'/article',options:{offset:0,limit:8,include:true}})
@@ -41,7 +41,7 @@ export const Articles =()=>{
         search:{placeholder:'Title or Topic'}
     }
 
-    const subTabs=[<DataTable initials={articleFormat} args={args} changeArgs={setArgs}/>,<CreateArticle/>,<EditArticle/>]
+    const subTabs=[<DataTable key={uuidv4()} initials={articleFormat} args={args} changeArgs={setArgs}/>,<CreateArticle key={uuidv4()}/>,<EditArticle key={uuidv4()}/>]
 
      return <CurrentProvider>
      <Layout heading={'Articles'}>

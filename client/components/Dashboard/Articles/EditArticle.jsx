@@ -426,10 +426,10 @@ return <div className="flex flex-col py-4  space-y-1 ">
             <button type="button" className="bg-indigo-50 my-2 p-2 rounded-md max-w-[120px]" onClick={handleCollabrators}>Add Author</button>
 
 
-            {collabrators.map((e)=>{
+            {collabrators.map((e,index)=>{
                 const details=getCollabrator(e)
                 
-                return <div className="flex bg-slate-100 p-4 rounded-md justify-evenly">
+                return <div key={index} className="flex bg-slate-100 p-4 rounded-md justify-evenly">
                 
                     <h1>{details?.name}</h1>
                     <h1>{details?.email}</h1>

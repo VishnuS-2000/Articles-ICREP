@@ -103,7 +103,7 @@ export const FilterBar=({filteredData,setFilteredData})=>{
                     <div className='flex flex-col space-y-2 py-5 '>
                     {filter?.fields?.map((element)=>{
 
-                            return <div className="flex space-x-5 text-gray-500">
+                            return <div key={index} className="flex space-x-5 text-gray-500">
                             <Checkbox isChecked={router?.query[filter?.name]?.includes(element)} className='' onChange={()=>handleChange({name:filter?.name,value:element})}/>
                             <p>{element[0]?.toUpperCase()+element.slice(1,element?.length)}</p>
                         </div>

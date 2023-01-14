@@ -240,8 +240,8 @@ export default function Article({data}){
 
                         <AccordionPanel pb={4}>
 
-                        {data?.footnotes?.map((element)=>{
-        return<div className="flex text-base  max-w-[300px] tablet:max-w-full tablet:flex-[0.60]  flex-col">
+                        {data?.footnotes?.map((element,index)=>{
+        return<div key={index} className="flex text-base  max-w-[300px] tablet:max-w-full tablet:flex-[0.60]  flex-col">
     <p className="text-sm desktop:text-base">    <button type="button" className="font-[600]" onClick={()=>handleReference(element?.id,element?.serial)}>{`[${element?.serial}]`}</button>
 {element?.reference}</p>
 

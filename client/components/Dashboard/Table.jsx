@@ -233,13 +233,13 @@ export const TableHeader = ({headers}) => {
     return (<Tr className=" items-center">
  
 
-        {fields.map((e)=>{
+        {fields.map((e,index)=>{
             
             if(e.type=="nested"){
 
               const nestedOject=element[e.name]
 
-              return<div className="space-y-2 py-2 justify-center flex flex-col overflow-y-auto max-h-[100px]"> 
+              return<div key={index} className="space-y-2 py-2 justify-center flex flex-col overflow-y-auto max-h-[100px]"> 
                 
                 {nestedOject.map((author,index)=>{
 
@@ -256,7 +256,7 @@ export const TableHeader = ({headers}) => {
             }
             if(e.type=="icon"){
 
-              return <Td className={`flex items-center  space-x-3 `}>
+              return <Td key={index} className={`flex items-center  space-x-3 `}>
                 
               {element?.photo?<img src={`${process.env.NEXT_PUBLIC_BACKEND_IMAGE_URL}/${element?.photo}`} className="w-[30px] rounded-full h-[30px]"/>:<Avatar name={`${element[e.name]}`} size="sm"/>}
               <h1 className="text-gray-700">{element[e.name]?.length>e.limit?element[e.name].slice(0,e.limit):element[e.name]}</h1>
@@ -267,7 +267,7 @@ export const TableHeader = ({headers}) => {
 
             else if(e.type=="count"){
 
-              return <Td className={``}>
+              return <Td key={index} className={``}>
 
               <h1 className="text-gray-700">{element[e.name]?.length}</h1>
 
@@ -277,7 +277,7 @@ export const TableHeader = ({headers}) => {
             }
 
             else{
-            return <Td className={``}>
+            return <Td key={index} className={``}>
               <h1 className="text-gray-700">{element[e.name]?.length>e.limit?element[e.name].slice(0,e.limit)+'...':element[e.name]}</h1>
 
             </Td>

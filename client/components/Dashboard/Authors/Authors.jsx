@@ -5,8 +5,7 @@ import {DataTable} from "../Table"
 import CurrentProvider from "../CurrentProvider"
 import { CreateAuthor } from "./CreateAuthor"
 import {EditAuthor} from "./EditAuthor"
-
-
+import {v4 as uuidv4} from "uuid"
 export const Authors=()=>{
 
 const [active,setActive]=useState(0)
@@ -49,7 +48,7 @@ const toggler=(id)=>{
     setActive(id)
 }
 
-const subTabs=[<DataTable initials={authorFormat} args={args} changeArgs={setArgs}/>,<CreateAuthor toggler={setActive}/>,<EditAuthor toggler={toggler}  />]
+const subTabs=[<DataTable key={uuidv4()} initials={authorFormat} args={args} changeArgs={setArgs}/>,<CreateAuthor key={uuidv4()} toggler={setActive}/>,<EditAuthor key={uuidv4()} toggler={toggler}  />]
 
 
 return <CurrentProvider> <Layout heading={'Authors'}>

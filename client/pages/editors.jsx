@@ -79,9 +79,9 @@ export default function Editors({data}){
             <h1 className="text-sm desktop:text-base text-slate-700 font-[600]">Members</h1>
             <div className="grid grid-cols-1 tablet:grid-cols-2 desktop:grid-cols-3 gap-y-3 tablet:gap-2 desktop:gap-8 py-3 rounded-md">
                 
-                {editors.slice(1,editors?.length).map((editor)=>{
+                {editors.slice(1,editors?.length).map((editor,index)=>{
 
-                    return <EditorCard name={editor?.name} email={editor?.email} bio={editor?.designation} photo={editor?.imageURL} />
+                    return <EditorCard key={index} name={editor?.name} email={editor?.email} bio={editor?.designation} photo={editor?.imageURL} />
                 })}
         
 

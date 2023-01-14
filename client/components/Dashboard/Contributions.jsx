@@ -238,7 +238,7 @@ backdropFilter='blur(10px)'/>
     <ModalHeader>Confirm Delete</ModalHeader>
     <ModalCloseButton />
     <ModalBody>
-      <p><span className='font-[600]'>{element?.name}</span>'s contribution will be permanantely deleted</p>
+      <p><span className='font-[600]'>{element?.name}</span> contribution will be permanantely deleted</p>
     </ModalBody>
 
     <ModalFooter>

@@ -228,8 +228,8 @@ export default function Publications({data}){
 </div>
 
 {data?.rows?.length>0?<ArticleContainer>
-    {data?.rows?.map((row)=>{
-        return <ArticleCard data={row}/>
+    {data?.rows?.map((row,index)=>{
+        return <ArticleCard key={index} data={row}/>
     })}
 </ArticleContainer>:<EmptyResponse/>}
 
