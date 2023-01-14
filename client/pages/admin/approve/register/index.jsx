@@ -2,6 +2,8 @@ import axios from "../../../../axios"
 import Link from 'next/link'
 const VerifyRegister=({data})=>{
 
+    console.log(data)
+
     if(data?.email){
 
     return <div className="min-h-screen tablet:bg-gradient-to-r from-primary to-blue-800 flex flex-col w-full justify-center  tablet:items-center">
