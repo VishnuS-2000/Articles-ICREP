@@ -1,13 +1,7 @@
 import NavBar from "../components/navbar"
 import Footer from "../components/footer"
-import SearchBar from "../components/searchbar"
-import TopicBar from "../components/topicbar"
-import { ArticleContainer } from "../components/articles/Container"
-import { ArticleHeader } from "../components/articles/Header"
-import { ArticleCard } from "../components/articles/ArticleCard"
 
-import { ArticlePagination } from "../components/Articles/Pagination"
-import InfiniteScroll from 'react-infinite-scroll-component';
+
 import { useEffect, useState } from "react"
 
 import axios from "../axios"
