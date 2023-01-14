@@ -153,7 +153,8 @@ return <div className="flex flex-col py-4 space-y-3  tablet:space-y-6 desktop:sp
        <InputGroup>
             <Input variant="filled" type="text" value={changes?.firstName?changes?.firstName:account?.firstName} disabled={changes?.firstName?false:true}  onChange={({target})=>setChanges({...changes,firstName:target.value})}/>
             
-            <InputRightElement children={changes?.firstName?<div className="flex mr-3 items-center">
+            <InputRightElement>
+            {changes?.firstName?<div className="flex mr-3 items-center">
                 <button type="button" className="text-green-600 p-1" onClick={()=>{setAccount({...account,firstName:changes?.firstName}); setChanges({...changes,firstName:null})}}>
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
   <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" />
@@ -170,7 +171,8 @@ return <div className="flex flex-col py-4 space-y-3  tablet:space-y-6 desktop:sp
     <path strokeLinecap="round" strokeLinejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10" />
     </svg>
 
-            </button>} />
+            </button>}
+            </InputRightElement>
             </InputGroup>
             {errorFields[0]&&<FormErrorMessage>First Name Required</FormErrorMessage>}
 
@@ -181,7 +183,8 @@ return <div className="flex flex-col py-4 space-y-3  tablet:space-y-6 desktop:sp
         <InputGroup>
             <Input variant="filled" type="text" value={changes?.lastName?changes?.lastName:account?.lastName} disabled={changes?.lastName?false:true}  onChange={({target})=>setChanges({...changes,lastName:target.value})}/>
             
-            <InputRightElement children={changes?.lastName?<div className="flex mr-3 items-center">
+            <InputRightElement>
+            {changes?.lastName?<div className="flex mr-3 items-center">
                 <button type="button" className="text-green-600 p-1" onClick={()=>{setAccount({...account,lastName:changes?.lastName}); setChanges({...changes,lastName:null})}}>
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
   <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" />
@@ -198,7 +201,9 @@ return <div className="flex flex-col py-4 space-y-3  tablet:space-y-6 desktop:sp
     <path strokeLinecap="round" strokeLinejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10" />
     </svg>
 
-            </button>} />
+            </button>
+}
+            </InputRightElement>
             </InputGroup>
             
             {errorFields[1]&&<FormErrorMessage>Last Name Required</FormErrorMessage>}
@@ -214,7 +219,8 @@ return <div className="flex flex-col py-4 space-y-3  tablet:space-y-6 desktop:sp
             <InputGroup>
             <Input variant="filled" type="text" value={changes?.email?changes?.email:account?.email} disabled={changes?.email?false:true}  onChange={({target})=>setChanges({...changes,email:target.value})}/>
             
-            <InputRightElement children={changes?.email?<div className="flex mr-3 items-center">
+            <InputRightElement>
+            {changes?.email?<div className="flex mr-3 items-center">
                 <button type="button" className="text-green-600 p-1" onClick={()=>{setAccount({...account,email:changes?.email}); setChanges({...changes,email:null})}}>
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
   <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" />
@@ -231,7 +237,8 @@ return <div className="flex flex-col py-4 space-y-3  tablet:space-y-6 desktop:sp
     <path strokeLinecap="round" strokeLinejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10" />
     </svg>
 
-            </button>} />
+            </button>}
+            </InputRightElement>
             </InputGroup>
             
             {errorFields[2]&&<FormErrorMessage>A Valid Email is required</FormErrorMessage>}
@@ -257,7 +264,8 @@ return <div className="flex flex-col py-4 space-y-3  tablet:space-y-6 desktop:sp
     <InputGroup>
             <Textarea variant="filled" type="text" resize="none" rows={8} value={changes?.bio?changes?.bio:account?.bio} disabled={changes?.bio?false:true}  onChange={({target})=>setChanges({...changes,bio:target.value})}/>
             
-            <InputRightElement children={changes?.bio?<div className="flex mr-3 items-center">
+            <InputRightElement >
+            {changes?.bio?<div className="flex mr-3 items-center">
                 <button type="button" className="text-green-600 p-1" onClick={()=>{setAccount({...account,bio:changes?.bio}); setChanges({...changes,bio:null})}}>
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
   <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" />
@@ -274,7 +282,8 @@ return <div className="flex flex-col py-4 space-y-3  tablet:space-y-6 desktop:sp
     <path strokeLinecap="round" strokeLinejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10" />
     </svg>
 
-            </button>} />
+            </button>}
+            </InputRightElement>
             </InputGroup>
     {errorFields[4]&&<FormErrorMessage>Bio is required</FormErrorMessage>}
     </FormControl>

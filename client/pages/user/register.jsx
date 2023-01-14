@@ -129,15 +129,11 @@ const Register = () => {
           <FormControl isInvalid={errorFields[2]}>
             <FormLabel>Email</FormLabel>
             <InputGroup>
-              <InputLeftElement
-                children={
-                  <button className="text-slate-500 ">
+              <InputLeftElement>
+              <button className="text-slate-500 ">
                     <AlternateEmailIcon />
                   </button>
-                }
-
-
-              />
+              </InputLeftElement>
               <Input
                 variant="filled"
                 value={account?.email}

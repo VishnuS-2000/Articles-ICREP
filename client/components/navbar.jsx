@@ -384,7 +384,7 @@ const ContributeModal=({isOpen, onOpen, onClose })=>{
 
       <FormLabel>Phone Number</FormLabel>
       <InputGroup>
-      <InputLeftAddon children='+91'  required={true} />
+      <InputLeftAddon  required={true} >+91</InputLeftAddon>
       <Input type='tel' variant='filled'  value={manuscript.phone} onChange={(e)=>{setManuscript({...manuscript,phone:e.target.value}); if(errorFields[1]&&e.target.value){setErrorFields((prev)=>{prev[1]=false; return prev})}}}/>
       </InputGroup>
   

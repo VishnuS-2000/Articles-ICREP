@@ -149,7 +149,10 @@ const ForgotPassword=()=>{
                 <FormLabel>Username</FormLabel>
                 <InputGroup>
 
-                    <InputLeftElement children={<button className="text-slate-500 "><AlternateEmailIcon/></button>}/>
+                    <InputLeftElement>
+                    <button className="text-slate-500 "><AlternateEmailIcon/></button>
+                    
+                    </InputLeftElement>
                     <Input variant="filled" type="email" value={username} onChange={(e)=>{setUsername(e.target.value)}}/>
             
                 </InputGroup>
@@ -174,7 +177,9 @@ const ForgotPassword=()=>{
 
         <InputGroup>
 
-            <InputLeftElement children={<button className="text-slate-500 "><PasswordIcon/></button>}/>
+            <InputLeftElement>
+            <button className="text-slate-500 "><PasswordIcon/></button>
+            </InputLeftElement>
             <Input variant="filled" type="number" value={otp} onChange={(e)=>{setOtp(e.target.value)}}/>
             
         </InputGroup>
@@ -208,13 +213,11 @@ const ForgotPassword=()=>{
 <FormControl>
             <FormLabel>Password</FormLabel>
             <InputGroup>
-              <InputLeftElement
-                children={
-                  <button className="text-slate-500 ">
+              <InputLeftElement>
+              <button className="text-slate-500 ">
                     <KeyIcon />
                   </button>
-                }
-              />
+              </InputLeftElement>
               <Input
                 variant="filled"
                 value={account?.password}
@@ -224,9 +227,8 @@ const ForgotPassword=()=>{
                 }}
                 autoComplete="off"
               />
-              <InputRightElement
-                children={
-                  <button
+              <InputRightElement>
+              <button
                     type="button"
                     className="text-slate-500 "
                     onClick={()=>{
@@ -240,8 +242,8 @@ const ForgotPassword=()=>{
                       <VisibilityOffIcon />
                     )}
                   </button>
-                }
-              />
+              
+              </InputRightElement>
             </InputGroup>
           </FormControl>
        
@@ -250,13 +252,11 @@ const ForgotPassword=()=>{
           <FormControl>
             <FormLabel>Confirm Password</FormLabel>
           <InputGroup>
-              <InputLeftElement
-                children={
-                  <button className="text-slate-500 ">
+              <InputLeftElement>
+              <button className="text-slate-500 ">
                     <LockIcon />
                   </button>
-                }
-              />
+              </InputLeftElement>
               <Input
                 variant="filled"
                 value={account?.confirm}

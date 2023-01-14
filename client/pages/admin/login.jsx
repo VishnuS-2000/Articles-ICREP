@@ -117,13 +117,11 @@ export default function Login(){
         <FormControl>
           <FormLabel>Username</FormLabel>
           <InputGroup>
-            <InputLeftElement
-              children={
-                <button className="text-slate-500 ">
+            <InputLeftElement>
+            <button className="text-slate-500 ">
                   <AlternateEmailIcon />
                 </button>
-              }
-            />
+            </InputLeftElement>
             <Input
               variant="filled"
               value={account.email}
@@ -140,13 +138,11 @@ export default function Login(){
           <FormControl>
             <FormLabel>Password</FormLabel>
             <InputGroup>
-              <InputLeftElement
-                children={
-                  <button className="text-slate-500 ">
+              <InputLeftElement>
+              <button className="text-slate-500 ">
                     <LockIcon />
                   </button>
-                }
-              />
+              </InputLeftElement>
               <Input
                 variant="filled"
                 value={account.password}
@@ -156,9 +152,8 @@ export default function Login(){
                 }}
                 autoComplete="off"
               />
-              <InputRightElement
-                children={
-                  <button
+              <InputRightElement>
+              <button
                     type="button"
                     className="text-slate-500 "
                     onClick={useCallback(() => {
@@ -171,8 +166,7 @@ export default function Login(){
                       <VisibilityOffIcon />
                     )}
                   </button>
-                }
-              />
+              </InputRightElement>
             </InputGroup>
           </FormControl>
 
