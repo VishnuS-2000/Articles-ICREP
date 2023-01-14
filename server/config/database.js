@@ -4,7 +4,7 @@ const Sequelize=require('sequelize')
  
 // For Local uncomment this and comment below
 const sequelize=new Sequelize(process.env.DB_NAME,process.env.DB_USERNAME,process.env.DB_PASSWORD,{
-    host:process.env.DB_HOST,
+    host:'localhost',
     dialect:'postgres',
     logging:false
 })
