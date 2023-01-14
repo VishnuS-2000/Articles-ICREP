@@ -5,7 +5,9 @@
   "main": "index.js",
   "scripts": {
     "start": "cross-env NODE_ENV=dev node index.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "stop": "pm2 kill",
+    "start": "pm2 start server.js"
   },
   "author": "",
   "license": "ISC",
