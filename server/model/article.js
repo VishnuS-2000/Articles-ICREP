@@ -47,6 +47,9 @@ Article.init({
     },
     footnotes:{
         type:DataTypes.ARRAY(DataTypes.JSON)     
+       },
+       references:{
+        type:DataTypes.TEXT
        }
 },{
     sequelize,

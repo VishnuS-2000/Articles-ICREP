@@ -73,6 +73,7 @@ export async function getServerSideProps({query}){
     }
     }
     catch(err){
+        console.log(err)
         return {
         props:{
             data:{}

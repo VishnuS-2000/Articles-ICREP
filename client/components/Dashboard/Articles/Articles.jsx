@@ -41,6 +41,9 @@ export const Articles =()=>{
         search:{placeholder:'Title or Topic'}
     }
 
+
+    
+
     const subTabs=[<DataTable key={uuidv4()} initials={articleFormat} args={args} changeArgs={setArgs}/>,<CreateArticle key={uuidv4()}/>,<EditArticle key={uuidv4()}/>]
 
      return <CurrentProvider>

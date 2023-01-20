@@ -3,17 +3,19 @@ import axios from "../axios"
 import Link from "next/link"
 const editorFolderId="1x6YdOwXtpXwGMSY8LtlSFuAwZ2Mfxx7s"
 import {useState} from "react"
+import { Skeleton, SkeletonCircle, SkeletonText } from '@chakra-ui/react'
 
 export const EditorsNote=()=>{
     
 
     const [formattedData,setformattedData]=useState([])
     const [expanded,setExpanded]=useState(false)
+    const [loading,setLoading]=useState(false)
     useEffect(()=>{
 
         const temp={}
         const fetchData=async()=>{
-
+        setLoading(true)
 
         const response=await axios.get(`/app/folder/${editorFolderId}`)
         
@@ -22,7 +24,7 @@ export const EditorsNote=()=>{
             response?.data?.result?.exports?.map((element)=>{
 
                 if(element.type=="text/plain"){
-                    temp['message']=element?.result     
+                    temp[            'message']=element?.result     
                 }
                 else if(element.type=="text/csv"){
                     const editors=element?.result.split('\r\n')
@@ -43,7 +45,7 @@ export const EditorsNote=()=>{
             })
 
             setformattedData(temp)
-
+            setLoading(false)
         }
         
         }
@@ -62,11 +64,12 @@ export const EditorsNote=()=>{
 
     
     <div className=" ">
-    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"><path d="M13 14.725c0-5.141 3.892-10.519 10-11.725l.984 2.126c-2.215.835-4.163 3.742-4.38 5.746 2.491.392 4.396 2.547 4.396 5.149 0 3.182-2.584 4.979-5.199 4.979-3.015 0-5.801-2.305-5.801-6.275zm-13 0c0-5.141 3.892-10.519 10-11.725l.984 2.126c-2.215.835-4.163 3.742-4.38 5.746 2.491.392 4.396 2.547 4.396 5.149 0 3.182-2.584 4.979-5.199 4.979-3.015 0-5.801-2.305-5.801-6.275z"/></svg>
 
+        {loading?
+        <SkeletonText noOfLines={15} spacing={2} className=""/>:
         <p className="hidden desktop:flex desktop:text-base text-slate-900 text-justify my-2">
             {formattedData?.message}
-        </p>
+        </p>}
 
 
 
@@ -75,7 +78,7 @@ export const EditorsNote=()=>{
             {expanded?formattedData?.message:formattedData?.message?.slice(0,350)}        
         </p>
 
-        {!expanded&&<button className="text-xs desktop:hidden font-[500]" onClick={()=>setExpanded(true)}>...Read More</button>}
+        {!expanded&&!loading&&<button className="text-xs desktop:hidden font-[500]" onClick={()=>setExpanded(true)}>...Read More</button>}
 
         </div>
         
@@ -91,12 +94,16 @@ export const EditorsNote=()=>{
 
         <div className="flex flex-col items-end text-right p-2  w-full ">
 
-        <img src={formattedData?.editor?.photo} className="tablet:w-[60px] tablet:h-[60px] h-[50px] w-[50px] rounded-full"/>
-        
+        {loading?<>
+            <SkeletonCircle size='50px' className="flex desktop:hidden" />
+            <SkeletonCircle size='60px' className="hidden desktop:flex"/>
+        </>
+:<img src={`https://drive.google.com/uc?id=${formattedData?.editor?.photo}`} className="tablet:w-[60px] tablet:h-[60px] h-[50px] w-[50px] rounded-full"/>
+        }        
         <div>
         
-        <h1 className="text-xs tablet:text-base font-[500]">{formattedData?.editor?.name}</h1>
-        <p className="text-xs tablet:text- text-secondary">{formattedData?.editor?.designation}</p>
+        {loading?<SkeletonText noOfLines={1} />:<h1 className="text-xs tablet:text-base font-[500]">{formattedData?.editor?.name}</h1>}
+        {loading?<SkeletonText noOfLines={1}/>:<p className="text-xs tablet:text- text-secondary">{formattedData?.editor?.designation}</p>}
         
         </div>
         

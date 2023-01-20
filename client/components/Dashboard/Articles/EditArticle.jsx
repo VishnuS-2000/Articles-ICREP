@@ -1,7 +1,7 @@
 import {useState,useCallback} from "react"
 import { AuthorContext } from "../CurrentProvider"
 
-import { FormControl,FormLabel,Input,Select, FormHelperText, FormErrorMessage,InputRightElement,InputGroup, Spinner,RadioGroup,Radio } from "@chakra-ui/react"
+import { FormControl,FormLabel,Input,Select, FormHelperText, FormErrorMessage,InputRightElement,InputGroup, Spinner,RadioGroup,Radio,Textarea } from "@chakra-ui/react"
 import { useCurrent } from "../useCurrent"
 import dynamic from 'next/dynamic'
 import { useEffect } from "react"
@@ -56,6 +56,8 @@ export const EditArticle=()=>{
         year:current?.article?.year,
         issue:current?.article?.issue,
         volume:current?.article?.volume,
+        footnotes:current?.article?.footnotes,
+        references:current?.article?.references
 
     })
 
@@ -65,7 +67,10 @@ export const EditArticle=()=>{
        title:null,
        type:null,
        author:null,
-       content:null
+       content:null,
+       references:null,
+       footnotes:null
+
     })
 
     const [loading,setLoading]=useState(false)
@@ -174,7 +179,8 @@ export const EditArticle=()=>{
                     year:article?.year,
                     issue:article?.issue,
                     volume:article?.volume,
-                    keywords:keywords
+                    keywords:keywords,
+                    references:article?.references
 
                    }
                    )
@@ -345,7 +351,7 @@ return <div className="flex flex-col py-4  space-y-1 ">
         <Select value={article?.year} variant="filled" onChange={(e)=>{setArticle({...article,year:e.target.value,issue:extras.years.indexOf(e.target.value)+1}); console.log(extras.years.indexOf(e.target.value))}}>
         <option>Select an Year</option>
 
-            {extras?.years?.map((year)=>{
+            {extras?.years?.map((year,index)=>{
                 return <option key={index} value={year}>{year}</option>
             })}
         </Select>
@@ -413,7 +419,7 @@ return <div className="flex flex-col py-4  space-y-1 ">
             <FormControl >
             <Select variant="filled"  value={collabrator} onChange={({target})=>{setCollabrator(target.value);}}>
                 <option>Select an Author</option>
-                {authors.map((author)=>{
+                {authors.map((author,index)=>{
                     return <option key={index} value={author?.id}>{`${author?.name}-${author?.email}`}</option>
                 }
                     )}
@@ -461,6 +467,35 @@ return <div className="flex flex-col py-4  space-y-1 ">
 ['sup', 'sub'],
 ['alignLeft', 'alignCenter', 'alignRight'],
 ]} value={text} onChange={setText} stickyOffset={-20} className='w-full  h-full  text-lg border border-2 border-black'/>
+
+
+<div className="flex flex-col py-3 space-y-3">
+                <h1 className="font-[500]">References</h1>
+                <InputGroup>
+                        <Textarea variant="filled" resize="none" rows={10} disabled={changes?.references?false:true} value={changes?.references?changes?.references:article?.references} onChange={(e)=>{setChanges({...changes,references:e.target.value})}}/>
+
+                        <InputRightElement>
+            {changes?.references?<div className="flex mr-3 items-center">
+                <button type="button" className="text-green-600 p-1" onClick={()=>{setArticle({...article,references:changes?.references}); setChanges({...changes,references:null})}}>
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
+  <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" />
+</svg>
+                </button>
+                <button type="button" className="text-red-600" onClick={()=>{setChanges({...changes,references:null})}}>
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
+  <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+</svg>
+
+                </button>
+            </div>:<button type="button" onClick={()=>{setChanges({...changes,references:article?.references})}}>
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
+    <path strokeLinecap="round" strokeLinejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10" />
+    </svg>
+
+            </button>}
+            </InputRightElement>
+                </InputGroup>
+            </div>
 
 
 

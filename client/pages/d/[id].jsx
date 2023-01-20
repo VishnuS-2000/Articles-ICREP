@@ -46,7 +46,6 @@ export default function Article({data}){
     data?.footnotes?.map((element)=>{
     for(var i=0;i<footNotes.length;i++){
         if(footNotes[i]?.textContent==`[${element?.serial}]`){
-            console.log(footNotes[i].match(`https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)`))
             footNotes[i].setAttribute('id',`${element?.id}`)
             break;
         }
@@ -97,11 +96,15 @@ export default function Article({data}){
         
             
             }
+            if(reference)
+            {
             reference.style.background="yellow";
-
+            }
             
             setTimeout(()=>{
+                if(reference){
                 reference.style.background="transparent";
+                }
             },3000)
     }
 
@@ -141,6 +144,8 @@ export default function Article({data}){
         <div className="flex flex-[1] flex-col pb-6 desktop:flex-[0.60] desktop:items-start sticky left-[19%] relative p-5 desktop:px-12 desktop:py-12 deskotp:space-y-5">
                     
                     
+
+                    <div className="p-5">
                     <h1 className="text-lg font-[600] desktop:text-xl text-justify">{data?.title}</h1>
                     <p className="text-sm tablet:text-sm text-slate-600 space-x-2">
                     <span className="font-[500]">Issue</span> {data?.issue} 
@@ -149,11 +154,13 @@ export default function Article({data}){
                     
                     </p>
 
+                    </div>
+
                 
                
 
 
-                <Accordion defaultIndex={[0]} allowMultiple className="flex flex-col w-full py-5 tablet:py-12 text-primary">
+                <Accordion  allowMultiple className="flex flex-col w-full py-5 tablet:py-12 text-primary">
                     <AccordionItem className="">
                         <AccordionButton variant="" className="">
                         <Box as="span" flex='1' textAlign='left' className="p-1">
@@ -220,13 +227,13 @@ export default function Article({data}){
 
                     
 
-                <div ref={refContainer} className=" text-justify px-5 py-4 desktop:py-8 space-y-1">
+                <div ref={refContainer} className="text-sm tablet:text-base text-justify px-5 py-4 desktop:py-8 space-y-1">
                 </div>
 
 
 
             
-                <Accordion defaultIndex={[0]} allowMultiple className="flex flex-col w-full py-5 ">
+                <Accordion  allowMultiple className="flex flex-col w-full py-5 ">
                     <AccordionItem className="">
                         <AccordionButton variant="" className="">
                         <Box as="span" flex='1' textAlign='left' className="p-1">
@@ -245,6 +252,31 @@ export default function Article({data}){
     <p className="text-sm desktop:text-base">    <button type="button" className="font-[600]" onClick={()=>handleReference(element?.id,element?.serial)}>{`[${element?.serial}]`}</button>
 {element?.reference}</p>
 
+    </div>
+
+})}
+    </AccordionPanel>
+
+                    </AccordionItem>
+                    <AccordionItem className="">
+                        <AccordionButton variant="" className="">
+                        <Box as="span" flex='1' textAlign='left' className="p-1">
+
+                        <h1 className="text-sm tablet:text-base font-[600]  text-primary">References</h1>
+        </Box>
+
+                        <AccordionIcon />
+
+                        </AccordionButton>
+
+                        <AccordionPanel pb={4}>
+
+                        {data?.references?.split('\n')?.map((element,index)=>{
+        return<div key={index} className="flex text-base  max-w-[300px] tablet:max-w-full tablet:flex-[0.60]  flex-col">
+        
+    <p className="text-sm desktop:text-base">
+        <span className="font-[600]">{index+1}. </span>  
+{element}</p>
     </div>
 
 })}
@@ -286,7 +318,7 @@ try{
 
     const response=await axios.get(`/article/${params.id}`,{
         headers:{
-            attributes:'id,title,richText,issue,volume,year,footnotes'
+            attributes:'id,title,richText,issue,volume,year,footnotes,references'
         }
     })
 

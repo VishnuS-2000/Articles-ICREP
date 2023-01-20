@@ -171,7 +171,8 @@ module.exports.createArticle=async(req,res)=>{
         issue:req.body.issue,
         volume:req.body.volume,
         keywords:req.body.keywords,
-        footnotes:req.body.footnotes
+        footnotes:req.body.footnotes,
+        references:req.body.references
     })
 
     await article.save()
@@ -217,7 +218,8 @@ module.exports.updateArticle=async(req,res)=>{
             year:req.body.year,
             issue:req.body.issue,
             volume:req.body.volume,
-            keywords:req.body.keywords
+            keywords:req.body.keywords,
+            references:req.body.references
                      
         })
 
