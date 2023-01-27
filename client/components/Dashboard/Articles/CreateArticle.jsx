@@ -8,13 +8,13 @@ import axios from "../../../axios"
 import useAxiosPrivate from "../../../hooks/useAxiosPrivate"
 
 import useNotification from "../../../hooks/useNotification";
-import moment from "moment";
+import moment, { invalid } from "moment";
 
 import { Spinner } from "@chakra-ui/react";
 
 import {convert} from "html-to-text"
 
-import { start_date,volumeData } from "../Dates";
+import { start_date,issueData } from "../Dates";
 
 const folderId="1tuIhE6V8kE-F6oMBvaoaSpBXbLBS82FA"
 const { v4: uuidv4 } = require('uuid');
@@ -33,7 +33,8 @@ const axiosPrivate=useAxiosPrivate()
         content:null,
         keywords:null,
         issue:null,
-        volume:null    })
+        volume:null,
+        year:null,    })
 
 
 
@@ -50,7 +51,7 @@ const axiosPrivate=useAxiosPrivate()
     const [createType,setCreateType]=useState(true)
 
     const fields=['title','type']
-    const [errorFields,setErrorFields]=useState([false,false,false])
+    const [errorFields,setErrorFields]=useState([false,false,false,false,false])
     const [extras,setExtras]=useState({years:[],volumes:{}})
 
     const [keyword,setKeyword]=useState('')
@@ -68,24 +69,65 @@ const axiosPrivate=useAxiosPrivate()
 
     const validateFields=()=>{
         let valid=true
-        fields.map((field,index)=>{
-            if(!article[field]){
-                valid=false
-                setErrorFields((prev)=>{
-                        prev[index]=true
-                        return prev
-                })
-                setNotification({message:`Missing Fields`,status:'error',createdAt:moment()})
-            }
-        })
+        if(!article?.title){
+            valid=false
+            setNotification({message:'Title required',status:'error',createdAt:moment()})
+            setErrorFields((prev)=>{
+                prev[0]=true
+                return prev
+            })
+        }
+        else if(!article?.type){
+            valid=false
+            setNotification({message:'Type required',status:'error',createdAt:moment()})
+            setErrorFields((prev)=>{
+                prev[1]=true
+                return prev
+            })
+
+
+
+        }
+        else if(!keywords){
+            valid=false
+            setNotification({message:'Keywords required',status:'error',createdAt:moment()})
+        }
+
+        else if(!text){
+            valid=false
+            setNotification({message:'Content required',status:'error',createdAt:moment()})
+
+
+        }
+        else if(!article?.year){
+            valid=false
+            setErrorFields((prev)=>{
+                prev[2]=true
+                return prev
+            })
+            setNotification({message:'Year required',status:'error',createdAt:moment()})
+        }
+
+        else if(!article?.issue){
+            valid=false
+            setErrorFields((prev)=>{
+                prev[3]=true
+                return prev
+            })
+            setNotification({message:'Issue required',status:'error',createdAt:moment()})
+        }
+      
+        else if(!collabrators||!collabrator){
+            valid=false
+            setNotification({message:'Author required',status:'error',createdAt:moment()})
+        }
+        
         return valid
     }
 
 
     const handleSubmit =async(e)=>{
         e.preventDefault()
-
-
 
         if(validateFields()){
             
@@ -161,31 +203,32 @@ const axiosPrivate=useAxiosPrivate()
 
     useEffect(()=>{
         const current_date=moment()
-
+        // console.log(issueData)
         const year_diff=current_date.diff(start_date,'year')
 
         var year=start_date.year()
 
-        var total_volume=current_date.diff(start_date,'quarter')
-        var remaining_volumes=Math.floor(total_volume%4)
+        var total_issues=current_date.diff(start_date,'quarter')
+        var remaining_issues=Math.floor(total_issues%4)
 
 
-        const volumes={}
+        const issues={}
         for(var i=0;i<year_diff;i++){
             
-            volumes[year]=volumeData
+            issues[year]=issueData
             year+=1
         }   
         
 
         
-        volumes[year]=volumeData.slice(0,remaining_volumes)
-        setExtras({years:Object.keys(volumes),volumes})
-        setArticle({...article,year:year,volume:volumes[year][volumes[year].length-1]})
+        issues[year]=issueData.slice(0,remaining_issues)
+        setExtras({years:Object.keys(issues),issues})
+        setArticle({...article,year:year,issue:issues[year][issues[year].length-1]})
 
     },[])
 
 
+    // console.log(extras)
 
     useEffect(()=>{
 
@@ -197,14 +240,14 @@ const axiosPrivate=useAxiosPrivate()
 
 
 
-            console.log(response?.data?.result?.files)
+            // console.log(response?.data?.result?.files)
             const files=response?.data?.result?.files.filter((element)=>{
 
                 return element.mimeType=="application/vnd.google-apps.spreadsheet"
             
             })
 
-            console.log(files)
+            // console.log(files)
 
             setFootNoteFiles(files)
 
@@ -244,7 +287,7 @@ const axiosPrivate=useAxiosPrivate()
     const handleKeywords=()=>{
 
     
-        const words=keyword.split('-').filter((word)=>{
+        const words=keyword.split(/[-_,;]/).filter((word)=>{
             if(word && !keywords.includes(word)){
                 return word
             }
@@ -286,7 +329,6 @@ const axiosPrivate=useAxiosPrivate()
 
 
         if(response){
-        console.log(response?.data)
         const footNotesData=response?.data?.result?.split('\r\n').map((element,index)=>{
             const data=element.split(',')
             return {serial:index+1, word:data[0],reference:data.slice(1,data?.length).join().replaceAll(`"`,''),id:uuidv4()}
@@ -352,29 +394,28 @@ return <div className="flex flex-col py-4  space-y-1 ">
     <div className="flex space-x-3">
 
     
-    <FormControl  isInvalid={errorFields[0]} isRequired={true}>
+    <FormControl  isInvalid={errorFields[0]} >
         <FormLabel className="text-secondary">Title</FormLabel>
             <Input variant="filled" type="text" value={article?.title} onChange={({target})=>{setArticle({...article,title:target.value}); if(target.value && errorFields[0]){setErrorFields((prev)=>{prev[0]=false; return prev})}}}/>
             {errorFields[0]&&<FormErrorMessage>Title is required</FormErrorMessage>}
 
             </FormControl>
 
-            <FormControl  isInvalid={errorFields[1]}  isRequired={true}>
+            <FormControl   isInvalid={errorFields[1]} >
         <div  className="flex space-x-5">
         <FormLabel className="text-secondary">Publication Type
         </FormLabel>
 
         <div>
-        <button type="button" className="ml-2 text-primary  underline" onClick={()=>setCreateType(!createType)}>{createType?'Existing Types':'Create Type'}</button>
+        <button type="button" className="ml-2 text-primary  underline" onClick={()=>{setCreateType(!createType); setArticle({...article,type:null})}}>{createType?'Existing Types':'Create Type'}</button>
         </div>
 
         </div>
 
             {createType?<Input variant="filled" value={article?.type} onChange={({target})=>{setArticle({...article,type:target.value}); if(target.value && errorFields[1]){setErrorFields((prev)=>{prev[1]=false; return prev})} } }/>:<Select variant="filled"  value={article?.type} onChange={({target})=>{setArticle({...article,type:target.value}); if(target.value && errorFields[1]){setErrorFields((prev)=>{prev[1]=false; return prev})} }}>
-                <option disabled value={null}>Select a Type</option>
-
+            <option disabled value={null}>Select a Type</option>
                 {types.map((type,index)=>{
-                    return <option key={index} value={type?.type}>{type?.type}</option>
+                    return <option key={index} value={type?.type} selected={index==0?'true':'false'}>{type?.type}</option>
                 })}
             </Select>}
             {errorFields[1]&&<FormErrorMessage>Type is required</FormErrorMessage>}
@@ -382,7 +423,7 @@ return <div className="flex flex-col py-4  space-y-1 ">
             </FormControl>
                 
 
-            <FormControl  isRequired={true}>
+            <FormControl  >
                 <FormLabel>Mode</FormLabel>
             <RadioGroup className="space-x-3" value={mode} onChange={setMode}>
                 <Radio value={'individual'}>Individual</Radio>
@@ -401,31 +442,42 @@ return <div className="flex flex-col py-4  space-y-1 ">
             <div className="flex  py-3 space-x-3">
 
 
-            <FormControl   isRequired={true}>
+            <FormControl  isInvalid={errorFields[2]} >
                     <FormLabel>Year</FormLabel>
-                    <Select value={article?.year} variant="filled" onChange={(e)=>{setArticle({...article,year:e.target.value,issue:extras.years.indexOf(e.target.value)+1}); console.log(extras.years.indexOf(e.target.value))}}>
+                    
+                    <Select value={article?.year} variant="filled" onChange={(e)=>{setArticle({...article,year:e.target.value,volume:extras.years.indexOf(e.target.value)+1});}}>
+                    <option disabled>Select a Year</option>
+
                         {extras.years?.map((year,index)=>{
-                            return <option key={index} value={year}>{year}</option>
+                            return <option key={index} value={year} selected={index==0?'true':'false'}>{year}</option>
                         })}
                     </Select>
+
+                    {errorFields[2]&&<FormErrorMessage>Year is required</FormErrorMessage>}
+
                 </FormControl>
 
 
-                <FormControl  isRequired={true}>
-                    <FormLabel>Issue</FormLabel>
-                    <Input value={article?.issue} variant="filled" disabled/>
-                </FormControl>
-
-                <FormControl  isRequired={true}>
+                <FormControl >
                     <FormLabel>Volume</FormLabel>
 
-                    <Select value={article?.volume} variant="filled" onChange={(e)=>{setArticle({...article,volume:e.target.value})}}>
-                        {extras.volumes[article?.year]?.map((volume,index)=>{
-                            return <option key={index} value={volume}>
-                                    {volume}
+                    <Input value={article?.volume} variant="filled" disabled/>
+
+                </FormControl>
+
+                <FormControl isInvalid={errorFields[4]} >
+                    <FormLabel>Issue</FormLabel>
+
+                    <Select value={article?.issue} variant="filled" onChange={(e)=>{setArticle({...article,issue:e.target.value})}} >
+                        <option disabled>Select an Issue</option>
+                        {extras?.issues?.[article?.year]?.map((issue,index)=>{
+                            return <option key={index} value={issue} selected={index==0?'true':'false'}>
+                                    {issue}
                             </option>
                         })}
                     </Select>
+                    {errorFields[3]&&<FormErrorMessage>Issue is required</FormErrorMessage>}
+
                 </FormControl>
 
 

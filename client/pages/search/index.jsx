@@ -33,7 +33,7 @@ const [sort,setSort]=useState()
 useEffect(()=>{
 
     if(!page){
-        console.log(true)
+        // console.log(true)
         setPageOptions({pageNumber:1,offset:0})
     }
     else{
@@ -94,7 +94,7 @@ useEffect(()=>{
             setSort(sorted)
         }
 
-        console.log(sorted)
+        // console.log(sorted)
 
     },[router])
 
@@ -106,7 +106,7 @@ useEffect(()=>{
         var {page}=query
         
 
-        console.log(query)
+        // console.log(query)
     if(!page){
         page=1
     }

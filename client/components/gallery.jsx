@@ -29,7 +29,7 @@ export const PhotoGallery=()=>{
             const response=await axios.get(`/app/folder/${galleryFolderId}`)
 
 
-            console.log(response?.data?.result?.images)
+            // console.log(response?.data?.result?.images)
 
             if(response){
                 
@@ -46,13 +46,13 @@ export const PhotoGallery=()=>{
   
 
     const handleNext=()=>{
-        console.log((active+1)%images?.length)
+        // console.log((active+1)%images?.length)
         setActive((active+1)%images?.length)
     }
 
     const handlePrevious=()=>{
 
-        console.log((active-1)%images?.length)
+        // console.log((active-1)%images?.length)
         setActive((active-1)<0?images?.length-1:(active-1)%images?.length)
     }
 

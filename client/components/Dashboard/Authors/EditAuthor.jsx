@@ -13,7 +13,7 @@ export const EditAuthor=({toggler})=>{
     const {current}=useCurrent()
     const axiosPrivate=useAxiosPrivate()
 
-    console.log(current?.author)
+    // console.log(current?.author)
     const [account,setAccount]=useState({
         firstName:current?.author.name.split(' ')[0],
         lastName:current?.author.name.split(' ')[1],
@@ -63,7 +63,7 @@ export const EditAuthor=({toggler})=>{
             
             if(account?.image!==current?.author.photo){
 
-            console.log(account?.image.raw)
+            // console.log(account?.image.raw)
             const imageResult=await axiosPrivate.post('/author/image',{
                 file:account?.image?.raw
             },{

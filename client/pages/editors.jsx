@@ -13,7 +13,7 @@ export default function Editors({data}){
     const [editors,setEditors] = useState([])
 
 
-    console.log(editors)
+    // console.log(editors)
 
     useEffect(()=>{
     

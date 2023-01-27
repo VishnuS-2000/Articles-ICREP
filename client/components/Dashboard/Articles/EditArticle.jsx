@@ -14,7 +14,7 @@ import moment from 'moment'
 
 
 import {convert} from 'html-to-text'
-import { start_date,volumeData } from "../Dates";
+import { start_date,issueData } from "../Dates";
 
 const RichTextEditor= dynamic(() => import('@mantine/rte'), { ssr: false });
 
@@ -61,7 +61,7 @@ export const EditArticle=()=>{
 
     })
 
-    const [errorFields,setErrorFields]=useState([false,false,false,false,false])
+    const [errorFields,setErrorFields]=useState([false,false,false,false])
    
     const [changes,setChanges]=useState({
        title:null,
@@ -76,7 +76,7 @@ export const EditArticle=()=>{
     const [loading,setLoading]=useState(false)
 
 
-    console.log("Article",current?.article);
+    // console.log("Article",current?.article);
     useEffect(()=>{
 
         const fetchAuthors=async()=>{
@@ -122,31 +122,88 @@ export const EditArticle=()=>{
 
     useEffect(()=>{
         const current_date=moment()
-
+        // console.log(issueData)
         const year_diff=current_date.diff(start_date,'year')
 
         var year=start_date.year()
 
-        var total_volume=current_date.diff(start_date,'quarter')
-        var remaining_volumes=Math.floor(total_volume%4)
+        var total_issues=current_date.diff(start_date,'quarter')
+        var remaining_issues=Math.floor(total_issues%4)
 
 
-
-
-        const volumes={}
+        const issues={}
         for(var i=0;i<year_diff;i++){
             
-            volumes[year]=volumeData
+            issues[year]=issueData
             year+=1
         }   
         
 
         
-        volumes[year]=volumeData.slice(0,remaining_volumes)
-        setExtras({years:Object.keys(volumes),volumes})
-    
+        issues[year]=issueData.slice(0,remaining_issues)
+        setExtras({years:Object.keys(issues),issues})
 
     },[])
+
+
+    const validateFields=()=>{
+        let valid=true
+        if(!article?.title){
+            valid=false
+            setNotification({message:'Title required',status:'error',createdAt:moment()})
+            setErrorFields((prev)=>{
+                prev[0]=true
+                return prev
+            })
+        }
+        else if(!article?.type){
+            valid=false
+            setNotification({message:'Type required',status:'error',createdAt:moment()})
+            setErrorFields((prev)=>{
+                prev[1]=true
+                return prev
+            })
+
+
+
+        }
+        else if(!keywords){
+            valid=false
+            setNotification({message:'Keywords required',status:'error',createdAt:moment()})
+        }
+
+        else if(!text){
+            valid=false
+            setNotification({message:'Content required',status:'error',createdAt:moment()})
+
+
+        }
+        else if(!article?.year){
+            valid=false
+            setErrorFields((prev)=>{
+                prev[2]=true
+                return prev
+            })
+            setNotification({message:'Year required',status:'error',createdAt:moment()})
+        }
+
+        else if(!article?.issue){
+            valid=false
+            setErrorFields((prev)=>{
+                prev[3]=true
+                return prev
+            })
+            setNotification({message:'Issue required',status:'error',createdAt:moment()})
+        }
+      
+        else if(!collabrators||!collabrator){
+            valid=false
+            setNotification({message:'Author required',status:'error',createdAt:moment()})
+        }
+        
+        return valid
+    }
+
 
 
 
@@ -155,12 +212,7 @@ export const EditArticle=()=>{
 
 
 
-        if(!article?.title||!article?.type||!mode){
-            setNotification({message:'Missing Fields',status:'error',createdAt:moment()})
-            return 
-        }
-
-        else{
+       if(validateFields()){
 
             try{
                 setLoading(true)
@@ -211,10 +263,14 @@ export const EditArticle=()=>{
 
     const handleKeywords=()=>{
 
-        if(keyword && !keywords.includes(keyword)){
-            setKeywords([...keywords,keyword])
-            setKeyword('')
-        }
+        const words=keyword.split(/[-_,;]/).filter((word)=>{
+            if(word && !keywords.includes(word)){
+                return word
+            }
+        })
+
+        setKeywords([...keywords,...words])
+        setKeyword('')
 
 
     }
@@ -278,7 +334,7 @@ return <div className="flex flex-col py-4  space-y-1 ">
 <div className="flex space-x-3">
 
 
-<FormControl isRequired="true" isInvalid={errorFields[0]} className="relative">
+<FormControl  isInvalid={errorFields[0]} className="relative">
     <FormLabel className="text-secondary">Title</FormLabel>
         <InputGroup>
         <InputRightElement>
@@ -342,40 +398,38 @@ return <div className="flex flex-col py-4  space-y-1 ">
 </div>
 
 
-
 <div className="flex  py-3 space-x-3">
 
 
-<FormControl  >
+<FormControl   isInvalid={errorFields[2]}>
         <FormLabel>Year</FormLabel>
-        <Select value={article?.year} variant="filled" onChange={(e)=>{setArticle({...article,year:e.target.value,issue:extras.years.indexOf(e.target.value)+1}); console.log(extras.years.indexOf(e.target.value))}}>
-        <option>Select an Year</option>
-
+        <Select value={article?.year} variant="filled" onChange={(e)=>{setArticle({...article,year:e.target.value,volume:extras.years.indexOf(e.target.value)+1});}}>
             {extras?.years?.map((year,index)=>{
                 return <option key={index} value={year}>{year}</option>
             })}
         </Select>
+        {errorFields[2]&&<FormErrorMessage>Year is required</FormErrorMessage>}
+
     </FormControl>
 
 
-    <FormControl >
-        <FormLabel>Issue</FormLabel>
-        <Input value={article?.issue} variant="filled" disabled/>
-    </FormControl>
-
-    <FormControl >
+    <FormControl  isRequired={true}>
         <FormLabel>Volume</FormLabel>
+        <Input value={article?.volume} variant="filled" disabled/>
+    </FormControl>
 
-        <Select value={article?.volume} variant="filled" onChange={(e)=>{setArticle({...article,volume:e.target.value})}}>
-           
-        <option>Select a Volume</option>
+    <FormControl  isInvalid={errorFields[3]}>
+        <FormLabel>Issue</FormLabel>
 
-            {extras?.volumes[article?.year]?.map((volume,index)=>{
-                return <option key={index} value={volume}>
-                        {volume}
+        <Select value={article?.issue} variant="filled" onChange={(e)=>{setArticle({...article,issue:e.target.value})}}>
+            {extras?.issues?.[article?.year]?.map((issue,index)=>{
+                return <option key={index} value={issue}>
+                        {issue}
                 </option>
             })}
         </Select>
+        {errorFields[3]&&<FormErrorMessage>Issue is required</FormErrorMessage>}
+
     </FormControl>
 
 
@@ -383,6 +437,8 @@ return <div className="flex flex-col py-4  space-y-1 ">
 
 
 </div>
+
+
 
 <FormControl>
     <FormLabel>Keywords</FormLabel>

@@ -14,7 +14,7 @@ export const Sidebar=({active,toggler})=>{
             withCredentials:'include'
             
         })
-        console.log(result)
+        // console.log(result)
 
         if(result?.status==200)
             {

@@ -48,7 +48,7 @@ export const Contributions=()=>{
       const response=await axios.get(args.url,{
         headers:args.options
       })
-      console.log(response?.data)
+      // console.log(response?.data)
       return response?.data?.result
   }  
 

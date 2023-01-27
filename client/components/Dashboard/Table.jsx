@@ -26,7 +26,7 @@ export const DataTable=({initials,args,changeArgs})=>{
 
   const {notification,setNotification}=useNotification()
 
-    console.log(args)
+    // console.log(args)
 
     const fetcher=async(args)=>{
       const response=await axios.get(args.url,{
@@ -40,7 +40,7 @@ export const DataTable=({initials,args,changeArgs})=>{
     const [selected,setSelected]=useState([])
     const {data,error,isValidating}=useSWR(args,fetcher)
 
-    console.log(data,selected)
+    // console.log(data,selected)
 
     const addSelected=(id)=>{
       setSelected([...selected,id])
@@ -52,7 +52,7 @@ export const DataTable=({initials,args,changeArgs})=>{
       }))
     }
 
-    console.log(data)
+    // console.log(data)
     
     return <div className="mt-8 ">
      <TableSearch setArgs={changeArgs} args={args} placeholder={initials?.search?.placeholder} name={initials?.name}/>
@@ -116,7 +116,7 @@ export const TableControl=({name,count,controls,args,setArgs})=>{
     }
   } 
 
-console.log(args)
+// console.log(args)
 
 return <div className="flex w-full py-4  items-center justify-between font-[500]">
     
@@ -193,7 +193,7 @@ export const TableHeader = ({headers}) => {
     
      
 
-    console.log(element)
+    // console.log(element)
 
     const handleSelection = () => {
       if (!selected.includes(element?.id)) {

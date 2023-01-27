@@ -64,11 +64,11 @@ export const CreateAuthor=({toggler})=>{
         return valid
     }
 
-    console.log(author)
+    // console.log(author)
 
     const handleSubmit = async(e)=>{
         e.preventDefault()
-        console.log(author)
+        // console.log(author)
         try{
             
             // Checking Error Fields

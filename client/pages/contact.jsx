@@ -29,7 +29,7 @@ export default function Contact(){
 
     },[])
 
-    console.log(contact)
+    // console.log(contact)
 
     return <>
 

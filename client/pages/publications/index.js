@@ -38,7 +38,7 @@ export default function Publications({data}){
     useEffect(()=>{
 
         if(!page){
-            console.log(true)
+            // console.log(true)
             setPageOptions({pageNumber:1,offset:0})
         }
         else{
@@ -58,7 +58,7 @@ export default function Publications({data}){
             setSort(sorted)
         }
 
-        console.log(sorted)
+        // console.log(sorted)
 
     },[router])
 
@@ -70,7 +70,7 @@ export default function Publications({data}){
         var {page}=query
         
 
-        console.log(query)
+        // console.log(query)
     if(!page){
         page=1
     }

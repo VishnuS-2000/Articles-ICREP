@@ -253,7 +253,7 @@ const ContributeModal=({isOpen, onOpen, onClose })=>{
             })
             setAccepted(true)
   
-            console.log(url)
+            // console.log(url)
           }
   
         }
@@ -314,7 +314,7 @@ const ContributeModal=({isOpen, onOpen, onClose })=>{
           
           documentId=await uploadDocument()
 
-          console.log(documentId)
+          // console.log(documentId)
           
           const response=await axios.post(`/app/contribution`,{ 
             name:manuscript.name,

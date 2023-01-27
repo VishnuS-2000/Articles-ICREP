@@ -2,7 +2,7 @@ import axios from "../../../../axios"
 import Link from 'next/link'
 const VerifyRegister=({data})=>{
 
-    console.log(data)
+    // console.log(data)
 
     if(data?.email){
 

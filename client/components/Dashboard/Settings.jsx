@@ -18,7 +18,7 @@ import { useEffect } from "react"
 export const Settings=()=>{
     
     const {auth}=useAuth()
-    console.log(auth)
+    // console.log(auth)
     return <Layout heading={'Settings'}>
         
         <div className="py-5 tablet:py-8 ">
@@ -93,7 +93,7 @@ const General=({role,lastLogin,username})=>{
             })
 
             if(response?.data){
-                console.log(response.data.result)
+                // console.log(response.data.result)
                 setAccount({displayName:response.data?.result.displayName,image:response.data?.result.photo?{url:`${process.env.NEXT_PUBLIC_BACKEND_IMAGE_URL}/${response?.data?.result?.photo}`}:null,bio:response?.data?.result.bio,note:response?.data?.result?.note})
             }
 
@@ -102,7 +102,7 @@ const General=({role,lastLogin,username})=>{
     },[])
 
 
-    console.log(account)
+    // console.log(account)
 
 
     const handleSubmit=async(e)=>{
