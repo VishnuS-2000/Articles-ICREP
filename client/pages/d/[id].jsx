@@ -28,6 +28,7 @@ export default function Article({data}){
     const refContainer=useRef()
     const router=useRouter()
     const [outlines,setOutlines]=useState()
+    const [footNoteLimit,setFootNoteLimit]=useState(5)
 
     useEffect(()=>{
 
@@ -143,9 +144,17 @@ export default function Article({data}){
         <div className="flex  w-full min-h-screen desktop:flex-row">
         <div className="flex flex-[1] flex-col pb-6 desktop:flex-[0.60] desktop:items-start sticky left-[19%] relative p-5 desktop:px-12 desktop:py-12 deskotp:space-y-5">
                     
-                    
 
-                    <div className="p-5">
+        <a onClick={()=>{router.back()}} className="cursor-pointer flex">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
+  <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" />
+</svg>
+<p className="font-[500]">Back</p>
+                    </a>
+
+                    <div className="p-3">
+
+
                     <h1 className="text-lg font-[600] desktop:text-xl text-justify">{data?.title}</h1>
                     <p className="text-sm tablet:text-sm text-slate-600 space-x-2">
                     <span className="font-[500]">Issue</span> {data?.issue} 
@@ -235,7 +244,7 @@ export default function Article({data}){
             
                 <Accordion  allowMultiple className="flex flex-col w-full py-5 ">
                     <AccordionItem className="">
-                        <AccordionButton variant="" className="">
+                        <AccordionButton variant="" className="" onClick={()=>{setFootNoteLimit(5)}}>
                         <Box as="span" flex='1' textAlign='left' className="p-1">
 
                         <h1 className="text-sm tablet:text-base font-[600]  text-primary">Footnotes</h1>
@@ -247,18 +256,27 @@ export default function Article({data}){
 
                         <AccordionPanel pb={4}>
 
-                        {data?.footnotes?.map((element,index)=>{
+                        {data?.footnotes.slice(0,footNoteLimit)?.map((element,index)=>{
         return<div key={index} className="flex text-base  max-w-[300px] tablet:max-w-full tablet:flex-[0.60]  flex-col">
     <p className="text-sm desktop:text-base">    <button type="button" className="font-[600]" onClick={()=>handleReference(element?.id,element?.serial)}>{`[${element?.serial}]`}</button>
 {element?.reference}</p>
 
+
+    
     </div>
 
 })}
+{!(footNoteLimit===data?.footnotes?.length)&&<button className="text-primary flex items-center my-5 font-[600]  w-full justify-center py-2 space-x-3" onClick={()=>{setFootNoteLimit(data?.footnotes?.length)}}>
+    <span>Read More</span>
+<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-4 h-4 animate-bounce">
+  <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
+</svg>
+
+</button>}
     </AccordionPanel>
 
                     </AccordionItem>
-                    <AccordionItem className="">
+                    {data?.references&&<AccordionItem className="">
                         <AccordionButton variant="" className="">
                         <Box as="span" flex='1' textAlign='left' className="p-1">
 
@@ -282,7 +300,7 @@ export default function Article({data}){
 })}
     </AccordionPanel>
 
-                    </AccordionItem>
+                    </AccordionItem>}
 
                 </Accordion>
 

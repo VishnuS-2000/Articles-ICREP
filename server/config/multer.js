@@ -25,7 +25,7 @@ const documentStorage=multer.diskStorage({
     },
     filename:(req,file,cb)=>{
         var fileType='' 
-        console.log(file.mimetype)
+        // console.log(file.mimetype)
         if(file.mimetype=="application/msword"){
             fileType='doc'
          }

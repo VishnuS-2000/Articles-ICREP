@@ -114,12 +114,12 @@ module.exports.getArticlesByQuery=async(req,res)=>{
         }
         else if(field=="type"){
             const types=req.query[field].split(',')
-            console.log(types)
+            // console.log(types)
             query[field] = {[Op.in]: types}
         }
         else if(field=="keywords"){ 
             const keywords=req.query[field].split(',')
-            console.log(keywords)
+            // console.log(keywords)
             query[field] = {[Op.contains]: keywords}
         }
 
@@ -129,12 +129,12 @@ module.exports.getArticlesByQuery=async(req,res)=>{
 
         else if(field=="designation"){
             const categories=req.query[field].split(',')
-            console.log(categories)
+            // console.log(categories)
             authorQuery['designation']={[Op.in]:categories}
         }
     })
     
-    console.log(query,authorQuery)
+    // console.log(query,authorQuery)
 
     
 
@@ -201,7 +201,7 @@ catch(err){
 
 module.exports.updateArticle=async(req,res)=>{
     
-    console.log(req.body)
+    // console.log(req.body)
     try{
     const article=await Article.findOne({where:{id:req.params.id}})
 

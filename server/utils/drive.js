@@ -26,7 +26,7 @@ const listFilesFromGoogleDrive = async (googleFolderId) => {
         q: `'${googleFolderId}' in parents`
       });
 
-      console.log(response?.data)
+      // console.log(response?.data)
   
       return response.data;
     } catch (err) {
@@ -42,7 +42,7 @@ const listFilesFromGoogleDrive = async (googleFolderId) => {
         fileId:fileId
       });
 
-      console.log(response?.data)
+      // console.log(response?.data)
   
       return response.data;
     } catch (err) {
@@ -64,7 +64,7 @@ const downloadFromGoogleDrive=async(googleFileId,mimeType)=>{
             mimeType:mimeType,
         })
 
-        console.log(response.data)
+        // console.log(response.data)
         return response.data
 
     }   

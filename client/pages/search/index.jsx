@@ -186,7 +186,7 @@ const handleSearch=(e)=>{
             url+=`${field}=${params[field]}&`
         })
 
-        router.push(url)
+        router.push(`${url}#results`)
 
 
 }
@@ -305,7 +305,7 @@ return <>
 </div>
 
 
-<div className="flex flex-col min-h-screen relative bottom-0 bg-gray-50 bottom-0 absolute w-full  ">
+<div className="flex flex-col min-h-screen relative bottom-0 bg-gray-50 bottom-0 absolute w-full  " id="results">
 
 
 

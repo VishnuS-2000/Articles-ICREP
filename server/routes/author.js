@@ -16,7 +16,7 @@ router.use(verifyJWT)
 router.post('/',createAuthor)
 router.post("/image",imageUpload.single('file'),(req,res)=>{
 
-    console.log(req.file)
+    // console.log(req.file)
     try{
     if(!req.file){
        return res.sendStatus(400)

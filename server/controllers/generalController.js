@@ -12,7 +12,7 @@ const getFolder=async(req,res)=>{
 
     try{
         const images=[]
-        console.log(req.params)
+        // console.log(req.params)
         const data=await listFilesFromGoogleDrive(req.params.id)
         if(data){
             const exportData=[]
@@ -40,7 +40,7 @@ const getFolder=async(req,res)=>{
 
                 }))
 
-                console.log(exportResults)
+                // console.log(exportResults)
 
                 return res.status(200).json({result:{exports:exportResults,images:images}})
 
@@ -131,7 +131,7 @@ const uploadFile = async (req, res) => {
       fs.unlink(req.file.path,()=>{
       })
 
-      console.log(response?.data.id)
+    //   console.log(response?.data.id)
 
       res.status(200).json({ id: response?.data.id });
     } catch (err) {
@@ -145,7 +145,7 @@ const getContributions=async(req,res)=>{
 
     try{
 
-        console.log(req.headers.offset,req.headers.limit)
+        // console.log(req.headers.offset,req.headers.limit)
         const contributions=await Contribution.findAndCountAll({offset:req.headers.offset,limit:req.headers.limit})
         res.status(200).json({result: contributions})
 
@@ -162,7 +162,7 @@ const createContribution=async(req,res)=>{
 
     try{
 
-        console.log(req.body)
+        // console.log(req.body)
         if(!req.body.name||!req.body.bio||!req.body.email||!req.body.contact||!req.body.file){
             return res.sendStatus(400)
         }
@@ -213,7 +213,7 @@ const deleteContribution=async(req,res)=>{
 
     try{
 
-        console.log(req.body)
+        // console.log(req.body)
         if(!req.params.id){
             return res.sendStatus(400)
         }

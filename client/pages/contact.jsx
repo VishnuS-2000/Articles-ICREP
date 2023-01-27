@@ -66,7 +66,7 @@ export default function Contact(){
             <iframe src="https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d15714.693033939906!2d76.327915!3d10.043798!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0xebc91136028db555!2zMTDCsDAyJzM3LjciTiA3NsKwMTknNDAuNSJF!5e0!3m2!1sen!2sus!4v1672793920710!5m2!1sen!2sus" className="w-full h-[300px] tablet:h-[500px]  rounded-md desktop:max-w-[520px]" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
             
 
-            <div className="flex flex-col py-8 desktop:py-24 text-justify desktop:max-w-[650px] relative desktop:right-[10%] "  >
+            <div className="flex flex-col py-8 desktop:py-24 text-justify desktop:w-[450px] relative desktop:right-[10%] "  >
                         <h1 className="text-sm tablet:text-base  font-[500] text-primary ">{contact?.address}</h1>
 
 

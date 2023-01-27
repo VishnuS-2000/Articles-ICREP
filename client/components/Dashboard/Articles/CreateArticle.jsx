@@ -85,7 +85,6 @@ const axiosPrivate=useAxiosPrivate()
     const handleSubmit =async(e)=>{
         e.preventDefault()
 
-        alert("submit")        
 
 
         if(validateFields()){
@@ -169,8 +168,6 @@ const axiosPrivate=useAxiosPrivate()
 
         var total_volume=current_date.diff(start_date,'quarter')
         var remaining_volumes=Math.floor(total_volume%4)
-
-
 
 
         const volumes={}

@@ -12,6 +12,11 @@ import KeyIcon from '@mui/icons-material/Key';
 import LockIcon from "@mui/icons-material/Lock";
 
 import axios from "../../axios"
+import useNotification from "../../hooks/useNotification";
+
+import { Notification } from "../../components/Notification";
+import moment from "moment"
+import { useRouter } from "next/router";
 
 /*Admin Login UI */
 const ForgotPassword=()=>{
@@ -22,7 +27,10 @@ const ForgotPassword=()=>{
     const [otpVerified,setOtpVerified]=useState(false)
     const [account,setAccount]=useState({})
     const [showPassword,setShowPassword]=useState(false)
-    
+    const [notification,setNotification]=useState(false)
+
+    const router=useRouter()
+
 
     const sendCode=async()=> {
         try{
@@ -36,10 +44,11 @@ const ForgotPassword=()=>{
 
         }catch(err){
             if(err?.response?.status==404){
-                alert("Account does not exist")
+                setNotification({status: 'error',message:'No Account found',createdAt: moment()});
+
             }
             else{
-                alert("Internal server error")
+                setNotification({status: 'error',message:'Try again later',createdAt: moment()});
             }
         }
     }
@@ -72,13 +81,13 @@ const ForgotPassword=()=>{
 
         }catch(err){
             if(err?.response?.status==404){
-                alert("Bad Request")
+                setNotification({status: 'error',message:'Not Found',createdAt: moment()});
             }
             else if(err?.response?.status==401){
-                alert("Unauthorized")
+                setNotification({status: 'error',message:'Unauthorized',createdAt: moment()});
             }
             else{
-                alert("Internal server error")
+                setNotification({status: 'error',message:'Internal Server Error',createdAt: moment()});
             }
         }
       
@@ -92,7 +101,7 @@ const ForgotPassword=()=>{
         try{
 
             if(account.password!==account.confirm){
-                console.log("Password & Confirm Password does not match")
+                setNotification({status: 'error',message:'Password & Confirm Password do not match',createdAt: moment()});
                 return 
             }
 
@@ -102,20 +111,21 @@ const ForgotPassword=()=>{
             })
 
             if(result?.status == 200){
-                alert("Password reset successfully")
+                setNotification({status: 'success',message:'Password Reset Successfully',createdAt: moment()});
+                router.push('/admin/login')
             }
 
 
         }
         catch(err){
             if(err?.status==400){
-                alert("Bad Request")
+                setNotification({status: 'error',message:'Bad Request',createdAt: moment()});
             }
             else if(err?.status==401){
-                alert("Unauthorized")
+                setNotification({status: 'error',message:'Unauthorized',createdAt: moment()});
             }
             else{
-                alert("Internal server error")
+                setNotification({status: 'error',message:'Internal Server Error',createdAt: moment()});
             }
 
         }
@@ -130,8 +140,8 @@ const ForgotPassword=()=>{
         <div className='fixed top-0 right-0 left-0  desktop:relative tablet:top-[-50px]'>
         </div>
 
+        {notification?.createdAt&&<Notification options={notification}/>}
 
-    
     
 
         <div className="flex flex-col w-full bg-white p-5  space-y-8 tablet:px-10 tablet:py-24  tablet:drop-shadow-lg  tablet:rounded-md tablet:w-[560px]   tablet:space-y-12">

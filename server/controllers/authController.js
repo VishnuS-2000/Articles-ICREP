@@ -287,7 +287,7 @@ catch(err){
 
 const resetPassword = async (req,res) => {
   try {
-    console.log(req.body)
+    // console.log(req.body)
     if (!req.body.password||!req.body.username) {
       return res.sendStatus(400);
     }
@@ -394,7 +394,7 @@ const handleLogout = async (req, res) => {
 
 const changePassword = async (req,res) => {
   try {
-    console.log(req.body)
+    // console.log(req.body)
     if (!req.body.password || !req.body.newPassword ||!req.body.username) {
       return res.sendStatus(400);
     }
@@ -421,7 +421,7 @@ const changePassword = async (req,res) => {
       await account.save();
       return res.sendStatus(200);
     } else {
-      console.log("No match")
+      // console.log("No match")
       return res.sendStatus(401);
     }
   } catch (err) {
@@ -434,7 +434,7 @@ const changePassword = async (req,res) => {
 
 const getAccount = async (req, res) => {
   try {
-    console.log(req?.user);
+    // console.log(req?.user);
     const account = await Account.findOne({
       where: { username: req?.headers?.username },
       attributes:['id','name','displayName','bio','photo','note']
@@ -455,12 +455,12 @@ const updateAccount =async(req,res)=>{
 
   try {
 
-    console.log(req.body)
+    // console.log(req.body)
     if(!req.body.username) return res.sendStatus(400)
 
     const account = await Account.findOne({where:{username:req.body.username}});
 
-    console.log(account)
+    // console.log(account)
     if(!account) return res.sendStatus(404)
 
 
@@ -484,7 +484,7 @@ const updateAccount =async(req,res)=>{
 
 const sendVerifyEmailOTP= async (req, res) => {
   try {
-    console.log(req.body)
+    // console.log(req.body)
     if (!req.body.email||!req.body.newEmail) return res.sendStatus(400);
 
     const account = await Account.findOne(
@@ -549,7 +549,7 @@ const changeEmail=async(req,res)=>{
 
 try{
 
-  console.log(req.body)
+  // console.log(req.body)
 
 if(!req.body.code || !req.body.username){
   return res.sendStatus(400)
@@ -558,7 +558,7 @@ if(!req.body.code || !req.body.username){
 const foundToken=await Token.findOne({where:{[Op.and]:[{username:req.body.username},{purpose:'reset-email'}]}})
 
 if(!foundToken?.jwt){
-  console.log("No token")
+  // console.log("No token")
   return res.sendStatus(401)
 }
 

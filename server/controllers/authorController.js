@@ -24,7 +24,7 @@ module.exports.getAuthorById=async(req,res)=>{
 
 module.exports.getAuthorByQuery=async(req,res)=>{
 
-    console.log(req.query)
+    // console.log(req.query)
     await Author.findAndCountAll({where:{
        [Op.or]:[{name:{[Op.iLike]:`${req.query.term}%`} },{email:{[Op.iLike]:`${req.query.term}%`}}]
     },limit:req.query.limit,offset:req.query.offset,include:req.query.include?[Article]:null}).then((authors)=>{
@@ -88,7 +88,7 @@ module.exports.updateAuthor=async(req,res)=>{
 module.exports.deleteAuthor=async(req,res)=>{
 
     try{
-    console.log(req.params.id)
+    // console.log(req.params.id)
     if(!req.params.id) return res.status(400)
 
     const author=await Author.findOne({where:{id:req.params.id}})
