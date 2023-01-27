@@ -44,7 +44,7 @@ export const Articles =()=>{
 
     
 
-    const subTabs=[<DataTable  initials={articleFormat} args={args} changeArgs={setArgs}/>,<CreateArticle />,<EditArticle />]
+    const subTabs=[<DataTable key={0}  initials={articleFormat} args={args} changeArgs={setArgs}/>,<CreateArticle key={1} />,<EditArticle key={2} />]
 
      return <CurrentProvider>
      <Layout heading={'Articles'}>

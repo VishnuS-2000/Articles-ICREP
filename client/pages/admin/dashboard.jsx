@@ -23,7 +23,7 @@ export default function Dashboard(){
     const [active,setActive]=useState(0)
     const {notification}=useNotification()
 
-    const tabs=[<Home />,<Authors />,<Articles />,<Contributions />,<Settings/>]
+    const tabs=[<Home key={0}/>,<Authors key={1}/>,<Articles key={2}/>,<Contributions key={3}/>,<Settings key={4}/>]
     const toggler=(id)=>{
         setActive(id)
     }

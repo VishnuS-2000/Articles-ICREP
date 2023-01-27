@@ -1,6 +1,6 @@
 import {useState,useCallback} from "react"
 import dynamic from 'next/dynamic'
-const RichTextEditor= dynamic(() => import('@mantine/rte'), { ssr: false });
+const RichTextEditor= dynamic(async() =>await import('@mantine/rte'), { ssr: false });
 
 import { FormControl,FormLabel,Input,Textarea,Avatar,Select, FormHelperText, FormErrorMessage, Switch,RadioGroup,Radio, TableContainer,Table,Thead,Tr,Th, Tbody,Td } from "@chakra-ui/react"
 import { useEffect } from "react";

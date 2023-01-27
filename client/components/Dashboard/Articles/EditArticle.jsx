@@ -16,7 +16,7 @@ import moment from 'moment'
 import {convert} from 'html-to-text'
 import { start_date,issueData } from "../Dates";
 
-const RichTextEditor= dynamic(() => import('@mantine/rte'), { ssr: false });
+const RichTextEditor= dynamic(async() => await import('@mantine/rte'), { ssr: false });
 
 
 

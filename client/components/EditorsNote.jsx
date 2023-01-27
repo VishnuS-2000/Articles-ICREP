@@ -65,7 +65,7 @@ export const EditorsNote=()=>{
     
     <div className=" ">
 
-        <h1 className="py-3 text-base desktop:text-lg font-[600]">Cheif Editor's Message</h1>
+        <h1 className="py-3 text-base desktop:text-lg font-[600]">Cheif Editors Message</h1>
         {loading?
         <SkeletonText noOfLines={15} spacing={2} className=""/>:
         <p className="hidden desktop:flex desktop:text-base text-slate-900 text-justify my-2">
