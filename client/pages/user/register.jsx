@@ -64,7 +64,7 @@ const Register = () => {
           name: account.firstName + ' ' + account.lastName,
           role: role
         })
-        console.log(result)
+        // console.log(result)
 
         if (result?.status == 200) {
           setSuccess(true)

@@ -35,11 +35,11 @@ Article.init({
         allowNull:false
     },
     issue:{
-        type:DataTypes.INTEGER,
+        type:DataTypes.STRING,
         allowNull:false
     },
     volume:{
-        type:DataTypes.STRING,
+        type:DataTypes.INTEGER,
         allowNull:false
     },
     keywords:{

@@ -17,7 +17,7 @@ export const ArticlePagination=({count,args,setArgs,itemsPerTab})=>{
 
     },[])
     
-    console.log(current)
+    // console.log(current)
 
     const handlePrevious=()=>{
         if(args.options.offset-args?.options?.limit>=0){  

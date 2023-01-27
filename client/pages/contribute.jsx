@@ -64,7 +64,7 @@ export default function Contribute(){
               })
               setAccepted(true)
     
-              console.log(url)
+              // console.log(url)
             }
     
           }
@@ -89,7 +89,7 @@ export default function Contribute(){
               })
               setImageAccepted(true)
     
-              console.log(url)
+              // console.log(url)
             }
     
           }
@@ -179,7 +179,7 @@ export default function Contribute(){
             
             documentId=await uploadDocument()
             imageId=await uploadImage()
-            console.log(documentId,imageId)
+            // console.log(documentId,imageId)
             
             const response=await axios.post(`/app/contribution`,{ 
               name:manuscript.name,

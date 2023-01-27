@@ -19,13 +19,12 @@ export const ArticleCard=({data})=>{
         <p>{data?.type}</p>
         <p>
         •
-        </p>
+        </p> <p>{`Volume ${data.volume}`}</p>
+        <p>•</p>
         <p>{`Issue ${data.issue}`}</p>
         <p>
         •
         </p>
-        <p>{`Volume ${data.volume}`}</p>
-        <p>•</p>
         <p>{data?.year}</p>
     </div>
 

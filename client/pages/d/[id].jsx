@@ -157,8 +157,8 @@ export default function Article({data}){
 
                     <h1 className="text-lg font-[600] desktop:text-xl text-justify">{data?.title}</h1>
                     <p className="text-sm tablet:text-sm text-slate-600 space-x-2">
-                    <span className="font-[500]">Issue</span> {data?.issue} 
                     <span className="font-[500]">Volume</span> {data?.volume}
+                    <span className="font-[500]">Issue</span> {data?.issue} 
                     <span className="font-[500]">Year</span> {data?.year}
                     
                     </p>

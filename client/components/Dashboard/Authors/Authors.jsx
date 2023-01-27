@@ -48,7 +48,7 @@ const toggler=(id)=>{
     setActive(id)
 }
 
-const subTabs=[<DataTable key={uuidv4()} initials={authorFormat} args={args} changeArgs={setArgs}/>,<CreateAuthor key={uuidv4()} toggler={setActive}/>,<EditAuthor key={uuidv4()} toggler={toggler}  />]
+const subTabs=[<DataTable initials={authorFormat} args={args} changeArgs={setArgs}/>,<CreateAuthor  toggler={setActive}/>,<EditAuthor  toggler={toggler}  />]
 
 
 return <CurrentProvider> <Layout heading={'Authors'}>

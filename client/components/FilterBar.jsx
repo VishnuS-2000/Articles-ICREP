@@ -52,7 +52,7 @@ export const FilterBar=({filteredData,setFilteredData})=>{
         query[element?.name]=[element?.value]
     }
 
-    console.log(query)
+    // console.log(query)
 
     
     Object.keys(query).map((key)=>{
@@ -74,7 +74,7 @@ export const FilterBar=({filteredData,setFilteredData})=>{
 
 
 
-    console.log(url)
+    // console.log(url)
     
 
 

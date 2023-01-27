@@ -34,8 +34,8 @@ export const Articles =()=>{
         fields:[
             {name:'title',limit:40},
             {name:'type'},
-            {name:'issue'},
             {name:'volume'},
+            {name:'issue'},
             {name:'authors',type:'nested',subfields:['name']},
         ],
         search:{placeholder:'Title or Topic'}
@@ -44,7 +44,7 @@ export const Articles =()=>{
 
     
 
-    const subTabs=[<DataTable key={uuidv4()} initials={articleFormat} args={args} changeArgs={setArgs}/>,<CreateArticle key={uuidv4()}/>,<EditArticle key={uuidv4()}/>]
+    const subTabs=[<DataTable  initials={articleFormat} args={args} changeArgs={setArgs}/>,<CreateArticle />,<EditArticle />]
 
      return <CurrentProvider>
      <Layout heading={'Articles'}>
