@@ -19,6 +19,7 @@ export default function Home({data}){
 
     const [title,setTitle]=useState()
 
+
     return <>
       <Head>
         <title>Home</title>
@@ -27,7 +28,9 @@ export default function Home({data}){
 
     <div className="flex flex-col w-full h-[250px]  tablet:h-[300px] desktop:p-4 items-center  bg-gradient-to-r from-primary to-secondary  justify-center ">
     <div className="w-full  tablet:w-[80%] desktop:w-[60%] flex flex-col items-center font-[600]">
-    <h1 className="text-base tablet:text-2xl desktop:text-2xl text-white drop-shadow">JOURNAL OF INTERDISCIPLINARY STUDIES</h1>
+    <div className="text-sm tablet:text-base desktop:text-2xl text-white drop-shadow  tablet:flex-row flex  items-center space-x-1">
+        
+        <span className="text-gray-200">ICREP</span><span className="text-gray-200">JOURNAL OF INTERDISCIPLINARY STUDIES</span></div>
         
             
         <InputGroup className="relative px-5 font-[400]">
@@ -68,8 +71,7 @@ export default function Home({data}){
     
 
     <div className="flex flex-col w-full items-center">
-    <EditorsNote/>
-
+        <EditorsNote/>
     </div>
 
 

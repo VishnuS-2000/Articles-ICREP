@@ -53,7 +53,7 @@ const NavBar=()=>{
 
         return <>
 
-{menu?<div className="fixed  bg-primary top-0  duration-300  w-full h-full overflow-hidden  text-white desktop:hidden  z-50 top-[0] p-3 ">
+{menu?<div className="fixed  bg-primary top-0  duration-300  w-full h-full overflow-hidden  text-white desktop:hidden  z-50 top-[0] p-2 ">
 
 <button className="absolute right-[20px] top-[17px]" onClick={()=>setMenu(false)}>
 
@@ -69,6 +69,7 @@ const NavBar=()=>{
                       
 
                       <Link href={`/`}>Home</Link>
+                      <Link href={`/editors`}>Editorial Board</Link>
                       <Link href={'/publications'}>Publications</Link>
                       <Link href={'/contribute'}>Contribute</Link>
                       <Link href={`/contact`}>Contact Us</Link>
@@ -100,11 +101,11 @@ const NavBar=()=>{
     </div>
 
 
-          <div className="flex h-[100px] p-4 desktop:p-8 items-center justify-between   w-full">
+          <div className="flex h-[80px] p-4 desktop:p-5 items-center justify-between   w-full">
               
               <Link href={`https://icrep.cusat.ac.in/`}>
-              <img src={`https://drive.google.com/uc?id=${icrepDesktop}`} className="flex-[0.10] max-w-[280px] h-[40px] hidden tablet:flex" />
-              <img src={`https://drive.google.com/uc?id=${icrepMobile}`} className=" max-w-[100px]  h-[65px] flex tablet:hidden" />
+              <img src={`https://drive.google.com/uc?id=${icrepDesktop}`} className="flex-[0.10] max-w-[280px] h-[40px] hidden desktop:flex" />
+              <img src={`https://drive.google.com/uc?id=${icrepMobile}`} className=" max-w-[100px]  h-[65px] flex desktop:hidden" />
 
               </Link>
 
@@ -114,18 +115,41 @@ const NavBar=()=>{
 
 
               
-              <div className="flex justify-end flex-[0.75]  hidden desktop:flex ">
-                <ul className="font-[600] flex flex-[0.70] items-center space-x-8 text-slate-600 text-sm justify-end">
+             
+
+
+            <div className="desktop:hidden flex flex-col">
+            <span className=" flex justify-center text-center text-xs font-[600] text-primary">Prof NR Madhava Menon Interdisciplinary Centre for Research Ethics & Protocols</span>
+            <span className="flex justify-center text-center text-xs font-[600] text-red-600">Cochin University of Science and Technology</span>
+            <span className="flex justify-center text-center text-xs font-[600] ">Kochi,Kerala</span>
+            </div>
+
+              <Link href={`https://www.cusat.ac.in/`}>
+              <img src={`https://drive.google.com/uc?id=${cusatDesktop}`} className="flex-[0.10] max-w-[320px] h-[50px] hidden desktop:flex"/>
+              
+              <img src={`https://drive.google.com/uc?id=${cusatMobile}`} className=" max-w-[100px]  h-[60px] flex desktop:hidden"/>
+              </Link>
+
+          </div>
+
+      
+
+
+
+      
+       
+
+          <div className="flex  w-full  hidden desktop:flex  p-2 justify-end ">
+                <ul className="font-[600] flex  items-center space-x-8 text-slate-600 text-sm flex-[0.50] justify-evenly">
                     
 
                     <Link href='/'>
-                        <button className="rounded-full border p-1 border-slate-600"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-6 h-6">
-  <path d="M11.47 3.84a.75.75 0 011.06 0l8.69 8.69a.75.75 0 101.06-1.06l-8.689-8.69a2.25 2.25 0 00-3.182 0l-8.69 8.69a.75.75 0 001.061 1.06l8.69-8.69z" />
-  <path d="M12 5.432l8.159 8.159c.03.03.06.058.091.086v6.198c0 1.035-.84 1.875-1.875 1.875H15a.75.75 0 01-.75-.75v-4.5a.75.75 0 00-.75-.75h-3a.75.75 0 00-.75.75V21a.75.75 0 01-.75.75H5.625a1.875 1.875 0 01-1.875-1.875v-6.198a2.29 2.29 0 00.091-.086L12 5.43z" />
-</svg>
+                        <button className="">
+                          Home
 
 </button>
                     </Link>
+                    <Link href='/editors'>Editorial Board</Link>
                     <Link href='/publications'>Publications</Link>
 
 
@@ -133,16 +157,17 @@ const NavBar=()=>{
                     <Popover>
 
   <PopoverTrigger>
-  <button className="rounded-full border p-1 border-slate-600">
-  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-6 h-6">
-  <path fillRule="evenodd" d="M4.848 2.771A49.144 49.144 0 0112 2.25c2.43 0 4.817.178 7.152.52 1.978.292 3.348 2.024 3.348 3.97v6.02c0 1.946-1.37 3.678-3.348 3.97a48.901 48.901 0 01-3.476.383.39.39 0 00-.297.17l-2.755 4.133a.75.75 0 01-1.248 0l-2.755-4.133a.39.39 0 00-.297-.17 48.9 48.9 0 01-3.476-.384c-1.978-.29-3.348-2.024-3.348-3.97V6.741c0-1.946 1.37-3.68 3.348-3.97zM6.75 8.25a.75.75 0 01.75-.75h9a.75.75 0 010 1.5h-9a.75.75 0 01-.75-.75zm.75 2.25a.75.75 0 000 1.5H12a.75.75 0 000-1.5H7.5z" clipRule="evenodd" />
+  <button className="rounded-full p-1 flex items-center space-x-2">
+  Support
+  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-4 h-4">
+  <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
 </svg>
+
                     </button>
   </PopoverTrigger>
   <PopoverContent>
     <PopoverArrow />
     <PopoverCloseButton />
-    <PopoverHeader>Support</PopoverHeader>
     <PopoverBody>
       <div className="flex flex-col space-y-3 w-full">
 
@@ -170,24 +195,6 @@ const NavBar=()=>{
                 </ul>
              </div>
 
-
-              <Link href={`https://www.cusat.ac.in/`}>
-              <img src={`https://drive.google.com/uc?id=${cusatDesktop}`} className="flex-[0.10] max-w-[320px] h-[50px] hidden tablet:flex"/>
-              
-              <img src={`https://drive.google.com/uc?id=${cusatMobile}`} className=" max-w-[100px]  h-[60px] flex tablet:hidden"/>
-              </Link>
-
-          </div>
-
-      
-
-
-
-      
-       
-
-
-
   
 
 
@@ -199,253 +206,9 @@ const NavBar=()=>{
 }
 
 
-const ContributeModal=({isOpen, onOpen, onClose })=>{
 
-
-    const [manuscript,setManuscript]=useState({
-      name:'',
-      phone:'',
-      email:'',
-      bio:'',
-      
-    })
-
-    const fields = ['name','phone','email','bio']
-    const [errorFields,setErrorFields]=useState([false,false,false,false])
-    
   
   
-    const [file,setFile]=useState(null)
-    const [accepted,setAccepted]=useState(false)
-  
-    const {notification,setNotification}=useNotification()
-    
-
-    const validateFields=()=>{
-      var valid=true
-      fields.map((field,index)=>{
-          if(!manuscript[field]){
-            setErrorFields((prev)=>{
-              prev[index]=true;
-              valid=false
-              return prev;
-            })
-          }
-      })
-
-      return valid
-
-    }
-  
-  
-    const handleChange=({target})=>{
-        
-      setAccepted(false)
-      if(target.files.length){
-          const raw=target.files[0]
-  
-          if(raw.type== 'application/msword' || raw.type=='application/vnd.openxmlformats-officedocument.wordprocessingml.document'||raw.type=='application/vnd.oasis.opendocument.text'){
-  
-            const url=URL.createObjectURL(target.files[0])
-            setFile({
-                raw:raw,
-                url:url
-            })
-            setAccepted(true)
-  
-            // console.log(url)
-          }
-  
-        }
-
-
-    }
-  
-  
-    const uploadDocument=async()=>{
-  
-      try{
-  
-        const response=await axios.post(`/app/contribution/upload`,{file:file.raw},{
-          headers:{
-              "Content-Type": "multipart/form-data",
-          }
-        
-      })
-  
-      
-      
-      if(response.status==200){
-
-      return response?.data
-      
-      }
-
-      }
-  
-      catch(err){
-          
-          setNotification({status:'error',message:'Document Upload Failed!',createdAt:moment()})
-      }
-  
-      }
-  
-   
-  
-  
-  
-  
-    const handleSubmit=async(e)=>{
-        e.preventDefault()
-
-        try{
-          
-          if(!validateFields()){
-            return 
-        }
-
-        if(!file?.raw){
-          return 
-        }
-
-      
-          var documentId={}
-        
-          
-          documentId=await uploadDocument()
-
-          // console.log(documentId)
-          
-          const response=await axios.post(`/app/contribution`,{ 
-            name:manuscript.name,
-            contact:'+91 '+manuscript.phone,
-            email:manuscript.email,
-            bio:manuscript.bio,
-            file:documentId?.id
-          })
-
-          if(response.status==204){
-            setNotification({status:'error',message:'Contribution Already Exists',createdAt:moment()})
-          }
-
-          if(response?.status==200){
-            setNotification({status:'success',message:'Successfully Contributed',createdAt:moment()})
-          }
-
-          setManuscript({
-            name:'',
-            phone:'',
-            email:'',
-            bio:'',
-            
-          })
-
-          setAccepted(false)
-          setFile(null)
-
-          setTimeout(onClose,2000)
-      
-  
-      }
-        
-  
-      catch(err){
-        console.log(err)
-        setNotification({status:'error',message:'Try Again Later',createdAt:moment()})
-      }
-  
-    }
-  
-  
-    return <Modal isOpen={isOpen} onClose={onClose} blockScrollOnMount={false} isCentered>
-    <ModalOverlay   bg='blackAlpha.300'
-      backdropFilter='blur(10px)'/>
-    <ModalContent>
-  
-    {notification?.createdAt&&<Notification options={notification}/>}
-
-
-    <form onSubmit={handleSubmit}>
-      <ModalHeader>
-      <div className='space-y-2'>
-      <div className='text-sm font-poppins font-[500]'>
-      </div>
-      
-        <h1 className='text-lg font-[poppins] desktop:text-xl'>Submit Your Manuscript</h1>
-        <p className='font-[poppins] text-sm text-slate-600'>Please fill your correct details.</p>
-        </div>
-      </ModalHeader>
-  
-      
-      <ModalCloseButton />
-      <ModalBody>
-
-    <FormControl isInvalid={errorFields[0]}>
-
-    <FormLabel>Full Name</FormLabel>
-      <Input variant='filled'   value={manuscript.name} onChange={(e)=>{setManuscript({...manuscript,name:e.target.value}); if(errorFields[0]&&e.target.value){setErrorFields((prev)=>{prev[0]=false; return prev})}}}/>
-    {errorFields[0]&&<FormErrorMessage>Name of Contributor required</FormErrorMessage>}
-    </FormControl>
-
-
-
-    <FormControl isInvalid={errorFields[1]}>
-
-      <FormLabel>Phone Number</FormLabel>
-      <InputGroup>
-      <InputLeftAddon  required={true} >+91</InputLeftAddon>
-      <Input type='tel' variant='filled'  value={manuscript.phone} onChange={(e)=>{setManuscript({...manuscript,phone:e.target.value}); if(errorFields[1]&&e.target.value){setErrorFields((prev)=>{prev[1]=false; return prev})}}}/>
-      </InputGroup>
-  
-      {errorFields[1]&&<FormErrorMessage>Phone Number required</FormErrorMessage>}
-
-  </FormControl>
-
-  <FormControl isInvalid={errorFields[2]}>
-      <FormLabel>Email</FormLabel>
-      <InputGroup>
-  
-      <Input type='email'  variant='filled'   value={manuscript.email} onChange={(e)=>{setManuscript({...manuscript,email:e.target.value}); if(errorFields[2]&&e.target.value){setErrorFields((prev)=>{prev[2]=false; return prev})}}}/>
-      </InputGroup>
-
-      {errorFields[2]&&<FormErrorMessage>Email required</FormErrorMessage>}
-
-  </FormControl>
-
-
-
-  <FormControl isInvalid={errorFields[3]}>
-    <FormLabel>Bio</FormLabel>
-      <Textarea placeholder='Bio' resize="none" variant="filled"  value={manuscript.bio} onChange={(e)=>{setManuscript({...manuscript,bio:e.target.value}); if(errorFields[3]&&e.target.value){setErrorFields((prev)=>{prev[3]=false; return prev})}}}/>
-      {errorFields[3]&&<FormErrorMessage>Bio required</FormErrorMessage>}
-
-  </FormControl>
-
-
-
-  <FormControl>
-    <FormLabel>File</FormLabel>
-      <Input type='file' placeholder='document' variant='outline' required={true} onChange={handleChange} />
-      {!accepted&&<p className='text-red-600 font-[500] text-sm'>File not accepted,Try Again</p>}
-      <p className='text-slate-600 text-sm'>Accepted File types : .doc,.docx,.odt</p>
-      </FormControl>
-    
-
-      </ModalBody>
-  
-    
-  
-      <ModalFooter className="space-x-3">
-        <button  variant="solid" mr={5} onClick={onClose} className='bg-red-500 px-2 py-2 text-white rounded-md'>
-          Close
-        </button>
-      </ModalFooter>
-      </form>
-    </ModalContent>
-  
-  </Modal>
-  
-  }
 
 
 export default NavBar;

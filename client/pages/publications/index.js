@@ -14,7 +14,7 @@ import { useRouter } from 'next/router'
 import { EmptyResponse } from "../../components/EmptyResponse"
 import { Alert, FormControl } from "@mui/material"
 
-const perPageLimit=2
+const perPageLimit=5
 
 export default function Publications({data}){
 
