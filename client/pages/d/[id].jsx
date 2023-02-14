@@ -142,14 +142,13 @@ export default function Article({data}){
     <NavBar/>
     
         <div className="flex  w-full min-h-screen desktop:flex-row">
-        <div className="flex flex-[1] flex-col pb-6 desktop:flex-[0.60] desktop:items-start sticky left-[19%] relative p-5 desktop:px-12 desktop:py-12 deskotp:space-y-5">
+        <div className="flex flex-[1] flex-col pb-6 desktop:flex-[0.60] desktop:items-start sticky left-[19%] relative  desktop:px-12 desktop:py-12 deskotp:space-y-5">
                     
 
         <a onClick={()=>{router.back()}} className="cursor-pointer flex">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
   <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" />
 </svg>
-<p className="font-[500]">Back</p>
                     </a>
 
                     <div className="p-3">
@@ -174,7 +173,7 @@ export default function Article({data}){
                         <AccordionButton variant="" className="">
                         <Box as="span" flex='1' textAlign='left' className="p-1">
 
-                        <h1 className="text-sm tablet:text-base font-[600]  ">Publishers</h1>
+                        <h1 className="text-sm tablet:text-base font-[600]  ">Authors</h1>
         </Box>
 
                         <AccordionIcon />
@@ -267,7 +266,7 @@ export default function Article({data}){
 
 })}
 {!(footNoteLimit===data?.footnotes?.length)&&<button className="text-primary flex items-center my-5 font-[600]  w-full justify-center py-2 space-x-3" onClick={()=>{setFootNoteLimit(data?.footnotes?.length)}}>
-    <span>Read More</span>
+    <span className="text-sm">Read More</span>
 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-4 h-4 animate-bounce">
   <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
 </svg>
