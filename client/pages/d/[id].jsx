@@ -36,7 +36,7 @@ export default function Article({data}){
 
     },[])
 
-
+    console.log(data)
 
 
     useEffect(()=>{
@@ -216,6 +216,37 @@ export default function Article({data}){
 
                     </AccordionItem>
 
+
+                    <AccordionItem>
+                        <AccordionButton>
+                        <Box as="span" flex='1' textAlign='left' className="p-1">
+
+                        <h1 className="text-sm tablet:text-base font-[600] ">Keywords</h1>
+        </Box>
+
+                        <AccordionIcon />
+
+                        </AccordionButton>
+
+                        <AccordionPanel pb={4}>
+
+                        <ul className="flex flex-col items-start py-3 px-2">
+
+                        <p className="text-secondary text-sm tablet:text-base mt-1 font-[600] text-primary ">
+{data?.keywords?.map((element,index)=>{
+    if(index<data?.keywords.length-1)
+    return     `${element}-`
+
+    else 
+        return `${element}`
+
+})}</p>
+</ul>
+
+    </AccordionPanel>
+
+                    </AccordionItem>
+
                 </Accordion>
 
 
@@ -241,7 +272,7 @@ export default function Article({data}){
 
 
             
-                <Accordion  allowMultiple className="flex flex-col w-full py-5 ">
+                <Accordion  allowMultiple className="flex flex-col w-full desktop:max-w-[800px]  py-5 ">
                     <AccordionItem className="">
                         <AccordionButton variant="" className="" onClick={()=>{setFootNoteLimit(5)}}>
                         <Box as="span" flex='1' textAlign='left' className="p-1">
@@ -335,7 +366,7 @@ try{
 
     const response=await axios.get(`/article/${params.id}`,{
         headers:{
-            attributes:'id,title,richText,issue,volume,year,footnotes,references'
+            attributes:'id,title,richText,issue,volume,year,footnotes,references,keywords'
         }
     })
 
