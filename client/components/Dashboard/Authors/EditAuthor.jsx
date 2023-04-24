@@ -108,7 +108,7 @@ export const EditAuthor=({toggler})=>{
 
 
 return <div className="flex flex-col py-4 space-y-3  tablet:space-y-6 desktop:space-y-3 ">
-    <h1 className="text-lg font-[600]">Edit Author</h1>
+    <h1 className="text-base font-[600]">Edit Author</h1>
 
 
     <form className="flex flex-col  h-full space-y-4  tablet:space-y-12 w-full desktop:w-[650px] desktop:space-y-6" onSubmit={handleSubmit} >
@@ -151,7 +151,7 @@ return <div className="flex flex-col py-4 space-y-3  tablet:space-y-6 desktop:sp
 
         <div className="flex   space-x-5 w-full">
         <FormControl isRequired="true" isInvalid={errorFields[0]}>
-            <FormLabel className="text-secondary">First Name</FormLabel>
+        <h1 className="text-secondary text-sm font-[600]">First Name <span className="text-red-500">*</span></h1>
        <InputGroup>
             <Input variant="filled" type="text" value={changes?.firstName?changes?.firstName:account?.firstName} disabled={changes?.firstName?false:true}  onChange={({target})=>setChanges({...changes,firstName:target.value})}/>
             
@@ -181,7 +181,7 @@ return <div className="flex flex-col py-4 space-y-3  tablet:space-y-6 desktop:sp
         </FormControl>
 
         <FormControl isRequired="true" isInvalid={errorFields[1]}>
-        <FormLabel className="text-secondary">Last Name</FormLabel>
+        <h1 className="text-secondary text-sm font-[600]">Last Name <span className="text-red-500">*</span></h1>
         <InputGroup>
             <Input variant="filled" type="text" value={changes?.lastName?changes?.lastName:account?.lastName} disabled={changes?.lastName?false:true}  onChange={({target})=>setChanges({...changes,lastName:target.value})}/>
             
@@ -216,7 +216,7 @@ return <div className="flex flex-col py-4 space-y-3  tablet:space-y-6 desktop:sp
     </div>
     <div>
     <FormControl isRequired="true" isInvalid={errorFields[2]}>
-        <FormLabel className="text-secondary">Email</FormLabel>
+    <h1 className="text-secondary text-sm font-[600]">Email<span className="text-red-500">*</span></h1>
             
             <InputGroup>
             <Input variant="filled" type="text" value={changes?.email?changes?.email:account?.email} disabled={changes?.email?false:true}  onChange={({target})=>setChanges({...changes,email:target.value})}/>
@@ -250,7 +250,7 @@ return <div className="flex flex-col py-4 space-y-3  tablet:space-y-6 desktop:sp
             </div>
 
     <FormControl isRequired="true" >
-        <FormLabel>Designation</FormLabel>
+    <h1 className="text-secondary text-sm font-[600]">Designation <span className="text-red-500">*</span></h1>
         <Select variant="filled" value={account?.designation} onChange={({target})=>{setAccount({...account,designation:target.value})}} >
             <option disabled></option>
             <option value={'faculty'} >Faculty</option>
@@ -261,7 +261,7 @@ return <div className="flex flex-col py-4 space-y-3  tablet:space-y-6 desktop:sp
         {errorFields[3]&&<FormErrorMessage>No Designation selected</FormErrorMessage>}
     </FormControl>
     <FormControl isRequired="true" isInvalid={errorFields[4]}>
-    <FormLabel>Bio</FormLabel>
+    <h1 className="text-secondary text-sm font-[600]">Bio <span className="text-red-500">*</span></h1>
 
     <InputGroup>
             <Textarea variant="filled" type="text" resize="none" rows={8} value={changes?.bio?changes?.bio:account?.bio} disabled={changes?.bio?false:true}  onChange={({target})=>setChanges({...changes,bio:target.value})}/>
@@ -291,20 +291,23 @@ return <div className="flex flex-col py-4 space-y-3  tablet:space-y-6 desktop:sp
     </FormControl>
 
     <FormControl>
-        <FormLabel className="text-secondary">Specializations</FormLabel>
+    <h1 className="text-secondary text-sm font-[600]">Specializations</h1>
             <Input variant="filled" value={account?.specialization} onChange={({target})=>{setAccount({...account,specialization:target.value})}}/>
     </FormControl>
-    <button type="submit" className={`p-2 w-full rounded-full flex justify-center font-[600] drop-shadow cursor-pointer drop-shadow items-center bg-gradient-to-r from-primary to-indigo-800 text-white `} >
-    {loading?<div className="space-x-3 flex">
+   
+
+        <button  type="submit" className={`p-2  my-2 rounded-md w-[120px]  relative  text-sm flex justify-center font-[500] drop-shadow cursor-pointer drop-shadow items-center bg-gradient-to-r from-primary to-indigo-800 text-white `} >
+        {loading?
+        <div className="space-x-3 flex">
             <p>Please Wait...</p>
             <Spinner color='white'/>
         </div>:
         <p>
         Save
-        </p>}
-
-        </button>
-
+        </p>
+        }
+        
+    </button>
     </form>
 
 

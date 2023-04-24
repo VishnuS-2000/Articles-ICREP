@@ -42,12 +42,13 @@ Article.init({
         type:DataTypes.INTEGER,
         allowNull:false
     },
+    period:{
+        type:DataTypes.STRING,
+        allowNull:false
+    },
     keywords:{
         type:DataTypes.ARRAY(DataTypes.STRING)
     },
-    footnotes:{
-        type:DataTypes.ARRAY(DataTypes.JSON)     
-       },
        references:{
         type:DataTypes.TEXT
        }

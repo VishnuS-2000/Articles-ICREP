@@ -1,7 +1,7 @@
 import Link from "next/link"
 const Footer = ()=>{
 
-    return <div className="flex flex-col  w-full   bottom-0 bg-gradient-to-r from-primary to-secondary text-white p-5 ">
+    return <div className="flex flex-col  w-full   bottom-0 bg-gradient-to-r from-primary to-secondary text-white p-5 print:hidden ">
 
    <div className="flex flex-col text-xs w-full tablet:flex-row space-y-2 tablet:space-y-0 tablet:space-x-5">
       <Link href={'/'}>
@@ -30,16 +30,16 @@ const Footer = ()=>{
 
  <div className="text-xs tablet:text-xs py-5">
     <h1 className=' hidden desktop:flex'>
-           Copyright © 2022 All Rights Reserved PROF NR MADHAVA MENON ICREP,CUSAT
+           Copyright © 2023 All Rights Reserved PROF NR MADHAVA MENON ICREP,CUSAT
         </h1>
 
         <h1 className=' desktop:hidden   '>
-        Copyright © 2022 All Rights Reserved  ICREP,CUSAT
+        Copyright © 2023 All Rights Reserved  ICREP,CUSAT
      </h1>
         
 
 
-        <h1 className="  ">Designed, Developed & Maintained by FLEG</h1>
+        <h1 className="  ">Designed, Developed & Maintained by FLG</h1>
 
      </div>
         </div>

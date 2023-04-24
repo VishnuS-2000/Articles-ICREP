@@ -12,7 +12,7 @@ import { Input,InputGroup, InputRightElement } from "@chakra-ui/react"
 import Link from "next/link"
 
 import { EditorsNote } from "../components/EditorsNote"
-import {PhotoGallery} from "../components/gallery"
+import { NewsContainer } from "../components/NewsNotifications"
 
 export default function Home({data}){
 
@@ -70,8 +70,10 @@ export default function Home({data}){
     </div>
     
 
-    <div className="flex flex-col w-full items-center">
+    <div className="flex flex-col-reverse desktop:flex-row  w-full ">
+
         <EditorsNote/>
+        <NewsContainer/>
     </div>
 
 

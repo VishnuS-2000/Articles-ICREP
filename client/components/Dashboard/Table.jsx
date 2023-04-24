@@ -68,8 +68,8 @@ export const DataTable=({initials,args,changeArgs})=>{
       })}
       
       </Table>:isValidating?<div className="flex p-3 justify-center  mt-3">
-      <h1 className="italic">Loading...</h1></div>:<div className="flex p-3 justify-center mt-3">
-        <h1 className="italic">No {initials?.name+'s'} available</h1></div>
+      <h1 className="font-[500]">Loading...</h1></div>:<div className="flex p-3 justify-center mt-3">
+        <h1 className="font-[500]">No {initials?.name+'s'} Available</h1></div>
     }
       </TableContainer>
     </div>
@@ -93,8 +93,8 @@ export const TableSearch=({args,setArgs,placeholder,name})=>{
       setArgs({...args,url:`/${name}/search?term=${target.value}`,options:{offset:0,limit:args?.options.limit,include:true}})
   }
 
-  return <div className="flex w-full my-2  ">
-      <Input variant='filled' placeholder={`${placeholder}`}  onChange={handleSearch}/>
+  return <div className="flex w-full">
+      <Input variant='filled' placeholder={`${placeholder}`} className="text-sm placeholder:text-sm " onChange={handleSearch}/>
   </div>
 
 }
@@ -122,13 +122,13 @@ return <div className="flex w-full py-4  items-center justify-between font-[500]
     
     <div className="flex space-x-5 items-center">
     <p className=" ">All({count?count:'0'})</p>
-    <button className="flex text-base justify-evenly py-1  drop-shadow px-3 rounded-full text-white bg-gradient-to-r from-primary to-indigo-800 items-center" onClick={()=>{controls.create.toggle(); setCurrent({...current,[name]:{firstName:'Vishnu S',lastName:'S'}})}}>
+    <button className="flex  text-sm justify-between space-x-1 py-2  drop-shadow px-6 rounded-md text-white bg-gradient-to-r from-primary to-indigo-800 items-center" onClick={()=>{controls.create.toggle(); setCurrent({...current,[name]:{firstName:'Vishnu S',lastName:'S'}})}}>
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-5 h-5">
 <path d="M10.75 4.75a.75.75 0 00-1.5 0v4.5h-4.5a.75.75 0 000 1.5h4.5v4.5a.75.75 0 001.5 0v-4.5h4.5a.75.75 0 000-1.5h-4.5v-4.5z" />
 </svg>
 
 
-        Create</button>
+        <h1>Create</h1></button>
 
 
 
@@ -230,7 +230,7 @@ export const TableHeader = ({headers}) => {
 
 
   
-    return (<Tr className=" items-center">
+    return (<Tr className="items-center text-sm font-[500]">
  
 
         {fields.map((e,index)=>{

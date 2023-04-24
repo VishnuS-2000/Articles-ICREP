@@ -23,6 +23,11 @@ export const ArticleCard=({data})=>{
         <p>•</p>
         <p>{`Issue ${data.issue}`}</p>
         <p>
+        • 
+        </p>
+        <span> </span>
+        {`${data?.period}`}
+        <p>
         •
         </p>
         <p>{data?.year}</p>

@@ -33,7 +33,7 @@ const [sort,setSort]=useState()
 useEffect(()=>{
 
     if(!page){
-        // console.log(true)
+        
         setPageOptions({pageNumber:1,offset:0})
     }
     else{
@@ -94,7 +94,6 @@ useEffect(()=>{
             setSort(sorted)
         }
 
-        // console.log(sorted)
 
     },[router])
 
@@ -106,7 +105,6 @@ useEffect(()=>{
         var {page}=query
         
 
-        // console.log(query)
     if(!page){
         page=1
     }
@@ -274,7 +272,7 @@ return <>
 
         {!showMore&&<div className="flex py-3 tablet:py-5">
         <button type="button" className="font-[600] flex items-center" onClick={()=>setShowMore(true)}>Show All 
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6 animate-bounce">
   <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m0 0l6.75-6.75M12 19.5l-6.75-6.75" />
 </svg>
 
@@ -329,13 +327,19 @@ return <>
        
         
         <form className="flex space-x-1">
-        <label for="sorted"> <h1 className="text-sm font-[500] mr-5">Sorted By</h1></label>
+        {/* <label for="sorted"> <h1 className="text-sm font-[500] mr-5">Sorted By</h1></label>
 
         <input type="radio" id="sorted" value="name" onChange={handleSort} checked={sort=="name"}/>
         <label className="text-sm">Relavance</label>
 
         <input type="radio" id="sorted" value="date" onChange={handleSort} checked={sort=="date"}/>
-        <label className="text-sm">Date</label>
+        <label className="text-sm">Date</label> */}
+
+                  
+<Select variant="filled" className="" onChange={handleSort} size="sm">
+                <option value="name">Relavance</option>
+                <option value="date">Date</option>
+        </Select>
 
         </form>
 
@@ -420,7 +424,7 @@ export async function getServerSideProps({query}){
                         headers:{
                             offset:query?.page?(query?.page-1)*perPageLimit:0,
                             limit:perPageLimit,
-                            attributes:'id,title,year,issue,volume,type,createdAt',
+                            attributes:'id,title,year,issue,volume,period,type,createdAt',
                             orderfield:orderField,
                             ordertype:orderType
                         }

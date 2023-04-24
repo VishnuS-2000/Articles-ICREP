@@ -17,8 +17,6 @@ const register = async (req, res) => {
 
     // console.log(req.body)
 
-
-
     if (!req.body.email || !req.body.role || !req.body.name) {
       return res.status(400).json({ success: false, message: "Invalid response" });
     }
@@ -38,12 +36,12 @@ const register = async (req, res) => {
         from:`ICREP CUSAT <>${process.env.EMAIL}<>`,
         to:`ICREP CUSAT <>${process.env.EMAIL}<>`,
         subject:`Verify Register Account ${req.body.email}`,
-        text:`Hi,A Register request for new account for ${req.body.role} has been received,please click the below link to approve ${process.env.CLIENT_URL}/admin/approve/register?verify=${token}
+        text:`Hi,A Register request for new account for ${req.body.role} has been received,please click the below link to approve ${process.env.CLIENT_URL}/journal/admin/approve/register?verify=${token}
         
         Link valid for only 2 mins.
         `,
         html:`<div>
-        Hi,A Register request for new account for ${req.body.role} has been received,please click the below link to approve ${process.env.CLIENT_URL}/admin/approve/register?verify=${token}
+        Hi,A Register request for new account for ${req.body.role} has been received,please click the below link to approve ${process.env.CLIENT_URL}/journal/admin/approve/register?verify=${token}
         Link valid for only 2 mins.
         </div>`
      }

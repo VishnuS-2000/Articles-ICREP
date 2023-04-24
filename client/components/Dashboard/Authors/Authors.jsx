@@ -28,6 +28,7 @@ const authorFormat={
     headers:[
     {name:'Author'},
     {name:'Email'},
+    {name:'Designation'},
     {name:'Published'},
     {name:'Actions'}
 ]
@@ -35,6 +36,7 @@ const authorFormat={
 fields:[
     {name:'name',limit:25,type:'icon'},
     {name:'email',limit:30,type:'text'},
+    {name:'designation',type:'text'},
     {name:'articles',type:'count'},
     
     

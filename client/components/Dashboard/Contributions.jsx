@@ -59,7 +59,21 @@ export const Contributions=()=>{
     return <Layout heading="Contributions">
 
 
-        <TableContainer className='py-8'>
+
+    <div className="flex w-full space-x-5 py-5">
+      <div className="flex items-center justify-center w-[250px] h-[250px] bg-red-400 rounded-md">
+          <h1>Active Contributions</h1>
+
+
+      </div>
+
+
+      <div className='flex items-center justify-center w-[250px] h-[250px] bg-yellow-400 rounded-md'>
+        <h1>Verified Contributions</h1>
+      </div>
+
+      </div>
+        {/* <TableContainer className='py-8'>
         <TableControl count={data?.count} args={args} setArgs={setArgs}/>
 
             <Table >
@@ -86,7 +100,7 @@ export const Contributions=()=>{
       <h1 className="italic">Loading...</h1></div>:<Tr className="flex p-3 justify-center mt-3">
         <h1 className="italic">No contributors available</h1></Tr>}
             </Table>
-        </TableContainer>
+        </TableContainer> */}
 
 
     </Layout>
@@ -155,7 +169,7 @@ const TableRow=({element})=>{
     setViewOpen(false)
   }
 
-  return <Tr>
+  return <Tr className='text-sm'>
   <Td>{element?.name}</Td> 
   <Td>{element?.email}</Td>  
   <Td>{element?.contact}</Td> 

@@ -5,6 +5,8 @@ import CurrentProvider from "../CurrentProvider"
 import { CreateArticle } from "./CreateArticle"
 import { EditArticle } from "./EditArticle"
 import {v4 as uuidv4} from "uuid"
+import Script from 'next/script'
+
 export const Articles =()=>{
     const [active,setActive]=useState(0)
     const [args,setArgs]=useState({url:'/article',options:{offset:0,limit:8,include:true}})
@@ -45,11 +47,13 @@ export const Articles =()=>{
     
 
     const subTabs=[<DataTable key={0}  initials={articleFormat} args={args} changeArgs={setArgs}/>,<CreateArticle key={1} />,<EditArticle key={2} />]
+    const headings=['Articles','Create Article','Edit Article']
+     return <>
 
-     return <CurrentProvider>
-     <Layout heading={'Articles'}>
+     <CurrentProvider>
+     <Layout heading={headings[active]}>
          {subTabs[active]}
      </Layout>
      </CurrentProvider>
-
+        </>
 }

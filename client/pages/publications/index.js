@@ -1,6 +1,6 @@
 import Head from "next/head"
 import NavBar from "../../components/navbar"
-import { InputGroup,Input,RadioGroup,Stack,Radio } from "@chakra-ui/react"
+import { InputGroup,Input,RadioGroup,Stack,Radio, Select,FormControl,FormLabel } from "@chakra-ui/react"
 import Link from "next/link"
 import { ArticleContainer } from "../../components/articles/Container"
 import { ArticleCard } from "../../components/articles/ArticleCard"
@@ -12,7 +12,6 @@ import {useState,useEffect} from "react"
 import { useRouter } from 'next/router'
 
 import { EmptyResponse } from "../../components/EmptyResponse"
-import { Alert, FormControl } from "@mui/material"
 
 const perPageLimit=5
 
@@ -195,7 +194,7 @@ export default function Publications({data}){
 <div className="flex w-full">
     <FilterBar/>
 <div className="flex flex-col w-full">
-<div className="flex flex-col  tablet:flex-row items-between tablet:justify-between  px-5 tablet:px-8 desktop:px-12 py-8 tablet:pt-12">
+<div className="flex flex-col justify-center tablet:flex-row items-between tablet:justify-between  px-5 tablet:px-8 desktop:px-12 py-8 tablet:pt-12">
 {title?
     <h1 className="text-base font-[600]">
         {`Search Results for " ${title?.length>25?`${title?.slice(0,50)}...`:title} "`}
@@ -207,15 +206,22 @@ export default function Publications({data}){
     <Stack direction='row' className="mt-1 desktop:mt-0" >
        
         
-        <form className="flex space-x-1">
-        <label for="sorted"> <h1 className="text-sm font-[500] mr-5">Sorted By</h1></label>
+        <form className="flex">
+        {/* <label for="sorted"> <h1 className="text-sm font-[500] mr-5">Sorted By</h1></label>
 
         <input type="radio" id="sorted" value="name" onChange={handleSort} checked={sort=="name"}/>
         <label className="text-sm">Relavance</label>
 
         <input type="radio" id="sorted" value="date" onChange={handleSort} checked={sort=="date"}/>
-        <label className="text-sm">Date</label>
+        <label className="text-sm">Date</label> */}
 
+
+            
+        <Select variant="filled" className="" onChange={handleSort} size="sm">
+                <option value="name">Relavance</option>
+                <option value="date">Date</option>
+        </Select>
+       
         </form>
 
       </Stack>
@@ -311,7 +317,7 @@ export async function  getServerSideProps({query}){
         headers:{
             offset:query?.page?(query?.page-1)*perPageLimit:0,
             limit:perPageLimit,
-            attributes:'id,title,year,issue,volume,type,createdAt',
+            attributes:'id,title,year,issue,volume,period,type,createdAt',
             orderfield:orderField,
             ordertype:orderType
         }

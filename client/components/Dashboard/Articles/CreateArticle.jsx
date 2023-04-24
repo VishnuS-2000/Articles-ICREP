@@ -1,8 +1,6 @@
-import {useState,useCallback} from "react"
+import {useState,useRef,useCallback} from "react"
 import dynamic from 'next/dynamic'
-const RichTextEditor= dynamic(async() =>await import('@mantine/rte'), { ssr: false });
-
-import { FormControl,FormLabel,Input,Textarea,Avatar,Select, FormHelperText, FormErrorMessage, Switch,RadioGroup,Radio, TableContainer,Table,Thead,Tr,Th, Tbody,Td } from "@chakra-ui/react"
+import { FormControl,FormLabel,Input,InputGroup,InputRightAddon,Textarea,Avatar,Select, FormHelperText, FormErrorMessage, Switch,RadioGroup,Radio,Modal,ModalOverlay,ModalCloseButton,ModalBody,Tooltip} from "@chakra-ui/react"
 import { useEffect } from "react";
 import axios from "../../../axios"
 import useAxiosPrivate from "../../../hooks/useAxiosPrivate"
@@ -14,14 +12,22 @@ import { Spinner } from "@chakra-ui/react";
 
 import {convert} from "html-to-text"
 
-import { start_date,issueData } from "../Dates";
+import { start_date,issueData,periodData} from "../Dates";
 
 const folderId="1tuIhE6V8kE-F6oMBvaoaSpBXbLBS82FA"
 const { v4: uuidv4 } = require('uuid');
 
-import { useRef } from "react";
+import RichTextEditor from "./TextEditor"
+
+import { useDisclosure } from "@chakra-ui/react";
+
+import { ReferencesModal } from "./Modal";
+import { useQuill } from "react-quilljs";
+
 
 export const CreateArticle=()=>{
+
+const {quill,quillRef}=useQuill()
 
     
 const axiosPrivate=useAxiosPrivate()
@@ -34,9 +40,10 @@ const axiosPrivate=useAxiosPrivate()
         keywords:null,
         issue:null,
         volume:null,
-        year:null,    })
-
-
+        year:null,
+        period:null,
+    })
+        
 
     const [mode,setMode]=useState('individual')
     const [collabrator,setCollabrator]=useState(null)
@@ -47,10 +54,9 @@ const axiosPrivate=useAxiosPrivate()
 
     const [loading,setLoading]=useState(false)
     const {notification,setNotification}=useNotification()
-
     const [createType,setCreateType]=useState(true)
 
-    const fields=['title','type']
+    
     const [errorFields,setErrorFields]=useState([false,false,false,false,false])
     const [extras,setExtras]=useState({years:[],volumes:{}})
 
@@ -58,14 +64,16 @@ const axiosPrivate=useAxiosPrivate()
     const [keywords,setKeywords]=useState([])
 
     const [footNotes,setFootNotes]=useState([])
-    const [footNoteFiles,setFootNoteFiles]=useState([])
-
-    const [originalRichText,setOriginalRichText]=useState(null)
-    const [footNoteLoading,setFootNoteLoading]=useState(false)
+    const [tableOfContents,setTableOfContents]=useState([])
+     
 
 
+    const [references,setReferences]=useState([])
 
-    const footNoteContainer = useRef()
+
+    const [modifyPeriod,setModifyPeriod]=useState(true)
+   
+
 
     const validateFields=()=>{
         let valid=true
@@ -84,25 +92,30 @@ const axiosPrivate=useAxiosPrivate()
                 prev[1]=true
                 return prev
             })
+        }
 
+        else if(!article?.volume){
+            valid=false
+            setErrorFields((prev)=>{
+                prev[2]=true
+                return prev
+            })
+            setNotification({message:'Volume required',status:'error',createdAt:moment()})
 
 
         }
+
+        
         else if(!keywords){
             valid=false
             setNotification({message:'Keywords required',status:'error',createdAt:moment()})
         }
 
-        else if(!text){
-            valid=false
-            setNotification({message:'Content required',status:'error',createdAt:moment()})
-
-
-        }
+  
         else if(!article?.year){
             valid=false
             setErrorFields((prev)=>{
-                prev[2]=true
+                prev[3]=true
                 return prev
             })
             setNotification({message:'Year required',status:'error',createdAt:moment()})
@@ -111,7 +124,7 @@ const axiosPrivate=useAxiosPrivate()
         else if(!article?.issue){
             valid=false
             setErrorFields((prev)=>{
-                prev[3]=true
+                prev[4]=true
                 return prev
             })
             setNotification({message:'Issue required',status:'error',createdAt:moment()})
@@ -136,10 +149,8 @@ const axiosPrivate=useAxiosPrivate()
 
             setLoading(true)
 
-            const content=convert(text,{
-                wordwrap:250
-            })
-
+            const content=JSON.stringify(quill?.getContents())
+            const referencesString=JSON.stringify({raw:references})
 
 
             const response=await axiosPrivate.post('/article',{
@@ -148,14 +159,12 @@ const axiosPrivate=useAxiosPrivate()
             type:article?.type,
             authors:collabrators?collabrators:collabrator,
             content:content,
-            richText:text,
             year:article?.year,
             issue:article?.issue,
             volume:article?.volume,
+            period:article?.period,
             keywords:keywords,
-            footnotes:footNotes,
-            references:article?.references
-
+            references:referencesString
             })
 
             if(response?.status==200){
@@ -228,42 +237,7 @@ const axiosPrivate=useAxiosPrivate()
     },[])
 
 
-    // console.log(extras)
-
-    useEffect(()=>{
-
-        const fetchFootNoteFiles=async()=>{
-
-            try{
-           const response=await axios.get(`/app/folder/files/${folderId}`)
-           if(response){
-
-
-
-            // console.log(response?.data?.result?.files)
-            const files=response?.data?.result?.files.filter((element)=>{
-
-                return element.mimeType=="application/vnd.google-apps.spreadsheet"
-            
-            })
-
-            // console.log(files)
-
-            setFootNoteFiles(files)
-
-
-        }
-        
-        }
-            catch(error){
-                console.log(error)
-            }
-
-        }
-
-        fetchFootNoteFiles()
-        },[])
-
+    
 
 
     const handleCollabrators=()=>{
@@ -312,107 +286,41 @@ const axiosPrivate=useAxiosPrivate()
 
 
 
-    const handleFootNotes=async()=>{
-
-        setFootNoteLoading(true)
-        const value=footNoteContainer.current.value
-
-        if(!value==null||value=="Select a Filename"){
-            setFootNotes(null)
-            return
-        }
-     const response= await axios.get(`/app/file/${value}`,{
-            headers:{
-                format:'text/csv'
-            }
-        })
-
-
-        if(response){
-        const footNotesData=response?.data?.result?.split('\r\n').map((element,index)=>{
-            const data=element.split(',')
-            return {serial:index+1, word:data[0],reference:data.slice(1,data?.length).join().replaceAll(`"`,''),id:uuidv4()}
-        })
-
-
-        setFootNotes(footNotesData)
-        setFootNoteLoading(false)
-
-
-
-
-
-        }
 
     
 
-    }
+return <>
 
 
-
-    const handleFootNotesLink=()=>{ 
-        var richText = text
-        setOriginalRichText(text)
-
-        if(!footNotes&&!richText){
-                    return
-                }
-
-        footNotes.map((element)=>{
-            richText=richText?.replace(`${element?.word}`,`<a>${element?.word}<sup>[${element?.serial}]</sup></a>`)
-        
-        })
-        
-        setText(richText)
-
-    }
-
-    const handleResetFootNote=()=>{
-        setText(originalRichText)
-        setOriginalRichText(null)
-    }
-
-return <div className="flex flex-col py-4  space-y-1 "> 
+ <div className="flex flex-col py-4  space-y-1 "> 
   
 
-    <form className="flex flex-col  py-4 w-full space-y-1  " onSubmit={handleSubmit} >
+    <form className="flex flex-col  py-6 w-full space-y-1  " onSubmit={handleSubmit} >
 
-    <div className="flex w-full justify-between">
-    <h1 className="text-lg font-[600] ">Create Article</h1>
-    
-    
-   
 
-    {!loading?<button type="submit" className={`py-1 px-3 rounded-full flex justify-center font-[600] drop-shadow cursor-pointer drop-shadow items-center bg-gradient-to-r from-primary to-indigo-800 text-white `} >Save</button>:
-    <button type="button" disabled className="py-1 px-3 rounded-full flex justify-center font-[600] drop-shadow cursor-pointer drop-shadow items-center bg-gradient-to-r from-primary to-indigo-800 text-white">
-<Spinner color="white"/>
-        </button>
-    }
-    </div>
    
-   
-    <div className="flex space-x-3">
+    <div className="flex space-x-3 ">
 
     
     <FormControl  isInvalid={errorFields[0]} >
-        <FormLabel className="text-secondary">Title</FormLabel>
-            <Input variant="filled" type="text" value={article?.title} onChange={({target})=>{setArticle({...article,title:target.value}); if(target.value && errorFields[0]){setErrorFields((prev)=>{prev[0]=false; return prev})}}}/>
+    <h1 className="text-secondary text-sm font-[600]">Title <span className="text-red-500">*</span></h1>
+            <Input variant="outline" type="text" value={article?.title} onChange={({target})=>{setArticle({...article,title:target.value}); if(target.value && errorFields[0]){setErrorFields((prev)=>{prev[0]=false; return prev})}}}/>
             {errorFields[0]&&<FormErrorMessage>Title is required</FormErrorMessage>}
 
             </FormControl>
 
             <FormControl   isInvalid={errorFields[1]} >
-        <div  className="flex space-x-5">
-        <FormLabel className="text-secondary">Publication Type
-        </FormLabel>
+        <div  className="flex space-x-5 items-center">
+        <h1 className="text-secondary text-sm font-[600]">Publication type <span className="text-red-500">*</span></h1>
+
 
         <div>
-        <button type="button" className="ml-2 text-primary  underline" onClick={()=>{setCreateType(!createType); setArticle({...article,type:null})}}>{createType?'Existing Types':'Create Type'}</button>
+        <button type="button" className="ml-2 text-primary text-sm font-[600]  underline" onClick={()=>{setCreateType(!createType); setArticle({...article,type:null})}}>{createType?'Existing Types':'Create Type'}</button>
         </div>
 
         </div>
 
-            {createType?<Input variant="filled" value={article?.type} onChange={({target})=>{setArticle({...article,type:target.value}); if(target.value && errorFields[1]){setErrorFields((prev)=>{prev[1]=false; return prev})} } }/>:<Select variant="filled"  value={article?.type} onChange={({target})=>{setArticle({...article,type:target.value}); if(target.value && errorFields[1]){setErrorFields((prev)=>{prev[1]=false; return prev})} }}>
+            {createType?<Input variant="outline" value={article?.type} onChange={({target})=>{setArticle({...article,type:target.value}); if(target.value && errorFields[1]){setErrorFields((prev)=>{prev[1]=false; return prev})} } }/>:<Select variant="filled"  value={article?.type} onChange={({target})=>{setArticle({...article,type:target.value}); if(target.value && errorFields[1]){setErrorFields((prev)=>{prev[1]=false; return prev})} }}>
             <option disabled value={null}>Select a Type</option>
                 {types.map((type,index)=>{
                     return <option key={index} value={type?.type} selected={index==0?'true':'false'}>{type?.type}</option>
@@ -424,8 +332,8 @@ return <div className="flex flex-col py-4  space-y-1 ">
                 
 
             <FormControl  >
-                <FormLabel>Mode</FormLabel>
-            <RadioGroup className="space-x-3" value={mode} onChange={setMode}>
+            <h1 className="text-secondary text-sm font-[600]">Mode<span className="text-red-500">*</span></h1>
+            <RadioGroup className="space-x-3 py-2 text-sm" value={mode} onChange={setMode}>
                 <Radio value={'individual'}>Individual</Radio>
                 <Radio value={'collabrated'}>Co-Authored</Radio>
             </RadioGroup>
@@ -443,9 +351,9 @@ return <div className="flex flex-col py-4  space-y-1 ">
 
 
             <FormControl  isInvalid={errorFields[2]} >
-                    <FormLabel>Year</FormLabel>
+            <h1 className="text-secondary text-sm font-[600]">Year <span className="text-red-500">*</span></h1>
                     
-                    <Select value={article?.year} variant="filled" onChange={(e)=>{setArticle({...article,year:e.target.value,volume:extras.years.indexOf(e.target.value)+1});}}>
+                    <Select value={article?.year} defaultValue={extras.years[0]} variant="outline" onChange={(e)=>{setArticle({...article,year:e.target.value,volume:extras.years.indexOf(e.target.value)+1,period:periodData[article?.issue]});}}>
                     <option disabled>Select a Year</option>
 
                         {extras.years?.map((year,index)=>{
@@ -459,16 +367,16 @@ return <div className="flex flex-col py-4  space-y-1 ">
 
 
                 <FormControl >
-                    <FormLabel>Volume</FormLabel>
+                <h1 className="text-secondary text-sm font-[600]">Volume<span className="text-red-500">*</span></h1>
 
-                    <Input value={article?.volume} variant="filled" disabled/>
+                    <Input value={article?.volume} variant="outline" disabled/>
 
                 </FormControl>
 
                 <FormControl isInvalid={errorFields[4]} >
-                    <FormLabel>Issue</FormLabel>
+                <h1 className="text-secondary text-sm font-[600]">Issue <span className="text-red-500">*</span></h1>
 
-                    <Select value={article?.issue} variant="filled" onChange={(e)=>{setArticle({...article,issue:e.target.value})}} >
+                    <Select value={article?.issue} variant="outline" defaultValue={extras?.issues?.[article?.year][0]} onChange={(e)=>{setArticle({...article,issue:e.target.value,period:periodData[e.target.value]})}} >
                         <option disabled>Select an Issue</option>
                         {extras?.issues?.[article?.year]?.map((issue,index)=>{
                             return <option key={index} value={issue} selected={index==0?'true':'false'}>
@@ -479,7 +387,31 @@ return <div className="flex flex-col py-4  space-y-1 ">
                     {errorFields[3]&&<FormErrorMessage>Issue is required</FormErrorMessage>}
 
                 </FormControl>
+                
 
+                <FormControl>
+                
+                <div className="flex justify-between items-center ">
+                <h1 className="text-secondary text-sm font-[600]">Period <span className="text-red-500">*</span></h1>
+
+                {!modifyPeriod?<button type="button" className="underline" onClick={()=>{setModifyPeriod(true)}}>Modify Period</button>
+                :<button type="button" className="underline" onClick={()=>{setModifyPeriod(false); setArticle({...article,period:periodData[article?.issue]})}}>Reset Period</button>
+                }
+
+
+                </div>
+                
+
+
+                        {!modifyPeriod?<Input variant="outline" disabled value={article?.period}/>:<Select defaultValue={periodData[article?.issue]} value={article?.period} onChange={({target})=>{setArticle({...article,period:target?.value})}}>
+                            <option  disabled>Select an Period</option>
+                                {Object.values(periodData)?.map((period)=>{
+                                    return <option value={period}>{period}</option>
+                                })}
+                            </Select>
+                            
+                            }
+                </FormControl>
 
 
 
@@ -487,12 +419,12 @@ return <div className="flex flex-col py-4  space-y-1 ">
             </div>
 
             <FormControl  >
-                <FormLabel>Keywords</FormLabel>
+            <h1 className="text-secondary text-sm font-[600]">Keywords<span className="text-red-500">*</span></h1>
                 
-                <div className="flex flex-wrap w-full py-4 space-x-3">
+                <div className="flex flex-wrap w-full py-2 space-x-3">
                 {keywords.map((element,index) =>{
-                    return <p key={index} className="bg-slate-200 relative p-2 rounded-md ">{element}
-                     <button  type="button" className="font-[600] absolute top-[-5px] right-0  desktop:top-[-10px] desktop:right-[-10px]" onClick={()=>deleteKeywords(element)}>
+                    return <p key={index} className="bg-slate-200 text-sm relative p-2 rounded-md ">{element}
+                     <button  type="button" className="font-[600]  absolute top-[-5px] right-0  desktop:top-[-10px] desktop:right-[-10px]" onClick={()=>deleteKeywords(element)}>
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
   <path strokeLinecap="round" strokeLinejoin="round" d="M9.75 9.75l4.5 4.5m0-4.5l-4.5 4.5M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
 </svg>
@@ -501,8 +433,20 @@ return <div className="flex flex-col py-4  space-y-1 ">
                     </p>
                 })}
                 </div>
-                <Input value={keyword} variant="filled" onChange={(e)=>setKeyword(e.target.value)}/>                
-                <button type="button" className="bg-indigo-50 my-2 p-2 rounded-md max-w-[220px]" onClick={handleKeywords}>Add Keyword</button>
+
+                <InputGroup>
+                <Input value={keyword} variant="outline" onChange={(e)=>setKeyword(e.target.value)}/>                
+                <InputRightAddon variant="unstyled" className="m-0">
+                <button type="button" className="flex text-sm justify-between  py-2  drop-shadow px-2 relative left-[15px] rounded-full bg-primary text-slate-200 " onClick={handleKeywords} >
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-5 h-5">
+<path d="M10.75 4.75a.75.75 0 00-1.5 0v4.5h-4.5a.75.75 0 000 1.5h4.5v4.5a.75.75 0 001.5 0v-4.5h4.5a.75.75 0 000-1.5h-4.5v-4.5z" />
+</svg>
+
+    </button>
+                </InputRightAddon>
+                
+                </InputGroup>
+               
 
             </FormControl>
 
@@ -511,11 +455,11 @@ return <div className="flex flex-col py-4  space-y-1 ">
 
 
             <div className="flex flex-col py-3 space-y-3">
-                <h1 className="my-2 font-[500]">Authors</h1>
+            <h1 className="text-secondary text-sm font-[600]">Authors<span className="text-red-500">*</span></h1>
 
                 
             <FormControl >
-            <Select variant="filled"  value={collabrator} onChange={({target})=>{setCollabrator(target.value);}}>
+            <Select variant="outline"  value={collabrator} onChange={({target})=>{setCollabrator(target.value);}}>
                 <option>Select an Author</option>
                 {authors.map((author,index)=>{
                     return <option key={index} value={author?.id}>{`${author?.name}-${author?.email}`}</option>
@@ -527,15 +471,21 @@ return <div className="flex flex-col py-4  space-y-1 ">
             </FormControl>
 
             {mode=="collabrated"&&<div>
-            <button type="button" className="bg-indigo-50 my-2 p-2 rounded-md max-w-[120px]" onClick={handleCollabrators}>Add Author</button>
+            <button type="button" className="flex  text-sm justify-between space-x-1 py-2  drop-shadow px-6 rounded-md  bg-blue-100  items-center" onClick={handleCollabrators} >
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-5 h-5">
+<path d="M10.75 4.75a.75.75 0 00-1.5 0v4.5h-4.5a.75.75 0 000 1.5h4.5v4.5a.75.75 0 001.5 0v-4.5h4.5a.75.75 0 000-1.5h-4.5v-4.5z" />
+</svg>
 
+
+        <h1>Add</h1></button>
 
             {collabrators.map((e,index)=>{
                 const details=getCollabrator(e)
                 
-                return <div key={index} className="flex bg-slate-100 p-4 rounded-md justify-between">
+                return <div key={index} className="flex my-4 text-base font-[400] bg-slate-100 p-3 rounded-md justify-between">
                 
-                    <div className="w-[250px]">
+                    <div className="w-[250px] flex items-center space-x-2">
+                    <Avatar name={details?.name} size="sm"/>
                     <h1>{details?.name}</h1>
                     </div>
                     <div className="flex ">
@@ -562,100 +512,32 @@ return <div className="flex flex-col py-4  space-y-1 ">
 
 </div>
 
-  
 
+
+
+
+
+
+<button type="submit" className={`flex justify-center text-sm  top-[45px] right-[25px] space-x-1 py-2 absolute w-[120px] drop-shadow px-6 rounded-md text-white bg-gradient-to-r from-primary to-indigo-800 items-center `} >
+    {!loading?<span>Save</span>:<Spinner color="white"/>}
+</button>
 
     
+
     </form>
-
-    <RichTextEditor controls={[
-    ['bold', 'italic', 'underline', 'link', 'image'],
-    ['unorderedList', 'h1', 'h2', 'h3'],
-    ['sup', 'sub'],
-    ['alignLeft', 'alignCenter', 'alignRight'],
-  ]} value={text} onChange={setText} stickyOffset={10} className='w-full  text-lg border border-2 border-black'/>
-
-
-
-
-
-
-
-<div className="flex flex-col py-3 space-y-3">
-
-
-                <div className="flex items-center justify-between w-full">
-
-                <h1 className="font-[500]">Footnotes</h1>
-
-                </div>
-                
-                <div>
-                    <Select variant="filled" rows={12} onChange={handleFootNotes} ref={footNoteContainer}>
-
-                        <option value={null} >Select a Filename</option>
-                           {footNoteFiles.map((file)=>{
-                               return <option key={file?.id} value={file?.id}>{file?.name}</option>
-                           })}
-                        </Select>
-                </div>
-            </div>
-
-
-
-{footNotes?.length>0&&<TableContainer>
-    <div className="flex  space-x-3">
-
-    <button type="button" className="bg-indigo-50 my-2 p-2 rounded-md max-w-[220px]" onClick={handleFootNotes}>
-    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className={`w-6 h-6 ${footNoteLoading&&'animate-spin'}`}>
-  <path strokeLinecap="round" strokeLinejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182m0-4.991v4.99" />
-</svg>
-
-    </button>
-    {originalRichText?<button type="button" className="bg-indigo-50 my-2 p-2 rounded-md max-w-[220px]" onClick={handleResetFootNote}>Unlink Table</button>:<button type="button" className="bg-indigo-50 my-2 p-2 rounded-md max-w-[220px]" onClick={handleFootNotesLink}>Link Table</button>}
-</div>
-        <Table>
-                <Thead>
-                    <Tr>
-                                            <Th>SlNo.</Th>
-                                            <Th>Word</Th>
-                                            <Th>Reference</Th>
-                                        </Tr>
-
-
-                </Thead>
-
-
     
-                <Tbody>
-                    {footNotes?.map((element, index)=>{
-                        return (
-                            <Tr key={index}>
-                                <Td>{index + 1}</Td>
-                                <Td>{element.word}</Td>
-                                <Td>{element.reference}</Td>
-                            </Tr>
-                        )
-                    })}
+
+    <div className="flex p-1 items-center space-x-3">
+
+            <ReferencesModal references={references} setReferences={setReferences} quill={quill} />
 
 
-                </Tbody>
-
-        </Table>
+    </div>
+    <RichTextEditor references={references} setReferences={setReferences} text={text} setText={setText} quill={quill} quillRef={quillRef}/>
         
     
-    </TableContainer>}
-
-
-    
-<div className="flex flex-col py-3 space-y-3" >
-                <h1 className="font-[500]">References</h1>
-                <div>
-                        <Textarea variant="filled" resize="none" rows={10} value={article?.references} onChange={(e)=>{setArticle({...article,references:e.target.value})}}/>
-                </div>
-            </div>
-
-
-    
 </div>
+
+    
+</>
 }

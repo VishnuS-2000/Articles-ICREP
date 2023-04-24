@@ -21,6 +21,7 @@ module.exports.getArticles=async(req,res)=>{
 
 
 module.exports.getArticleById=async(req,res)=>{
+        
 
 
         await Article.findOne({where:{id:req.params.id},include:[Author],distinct:true,attributes:req.headers.attributes?req.headers.attributes.split(','):null}).then((article)=>{
@@ -157,7 +158,6 @@ module.exports.getArticlesByQuery=async(req,res)=>{
 
 
 module.exports.createArticle=async(req,res)=>{
-    
 
     try{
     const article= await Article.build({
@@ -166,10 +166,10 @@ module.exports.createArticle=async(req,res)=>{
         mode:req.body.mode,
         type:req.body.type,
         content:req.body.content,
-        richText:req.body.richText,
         year:req.body.year,
         issue:req.body.issue,
         volume:req.body.volume,
+        period:req.body.period,
         keywords:req.body.keywords,
         footnotes:req.body.footnotes,
         references:req.body.references
@@ -214,13 +214,13 @@ module.exports.updateArticle=async(req,res)=>{
             mode:req.body.mode,
             type:req.body.type,
             content:req.body.content,
-            richText:req.body.richText,
             year:req.body.year,
             issue:req.body.issue,
             volume:req.body.volume,
+            period:req.body.period,
             keywords:req.body.keywords,
-            references:req.body.references
-                     
+            references:req.body.references,
+            footnotes:req.body.footnotes         
         })
 
     

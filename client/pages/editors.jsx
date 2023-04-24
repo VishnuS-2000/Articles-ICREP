@@ -7,6 +7,7 @@ import { Card, CardHeader, CardBody, CardFooter,Avatar,Stack,Heading ,Text} from
 import { useEffect, useState} from "react"
 import useSWR from "swr"
 import Link from "next/link"
+import Head from "next/head"
 
 export default function Editors({data}){
 
@@ -27,9 +28,10 @@ export default function Editors({data}){
                     const name=editorDetails[0]
                     const email=editorDetails[1]
                     const imageURL=editorDetails[2]
-                    const designation=editorDetails.slice(3,editorDetails.length).join().replaceAll(`"`,'')
+                    const profileURL=editorDetails[3]
+                    const designation=editorDetails.slice(4,editorDetails.length).join().replaceAll(`"`,'')
 
-                    return {name,email,imageURL,designation}
+                    return {name,email,imageURL,profileURL,designation}
                 })
 
                setEditors(editorsData)                 
@@ -41,9 +43,14 @@ export default function Editors({data}){
     },[])
 
 
+    console.log(editors)
 
 
     return <>
+    <Head>
+        <title>Editorial Board</title>
+    </Head>
+
     <NavBar/>
         <div className="flex w-full  flex-col space-y-5 pb-12 ">
 
@@ -73,7 +80,7 @@ export default function Editors({data}){
 
             <h1 className="text-sm tablet:text-base desktop:text-base font-[600] text-slate-700">Cheif Editor</h1>
             <div className="grid grid-cols-1 tablet:grid-cols-2 desktop:grid-cols-3 gap-y-3 tablet:gap-2 desktop:gap-8 py-3 rounded-md">
-                <EditorCard name={editors[0]?.name} email={editors[0]?.email} photo={editors[0]?.imageURL} bio={editors[0]?.designation}/>
+                <EditorCard name={editors[0]?.name} email={editors[0]?.email} photo={editors[0]?.imageURL}  bio={editors[0]?.designation} profileURL={editors[0]?.profileURL}/>
             </div>
 
             <h1 className="text-sm desktop:text-base text-slate-700 font-[600]">Members</h1>
@@ -81,7 +88,7 @@ export default function Editors({data}){
                 
                 {editors.slice(1,editors?.length).map((editor,index)=>{
 
-                    return <EditorCard key={index} name={editor?.name} email={editor?.email} bio={editor?.designation} photo={editor?.imageURL} />
+                    return <EditorCard key={index} name={editor?.name} email={editor?.email} bio={editor?.designation} photo={editor?.imageURL} profileURL={editor?.profileURL}/>
                 })}
         
 
@@ -99,8 +106,9 @@ export default function Editors({data}){
 }
 
 
-const EditorCard=({name,bio,photo,email})=>{
+const EditorCard=({name,bio,photo,email,profileURL})=>{
 
+    console.log(profileURL);
 
     return  <div variant="" className={`flex flex-col space-y-2 desktop:flex-[0.40] p-5 bg-gray-50  border rounded-md  px-3 `}>
 
@@ -128,6 +136,8 @@ const EditorCard=({name,bio,photo,email})=>{
 
 </div>
 
+
+<Link href={`${profileURL}`} className="text-gray-800 text-xs desktop:text-sm underline">Visit Profile</Link>
 </div>
 
 

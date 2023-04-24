@@ -8,7 +8,8 @@ module.exports = {
     screens:{
       'mobile' : '250px',
       'tablet' : '600px',
-      'desktop' : '1280px'
+      'desktop' : '1280px',
+      'print': { 'raw': 'print' },
     },
     extend: {
       'colors':{

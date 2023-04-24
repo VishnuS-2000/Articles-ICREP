@@ -53,6 +53,8 @@ const NavBar=()=>{
 
         return <>
 
+
+<div className="print:hidden">
 {menu?<div className="fixed  bg-primary top-0  duration-300  w-full h-full overflow-hidden  text-white desktop:hidden  z-50 top-[0] p-2 ">
 
 <button className="absolute right-[20px] top-[17px]" onClick={()=>setMenu(false)}>
@@ -84,8 +86,9 @@ const NavBar=()=>{
 
 </div>
 }
+</div>
 
-<div className="flex p-5 justify-end desktop:hidden">
+<div className="flex p-5 justify-end desktop:hidden print:hidden">
             <button className="
             absolute right-[20px] top-[17px]" onClick={()=>{setMenu(true)}}>
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
@@ -118,10 +121,9 @@ const NavBar=()=>{
              
 
 
-            <div className="desktop:hidden flex flex-col">
+            <div className="desktop:hidden flex flex-col relative bottom-[20px]">
             <span className=" flex justify-center text-center text-xs font-[600] text-primary">Prof NR Madhava Menon Interdisciplinary Centre for Research Ethics & Protocols</span>
             <span className="flex justify-center text-center text-xs font-[600] text-red-600">Cochin University of Science and Technology</span>
-            <span className="flex justify-center text-center text-xs font-[600] ">Kochi,Kerala</span>
             </div>
 
               <Link href={`https://www.cusat.ac.in/`}>
@@ -150,40 +152,43 @@ const NavBar=()=>{
 </button>
                     </Link>
                     <Link href='/editors'>Editorial Board</Link>
-                    <Link href='/publications'>Publications</Link>
+
 
 
 
                     <Popover>
 
-  <PopoverTrigger>
-  <button className="rounded-full p-1 flex items-center space-x-2">
-  Support
-  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-4 h-4">
-  <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
+<PopoverTrigger>
+<button className="rounded-full p-1 flex items-center space-x-2">
+<Link href='/publications'>Publications</Link>
+<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-4 h-4">
+<path strokeLinecap="round" strokeLinejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
 </svg>
 
-                    </button>
-  </PopoverTrigger>
-  <PopoverContent>
-    <PopoverArrow />
-    <PopoverCloseButton />
-    <PopoverBody>
-      <div className="flex flex-col space-y-3 w-full">
+                  </button>
+</PopoverTrigger>
+<PopoverContent>
+  <PopoverArrow />
+  <PopoverBody>
+    <div className="flex flex-col items-center space-y-3 w-full">
 
-            
-      <Link href={`/contact`} >
-      <button className="hover:bg-slate-100 w-full  duration-500 flex justify-start">Contact Us</button>
-      </Link>
+          
+    <Link href={`/archives`} className="w-full">
+    <button className="hover:bg-slate-100 justify-center  w-full  duration-500 flex ">Archives</button>
+    </Link>
+
+  
 
     
+    </div>
 
-      
-      </div>
-
-    </PopoverBody>
-  </PopoverContent>
+  </PopoverBody>
+</PopoverContent>
 </Popover>
+
+<Link href={`/contact`} className="">
+      <button className="justify-center  w-full  duration-500 flex ">Contact Us</button>
+      </Link>
                 
 
                     <Link href={`/user/login`}>
