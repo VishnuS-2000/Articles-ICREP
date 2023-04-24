@@ -39,23 +39,95 @@ export default function Article({data}){
                 theme:'bubble'
     })
     const [outlines,setOutlines]=useState()
+    const [currentReference,setCurrentReference]=useState()
 
 
     useEffect(()=>{
         if(quill&&data?.content){
     
         quill.setContents(JSON.parse(data?.content))
-        refContainer.current.innerHTML=quill.root.innerHTML
+    
+        var richText=quill.root.innerHTML
+        JSON.parse(data?.references)?.raw.map((element)=>{
+            element?.uses?.map((word)=>{
+                if(richText.includes(word)){
 
+                    console.log(word)
+                const regexPattern = new RegExp(`${word}\\s*<sup>(.*?)</sup>`, "gi");
+                const match = regexPattern.exec(richText);
+            if(match){  
+            const spanContent = match[1];
+            richText=richText.replace(`${word}<sup>${spanContent}</sup>`,`${word}<sup>${spanContent}<button class="footnote" ><strong>[${element?.id}]</strong></button></sup>`)
+            }
+        else{
+         richText=richText.replace(`${word}`,`${word}<sup><button class="footnote" ><strong>[${element?.id}]</strong></button></sup>`)
         }
+                }
+            })
+        })
+
+
+        refContainer.current.innerHTML=richText;
+
+        
+        
+        }
+
+
+        
+
     },[quill,data])
 
 
+    const handleOnEnter=(e)=>{
+        const id=e?.target?.textContent?.replace(/\D/g,"");
+        console.log(id)
+        var results=JSON.parse(data?.references)?.raw?.map((element)=>{
+            if(element?.id==id){
+               return element;
+            }
+        })
+
+        results=results?.filter((e)=>e!==undefined)
+        
+        console.log(results)
+        if(results?.length>0){
+        setCurrentReference({x:e?.clientX+window?.scrollX,y:e?.clientY+window?.scrollY,text:results[0]?.description})
+        }
+    }
+
+    const handleOnLeave=()=>{
+        setCurrentReference(null)
+    }
 
 
-   
+    useEffect(()=>{
+            const referenceButtons=refContainer.current.getElementsByClassName("footnote")
+            for(var i=0;i<referenceButtons.length;i++){
+                referenceButtons[i].addEventListener("mouseenter",handleOnEnter)
+            }
+            for(var i=0;i<referenceButtons.length;i++){
+                referenceButtons[i].addEventListener("mouseleave",handleOnLeave)
+            }
+            
 
-       
+
+
+        
+
+        return ()=>{
+            for(var i=0;i<referenceButtons.length;i++){
+                referenceButtons[i].removeEventListener("mouseenter",handleOnEnter)
+            }
+            for(var i=0;i<referenceButtons.length;i++){
+                referenceButtons[i].removeEventListener("mouseleave",handleOnLeave)
+            }
+            
+            
+        }
+    },[])
+
+    
 
 
     useEffect(()=>{
@@ -106,10 +178,16 @@ const handleOutline=(id,heading)=>{
         <title>{data?.title}</title>
         </Head>
     <NavBar/>
+    {currentReference?.text&&<div style={{left:currentReference?.x,top:currentReference?.y,position:'absolute',background:'black'}} className=" rounded-sm px-5 py-2 text-white text-sm ">
+                <p>{currentReference?.text}</p>
+        </div>}
     
-        <div className="flex  w-full min-h-screen desktop:flex-row">
-        <div className="flex flex-[1] flex-col pb-6 desktop:flex-[0.60] desktop:items-start sticky left-[19%] relative  desktop:px-12 desktop:py-12 deskotp:space-y-5">
-                    
+    
+        <div className="flex  w-full min-h-screen desktop:flex-row relative">
+        <div className="flex flex-[1] flex-col pb-6 desktop:flex-[0.60] desktop:items-start sticky left-[19%] relative  desktop:px-12 desktop:py-12 desktop:space-y-5">
+
+
+              
 
         <a onClick={()=>{router.back()}} className="cursor-pointer flex space-x-3 print:hidden">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
@@ -119,7 +197,7 @@ const handleOutline=(id,heading)=>{
                     </a>
 
                     <div className="p-3" id="title">
-
+                    
 
                     <h1 className="text-lg font-[600] desktop:text-xl text-justify">{data?.title}</h1>
                     <p className="text-sm tablet:text-sm text-slate-600 space-x-2">
@@ -164,7 +242,7 @@ const handleOutline=(id,heading)=>{
             
             </div>
 
-
+       
 
 
 

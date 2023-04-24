@@ -121,9 +121,10 @@ const NavBar=()=>{
              
 
 
-            <div className="desktop:hidden flex flex-col relative bottom-[20px]">
-            <span className=" flex justify-center text-center text-xs font-[600] text-primary">Prof NR Madhava Menon Interdisciplinary Centre for Research Ethics & Protocols</span>
-            <span className="flex justify-center text-center text-xs font-[600] text-red-600">Cochin University of Science and Technology</span>
+            <div className="desktop:hidden items-center flex flex-col relative bottom-[20px] print:bottom-0">
+            <span className=" flex justify-center text-center text-xs print:text-sm font-[600] text-primary">Prof NR Madhava Menon Interdisciplinary Centre for Research Ethics & Protocols</span>
+            <span className="flex justify-center text-center text-xs print:text-sm font-[600] text-red-600">Cochin University of Science and Technology</span>
+            <span className="flex print:flex hidden text-xs underline print:text-base font-[600] relative top-[5px]">ICREP JOURNAL OF INTERDISCIPLINARY STUDIES</span>
             </div>
 
               <Link href={`https://www.cusat.ac.in/`}>
@@ -154,13 +155,12 @@ const NavBar=()=>{
                     <Link href='/editors'>Editorial Board</Link>
 
 
-
-
                     <Popover>
 
 <PopoverTrigger>
+
 <button className="rounded-full p-1 flex items-center space-x-2">
-<Link href='/publications'>Publications</Link>
+<span>Publications</span>
 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-4 h-4">
 <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
 </svg>
@@ -172,7 +172,11 @@ const NavBar=()=>{
   <PopoverBody>
     <div className="flex flex-col items-center space-y-3 w-full">
 
-          
+    
+    <Link href={`/publications`} className="w-full">
+    <button className="hover:bg-slate-100 justify-center  w-full  duration-500 flex ">Recent Publications</button>
+    </Link>
+
     <Link href={`/archives`} className="w-full">
     <button className="hover:bg-slate-100 justify-center  w-full  duration-500 flex ">Archives</button>
     </Link>

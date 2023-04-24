@@ -45,16 +45,9 @@ export default function Info(){
                     </div>
 
                    
-                    <div className="">
-
-                    <h1 className="text-base font-[500] ">Publication Frequency</h1>
-
-                        <p className="my-2">
-                            Quarterly
-                        </p>
-                    
-                    </div>
-
+                <div className="flex w-full py-5 items-center justify-center">
+                <iframe src="https://drive.google.com/file/d/1T7ZSLUWkNxthUoDpkHva9GmwnWWXTXmQ/preview" width="640" className="h-[600px] desktop:h-[800px] "></iframe>
+                </div>
                    
 </div>
 
