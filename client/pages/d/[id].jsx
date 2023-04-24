@@ -215,8 +215,8 @@ const handleOutline=(id,heading)=>{
 
                 
                 <div id="authors" className="hidden print:flex px-4 py-3">
-                    {data?.authors?.map((author)=>{
-                        return <div>
+                    {data?.authors?.map((author,index)=>{
+                        return <div key={index}>
                             <h1 className="text-base font-[600]">{author?.name}</h1>
                             <p className="text-sm">{author?.bio}</p>
                             <p className="text-sm underline">{author?.email}</p>
@@ -234,7 +234,7 @@ const handleOutline=(id,heading)=>{
                 <ul className="flex flex-col items-start my-3">
 
                 {outlines?.map((element,index)=>{
-            return <li className="text-secondary text-sm tablet:text-sm px-2 mt-1 font-[500] ">{index+1}.{element?.term}</li>
+            return <li className="text-secondary text-sm tablet:text-sm px-2 mt-1 font-[500] " key={index}>{index+1}.{element?.term}</li>
     
 
 })}
@@ -374,8 +374,8 @@ const handleOutline=(id,heading)=>{
 {element?.description}</p>
 
     <div className="flex">
-        {element?.urls.map((url)=>{
-            return <Link href={`${url?.link}`} className="text-sm font-[500] flex space-x-2">
+        {element?.urls.map((url,index)=>{
+            return <Link key={index} href={`${url?.link}`} className="text-sm font-[500] flex space-x-2">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-4 h-4">
   <path strokeLinecap="round" strokeLinejoin="round" d="M13.19 8.688a4.5 4.5 0 011.242 7.244l-4.5 4.5a4.5 4.5 0 01-6.364-6.364l1.757-1.757m13.35-.622l1.757-1.757a4.5 4.5 0 00-6.364-6.364l-4.5 4.5a4.5 4.5 0 001.242 7.244" />
 </svg>
@@ -402,13 +402,13 @@ const handleOutline=(id,heading)=>{
             <div className="print:flex hidden flex flex-col w-full text-justify px-5 space-y-1">
             <h1 className="text-base my-2 font-[600]">References</h1>
                 {JSON.parse(data?.references)?.raw?.map((element,index)=>{
-        return <p className="text-sm desktop:text-base">
+        return <p key={index} className="text-sm desktop:text-base">
         <span className="font-[600]">{index+1}. </span>  
 {element?.description}
 
 <div className="flex">
-        {element?.urls.map((url)=>{
-            return <span className="text-sm underline ">{url?.link}</span>
+        {element?.urls.map((url,index)=>{
+            return <span key={index} className="text-sm underline ">{url?.link}</span>
         })}
     </div>
 

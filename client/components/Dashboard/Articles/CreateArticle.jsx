@@ -405,8 +405,8 @@ return <>
 
                         {!modifyPeriod?<Input variant="outline" disabled value={article?.period}/>:<Select defaultValue={periodData[article?.issue]} value={article?.period} onChange={({target})=>{setArticle({...article,period:target?.value})}}>
                             <option  disabled>Select an Period</option>
-                                {Object.values(periodData)?.map((period)=>{
-                                    return <option value={period}>{period}</option>
+                                {Object.values(periodData)?.map((period,index)=>{
+                                    return <option key={index} value={period}>{period}</option>
                                 })}
                             </Select>
                             

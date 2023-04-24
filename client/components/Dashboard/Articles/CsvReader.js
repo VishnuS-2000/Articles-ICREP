@@ -76,7 +76,7 @@ const onDrop = useCallback(acceptedFiles => {
       {
         isDragActive ?
           <p>Drop the files here ...</p> :
-          <p>Drag 'n' drop some files here, or click to select files</p>
+          <p>Drag n drop some files here, or click to select files</p>
           }
         {error&&<p className='text-red-500'>Invalid CSV File</p>}
     </div>
@@ -95,22 +95,22 @@ const onDrop = useCallback(acceptedFiles => {
 
 
                           {csvData?.map((element,index)=>{
-                            return <Tr>
+                            return <Tr key={index}>
                               <Td>{element?.id}</Td>
                               <Td className="">
                                 <div className=''>
                                   <p className='max-w-[350px] text-justify'>{element?.description}</p></div>
                               </Td>
-                              <Td>{element?.urls?.map((url)=>{
-                                return <div className="flex space-x-5 max-w-[320px] ">
+                              <Td>{element?.urls?.map((url,index)=>{
+                                return <div className="flex space-x-5 max-w-[320px] " key={index}>
                                   <p className='max-w-[300px] text-justify'>{url?.link}</p>
                                   <p className="font-[500]">{`(${url?.source})`}</p>
                                 </div>
                               })}</Td>
 
                               <Td>
-                                  {element?.uses?.map((word)=>{
-                                    return <div className="relative">
+                                  {element?.uses?.map((word,index)=>{
+                                    return <div key={index} className="relative">
                                       <p>{word}</p>
                                     </div>
                                   })}

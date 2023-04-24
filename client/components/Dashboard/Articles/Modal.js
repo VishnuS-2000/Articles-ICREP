@@ -285,7 +285,7 @@ return missingId;
 
                         <div className="flex flex-wrap space-x-1">
                             {uses.map((word,index)=>{
-                              return <div className="relative">
+                              return <div key={index} className="relative">
                                 <p className="p-2 rounded-md bg-slate-200 text-sm ">{word}</p>
                                 <button type="button" className="absolute top-0 right-[-2px]" onClick={()=>deleteUse(index)}>
                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-4 h-4">
@@ -352,7 +352,7 @@ return missingId;
                           
 
                           {urls?.map((element,index)=>{
-                            return <div className="flex bg-slate-100 rounded-md p-2 justify-between items-center">
+                            return <div key={index} className="flex bg-slate-100 rounded-md p-2 justify-between items-center">
                           
                               <p className="text-sm w-[250px] text-justify">{element?.link}</p>
                               <p className="text-sm">{element?.source}</p>
@@ -382,15 +382,15 @@ return missingId;
 
 
                           {references?.map((element,index)=>{
-                            return <Tr>
+                            return <Tr key={index}>
                               <Td>{element?.id}</Td>
                               <Td className="">
                                 <div><p className="max-w-[350px] text-justify">
                                   {element?.description}
                                   </p></div>
                               </Td>
-                              <Td>{element?.urls?.map((url)=>{
-                                return <div className="flex space-x-5 max-w-[320px]">
+                              <Td>{element?.urls?.map((url,index)=>{
+                                return <div key={index} className="flex space-x-5 max-w-[320px]">
                                   <p className="max-w-[300px] text-justify">{url?.link}</p>
                                   <p className="font-[500]">{`(${url?.source})`}</p>
                                   
@@ -398,8 +398,8 @@ return missingId;
                               })}</Td>
 
                               <Td>
-                                  {element?.uses?.map((word)=>{
-                                    return <div className="relative">
+                                  {element?.uses?.map((word,index)=>{
+                                    return <div key={index} className="relative">
                                       <p>{word}</p>
                                     </div>
                                   })}
