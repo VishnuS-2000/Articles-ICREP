@@ -304,7 +304,7 @@ return <>
     
     <FormControl  isInvalid={errorFields[0]} >
     <h1 className="text-secondary text-sm font-[600]">Title <span className="text-red-500">*</span></h1>
-            <Input variant="outline" type="text" value={article?.title} onChange={({target})=>{setArticle({...article,title:target.value}); if(target.value && errorFields[0]){setErrorFields((prev)=>{prev[0]=false; return prev})}}}/>
+            <Input variant="filled" size="sm" type="text" value={article?.title} onChange={({target})=>{setArticle({...article,title:target.value}); if(target.value && errorFields[0]){setErrorFields((prev)=>{prev[0]=false; return prev})}}}/>
             {errorFields[0]&&<FormErrorMessage>Title is required</FormErrorMessage>}
 
             </FormControl>
@@ -315,12 +315,12 @@ return <>
 
 
         <div>
-        <button type="button" className="ml-2 text-primary text-sm font-[600]  underline" onClick={()=>{setCreateType(!createType); setArticle({...article,type:null})}}>{createType?'Existing Types':'Create Type'}</button>
+        <button type="button" className="ml-2 text-primary text-sm font-[500]  underline" onClick={()=>{setCreateType(!createType); setArticle({...article,type:null})}}>{createType?'Existing Types':'Create Type'}</button>
         </div>
 
         </div>
 
-            {createType?<Input variant="outline" value={article?.type} onChange={({target})=>{setArticle({...article,type:target.value}); if(target.value && errorFields[1]){setErrorFields((prev)=>{prev[1]=false; return prev})} } }/>:<Select variant="filled"  value={article?.type} onChange={({target})=>{setArticle({...article,type:target.value}); if(target.value && errorFields[1]){setErrorFields((prev)=>{prev[1]=false; return prev})} }}>
+            {createType?<Input variant="filled" size="sm" value={article?.type} onChange={({target})=>{setArticle({...article,type:target.value}); if(target.value && errorFields[1]){setErrorFields((prev)=>{prev[1]=false; return prev})} } }/>:<Select size="sm" variant="filled"  value={article?.type} onChange={({target})=>{setArticle({...article,type:target.value}); if(target.value && errorFields[1]){setErrorFields((prev)=>{prev[1]=false; return prev})} }}>
             <option disabled value={null}>Select a Type</option>
                 {types.map((type,index)=>{
                     return <option key={index} value={type?.type} selected={index==0?'true':'false'}>{type?.type}</option>
@@ -333,7 +333,7 @@ return <>
 
             <FormControl  >
             <h1 className="text-secondary text-sm font-[600]">Mode<span className="text-red-500">*</span></h1>
-            <RadioGroup className="space-x-3 py-2 text-sm" value={mode} onChange={setMode}>
+            <RadioGroup variant="filled"  className="space-x-3 py-2 text-sm" value={mode} onChange={setMode}>
                 <Radio value={'individual'}>Individual</Radio>
                 <Radio value={'collabrated'}>Co-Authored</Radio>
             </RadioGroup>
@@ -353,7 +353,7 @@ return <>
             <FormControl  isInvalid={errorFields[2]} >
             <h1 className="text-secondary text-sm font-[600]">Year <span className="text-red-500">*</span></h1>
                     
-                    <Select value={article?.year} defaultValue={extras.years[0]} variant="outline" onChange={(e)=>{setArticle({...article,year:e.target.value,volume:extras.years.indexOf(e.target.value)+1,period:periodData[article?.issue]});}}>
+                    <Select variant="filled" size="sm" value={article?.year} defaultValue={extras.years[0]} onChange={(e)=>{setArticle({...article,year:e.target.value,volume:extras.years.indexOf(e.target.value)+1,period:periodData[article?.issue]});}}>
                     <option disabled>Select a Year</option>
 
                         {extras.years?.map((year,index)=>{
@@ -369,14 +369,14 @@ return <>
                 <FormControl >
                 <h1 className="text-secondary text-sm font-[600]">Volume<span className="text-red-500">*</span></h1>
 
-                    <Input value={article?.volume} variant="outline" disabled/>
+                    <Input variant="filled" size="sm" value={article?.volume} disabled/>
 
                 </FormControl>
 
                 <FormControl isInvalid={errorFields[4]} >
                 <h1 className="text-secondary text-sm font-[600]">Issue <span className="text-red-500">*</span></h1>
 
-                    <Select value={article?.issue} variant="outline" defaultValue={extras?.issues?.[article?.year][0]} onChange={(e)=>{setArticle({...article,issue:e.target.value,period:periodData[e.target.value]})}} >
+                    <Select value={article?.issue} variant="filled" size="sm" defaultValue={extras?.issues?.[article?.year][0]} onChange={(e)=>{setArticle({...article,issue:e.target.value,period:periodData[e.target.value]})}} >
                         <option disabled>Select an Issue</option>
                         {extras?.issues?.[article?.year]?.map((issue,index)=>{
                             return <option key={index} value={issue} selected={index==0?'true':'false'}>
@@ -403,7 +403,7 @@ return <>
                 
 
 
-                        {!modifyPeriod?<Input variant="outline" disabled value={article?.period}/>:<Select defaultValue={periodData[article?.issue]} value={article?.period} onChange={({target})=>{setArticle({...article,period:target?.value})}}>
+                        {!modifyPeriod?<Input variant="filled" size="sm" disabled value={article?.period}/>:<Select variant="filled" size="sm" defaultValue={periodData[article?.issue]} value={article?.period} onChange={({target})=>{setArticle({...article,period:target?.value})}}>
                             <option  disabled>Select an Period</option>
                                 {Object.values(periodData)?.map((period,index)=>{
                                     return <option key={index} value={period}>{period}</option>
@@ -435,16 +435,15 @@ return <>
                 </div>
 
                 <InputGroup>
-                <Input value={keyword} variant="outline" onChange={(e)=>setKeyword(e.target.value)}/>                
-                <InputRightAddon variant="unstyled" className="m-0">
+                <Input value={keyword}  onChange={(e)=>setKeyword(e.target.value)} variant="filled" size="sm"/>                
+
                 <button type="button" className="flex text-sm justify-between  py-2  drop-shadow px-2 relative left-[15px] rounded-full bg-primary text-slate-200 " onClick={handleKeywords} >
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-5 h-5">
 <path d="M10.75 4.75a.75.75 0 00-1.5 0v4.5h-4.5a.75.75 0 000 1.5h4.5v4.5a.75.75 0 001.5 0v-4.5h4.5a.75.75 0 000-1.5h-4.5v-4.5z" />
 </svg>
 
     </button>
-                </InputRightAddon>
-                
+           
                 </InputGroup>
                
 
@@ -459,7 +458,7 @@ return <>
 
                 
             <FormControl >
-            <Select variant="outline"  value={collabrator} onChange={({target})=>{setCollabrator(target.value);}}>
+            <Select variant="filled" size="sm"  value={collabrator} onChange={({target})=>{setCollabrator(target.value);}}>
                 <option>Select an Author</option>
                 {authors.map((author,index)=>{
                     return <option key={index} value={author?.id}>{`${author?.name}-${author?.email}`}</option>
@@ -482,7 +481,7 @@ return <>
             {collabrators.map((e,index)=>{
                 const details=getCollabrator(e)
                 
-                return <div key={index} className="flex my-4 text-base font-[400] bg-slate-100 p-3 rounded-md justify-between">
+                return <div key={index} className="flex my-4 text-sm items-center font-[400] bg-slate-100 p-3 rounded-md justify-between">
                 
                     <div className="w-[250px] flex items-center space-x-2">
                     <Avatar name={details?.name} size="sm"/>

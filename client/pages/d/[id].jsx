@@ -103,6 +103,8 @@ export default function Article({data}){
 
     useEffect(()=>{
             const referenceButtons=refContainer.current.getElementsByClassName("footnote")
+            
+            
             for(var i=0;i<referenceButtons.length;i++){
                 referenceButtons[i].addEventListener("mouseenter",handleOnEnter)
             }
@@ -125,7 +127,7 @@ export default function Article({data}){
             
             
         }
-    },[])
+    },[refContainer?.current?.innerHTML])
 
     
 
@@ -178,7 +180,7 @@ const handleOutline=(id,heading)=>{
         <title>{data?.title}</title>
         </Head>
     <NavBar/>
-    {currentReference?.text&&<div style={{left:currentReference?.x,top:currentReference?.y,position:'absolute',background:'black'}} className=" rounded-sm px-5 py-2 text-white text-sm ">
+    {currentReference?.text&&<div style={{left:currentReference?.x,top:currentReference?.y,position:'absolute',}} className=" rounded-md  px-5 py-2 bg-black text-white text-sm z-[50] w-[350px]">
                 <p>{currentReference?.text}</p>
         </div>}
     
