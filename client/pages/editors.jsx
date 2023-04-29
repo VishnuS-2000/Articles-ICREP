@@ -18,7 +18,7 @@ export default function Editors({data}){
 
     useEffect(()=>{
     
-        data?.exports.map((element)=>{
+        data?.exports?.map((element)=>{
         
             if(element?.type=="text/csv"){
             

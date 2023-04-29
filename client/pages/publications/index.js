@@ -30,7 +30,6 @@ export default function Publications({data}){
 
 
     const {title,page,sorted}=router.query
-
     const [sort,setSort]=useState()
 
 
@@ -61,7 +60,12 @@ export default function Publications({data}){
 
     },[router])
 
+    
 
+    useEffect(()=>{
+            
+        
+    },[router])
 
     const handleNext=()=>{
         const pathname=router.pathname
@@ -114,6 +118,28 @@ export default function Publications({data}){
     
     router.push(url)
     
+    }
+
+    const handleIssue=(e)=>{
+
+
+    
+        const pathname=router?.pathname
+        const query=router?.query
+        var url=pathname
+        url+='?'
+
+        console.log(query)
+
+        Object.keys(query).map((field)=>{
+            if(field!='issue')
+            url+=`${field}=${query[field]}&`
+        })
+
+        url+=`issue=${e.target.value}`
+
+        router.push(url)
+
     }
     
 
@@ -200,13 +226,13 @@ export default function Publications({data}){
         {`Search Results for " ${title?.length>25?`${title?.slice(0,50)}...`:title} "`}
         </h1>:
 <h1 className="text-base  font-[600] ">
-    All Publications
+    {`Recent Publications - [ 2022 Volume I]`}
     </h1>}
 <div className="flex items-center space-x-5 text-sm tablet:text-base">   
     <Stack direction='row' className="mt-1 desktop:mt-0" >
        
         
-        <form className="flex">
+
         {/* <label for="sorted"> <h1 className="text-sm font-[500] mr-5">Sorted By</h1></label>
 
         <input type="radio" id="sorted" value="name" onChange={handleSort} checked={sort=="name"}/>
@@ -215,15 +241,26 @@ export default function Publications({data}){
         <input type="radio" id="sorted" value="date" onChange={handleSort} checked={sort=="date"}/>
         <label className="text-sm">Date</label> */}
 
-
-            
+        
+        
+        <div className="flex items-start relative space-x-1 py-2 desktop:px-3 desktop:py-0">
+        
+        <Select variant="filled" className="" onChange={handleIssue} size="sm">
+                <option value="I">Issue I</option>
+                <option value="II">Issue II</option>
+        </Select>
+       
+        
+        <div className="flex flex-col flex-[0.50 relative top-[-32%]">
+        <p className="text-xs">Sorted By</p>
         <Select variant="filled" className="" onChange={handleSort} size="sm">
                 <option value="name">Relavance</option>
                 <option value="date">Date</option>
         </Select>
-       
-        </form>
+        </div>
 
+            </div>
+    
       </Stack>
 
 </div>
@@ -292,7 +329,7 @@ export async function  getServerSideProps({query}){
     var orderField=query?.sorted=="name"? "title":"createdAt"
     var orderType=query?.sorted=="name" ? "ASC":"DESC"
 
-    if(query?.title||query?.type||query?.designation){
+    if(query?.title||query?.type||query?.designation||query?.issue){
         url=`/article/search?`
 
         if(query?.title){
@@ -309,6 +346,10 @@ export async function  getServerSideProps({query}){
 
     if(query?.designation){
         url+=`designation=${query?.designation}&`
+    }
+
+    if(query?.issue){
+        url+=`issue=${query?.issue}`
     }
 
     }
