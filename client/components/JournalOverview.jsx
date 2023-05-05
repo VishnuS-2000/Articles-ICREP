@@ -44,8 +44,8 @@ export const JournalOverview=()=>{
                     </div>
 
     <div className="grid grid-cols-1 desktop:grid-cols-3 py-5 desktop:gap-y-5">
-            {Object.keys(data).map((element)=>{
-                return <OverviewCard title={element[0].toUpperCase()+element.slice(1,data?.length)} description={data[element]}/>
+            {Object.keys(data).map((element,index)=>{
+                return <OverviewCard key={index} title={element[0].toUpperCase()+element.slice(1,data?.length)} description={data[element]}/>
             })}
 
 
