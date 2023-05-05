@@ -312,7 +312,7 @@ return <>
     <FilterBar/>
 <div className="flex flex-col w-full">
 <div className="flex flex-col  tablet:flex-row items-between tablet:justify-between  px-5 tablet:px-8 desktop:px-12 py-8 tablet:pt-12">
-{params?
+{/* {params?
     <div className="text-base font-[600]">
         <p>Search Results for {Object.keys(params)?.map((key)=>{
                 if(key!='page'||key!='sorted')
@@ -321,7 +321,11 @@ return <>
         </div>:
 <h1 className="text-base  font-[600] ">
         Search Results
-    </h1>}
+    </h1>} */}
+
+<h1 className="text-base  font-[600] ">
+        Search Results
+    </h1>
 <div className="flex items-center space-x-5 text-sm tablet:text-base">   
     <Stack direction='row' className="mt-1 desktop:mt-0" >
        

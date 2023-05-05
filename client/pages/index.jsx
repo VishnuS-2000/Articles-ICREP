@@ -14,7 +14,7 @@ import Link from "next/link"
 import { AboutJournal } from "../components/AboutJournal"
 import { NewsContainer } from "../components/NewsNotifications"
 import {JournalOverview} from "../components/JournalOverview"
-
+import { PublicationsInfoContainer } from "../components/PublicationInfo"
 export default function Home({data}){
 
 
@@ -73,11 +73,17 @@ export default function Home({data}){
 
     <div className="flex flex-col-reverse desktop:flex-row  w-full ">
 
+        <PublicationsInfoContainer/>
+        <div className="flex flex-col desktop:max-w-[60%]">
         <AboutJournal/>
+        <JournalOverview/>
+        </div>
+       
+
         <NewsContainer/>
+
     </div>
 
-    <JournalOverview/>
 
 
 

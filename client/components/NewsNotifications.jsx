@@ -14,8 +14,8 @@ export const NewsContainer=()=>{
 
 
 
-    return <div className="py-5 px-5 tablet:px-16 desktop:px-5 flex flex-col rounded-md bg-slate-50 w-full  w-full desktop:max-w-[30%] relative">
-                <h1 className="flex px-1 items-center space-x-3  text-base desktop:text-base desktop:text-base font-[600] ">
+    return <div className="py-5  flex flex-col rounded-md bg-slate-50 w-full  w-full desktop:max-w-[20%] relative">
+                <h1 className="flex px-5 items-center space-x-3  text-base desktop:text-base desktop:text-base font-[500] ">
                 
 
                     <span>
@@ -32,7 +32,7 @@ export const NewsContainer=()=>{
     <h2>
       <AccordionButton>
         <Box as="span" flex='1' textAlign='left'>
-          <h1 className='text-sm desktop:text-base font-[600] '>ICREP Journal</h1>
+          <h1 className='text-sm text-gray-800 desktop:text-base font-[500] '>ICREP Journal</h1>
          
         </Box>
         <AccordionIcon />
@@ -40,8 +40,7 @@ export const NewsContainer=()=>{
     </h2>
     <AccordionPanel pb={4} >
         <div className='text-xs desktop:text-sm'>
-        <p>Current Issue : X</p>
-        <p>Current Volume : Y </p>
+        <p>Current Volume : II </p>
         <p>Publication Frqeuency : Quarterly</p>
         </div>
     </AccordionPanel>
@@ -51,7 +50,7 @@ export const NewsContainer=()=>{
     <h2>
       <AccordionButton>
         <Box as="span" flex='1' textAlign='left'>
-        <h1 className='text-sm desktop:text-base font-[600] '>Call for Applications</h1>
+        <h1 className='text-sm desktop:text-base text-gray-800 font-[500] '>Call for Applications</h1>
         <p className='text-xs '>Released 19-04-2023</p>
         </Box>
         <AccordionIcon />

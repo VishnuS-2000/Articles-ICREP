@@ -52,7 +52,7 @@ export const AboutJournal=()=>{
 
 
 
-    return <div className="flex  w-full py-5 px-8 flex-col tablet:px-16 desktop:px-20 desktop:py-8 desktop:max-w-[70%] space-y-5 ">
+    return <div className="flex  w-full py-5 px-8 flex-col tablet:px-16 desktop:px-10 desktop:py-8 desktop:max-w-full space-y-5 ">
 
     
     <div className=" ">
