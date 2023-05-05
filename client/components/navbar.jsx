@@ -75,7 +75,7 @@ const NavBar=()=>{
                       <Link href={'/publications'}>Publications</Link>
                       <Link href={'/contribute'}>Contribute</Link>
                       <Link href={`/contact`}>Contact Us</Link>
-                      <Link href={`/user/login`}>Sign In/Register</Link>
+                      {/* <Link href={`/user/login`}>Sign In/Register</Link> */}
 
 
 
@@ -195,9 +195,9 @@ const NavBar=()=>{
       </Link>
                 
 
-                    <Link href={`/user/login`}>
+                    {/* <Link href={`/user/login`}>
                     <button className="p-2 text-sm border border-primary rounded-md ">Sign In/Register</button>
-                    </Link>
+                    </Link> */}
 
 
                     

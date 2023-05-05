@@ -6,7 +6,7 @@ import {useState} from "react"
 import { Skeleton, SkeletonCircle, SkeletonText } from '@chakra-ui/react'
 import useSWR from "swr"
 
-export const EditorsNote=()=>{
+export const AboutJournal=()=>{
     
 
     const [expanded,setExpanded]=useState(false)
@@ -86,9 +86,7 @@ export const EditorsNote=()=>{
 
 
 
-        <Link href={`/info`}>
-        <button className="flex   underline  text-slate-primary text-xs font-[500] text-secondary">Journal Information</button>
-        </Link>
+        
         
         
         

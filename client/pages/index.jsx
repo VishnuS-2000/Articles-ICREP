@@ -11,8 +11,9 @@ import Head from "next/head"
 import { Input,InputGroup, InputRightElement } from "@chakra-ui/react"
 import Link from "next/link"
 
-import { EditorsNote } from "../components/EditorsNote"
+import { AboutJournal } from "../components/AboutJournal"
 import { NewsContainer } from "../components/NewsNotifications"
+import {JournalOverview} from "../components/JournalOverview"
 
 export default function Home({data}){
 
@@ -72,9 +73,12 @@ export default function Home({data}){
 
     <div className="flex flex-col-reverse desktop:flex-row  w-full ">
 
-        <EditorsNote/>
+        <AboutJournal/>
         <NewsContainer/>
     </div>
+
+    <JournalOverview/>
+
 
 
     <Footer/>
