@@ -13,6 +13,7 @@ export const JournalOverview=()=>{
 
     const data={
         publisher:'Prof NR Madhava Menon ICREP,CUSAT',
+        frequency:'Quarterly',
         language:'English',
         year:2022,
         format:'Online',
@@ -47,16 +48,7 @@ export const JournalOverview=()=>{
                 return <OverviewCard title={element[0].toUpperCase()+element.slice(1,data?.length)} description={data[element]}/>
             })}
 
-<div className="py-3  flex flex-col justify-end items-center cursor-pointer">
-           <Link href={`/contact`} className="font-[600] flex items-center">
-            <span className="text-sm ">Contact Details</span>
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6 animate-pulse">
-  <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
-</svg>
 
-           </Link>
-
-        </div>
     </div>
 
 

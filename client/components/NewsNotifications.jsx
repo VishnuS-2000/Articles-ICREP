@@ -27,7 +27,7 @@ export const NewsContainer=()=>{
                         </h1>
 
 
-                        <Accordion  allowToggle className='py-5 border-gray-500'>
+                        <Accordion  allowToggle className='py-5 '>
   <AccordionItem>
     <h2>
       <AccordionButton>
