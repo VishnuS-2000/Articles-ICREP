@@ -40,7 +40,7 @@ export const PublicationsInfoContainer=()=>{
                 
 
                     <span>
-                    Recent Publications(Volume I)
+                    Recent Publications(Volume I)(2022)
                         </span>
                                   </h1>
 
