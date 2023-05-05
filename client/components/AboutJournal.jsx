@@ -52,7 +52,7 @@ export const AboutJournal=()=>{
 
 
 
-    return <div className="flex  w-full py-5 px-8 flex-col tablet:px-16 desktop:px-20 desktop:py-12 desktop:max-w-[70%] space-y-5 ">
+    return <div className="flex  w-full py-5 px-8 flex-col tablet:px-16 desktop:px-20 desktop:py-8 desktop:max-w-[70%] space-y-5 ">
 
     
     <div className=" ">
@@ -77,20 +77,7 @@ export const AboutJournal=()=>{
         
 
 
-        <div className="flex items-baseline my-5 w-full justify-between">
-        <Link href={`/editors`}>
-        <button className="flex w-[180px]  underline  text-slate-primary text-xs font-[500] text-secondary">Editorial Board</button>
-        </Link>
-
-
-
-
-
-        
-        
-        
-        
-    </div>
+       
 
     </div>
 

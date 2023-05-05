@@ -66,7 +66,7 @@ export const NewsContainer=()=>{
   </AccordionItem>
 </Accordion>
 
-
+{/* 
 <Link href='/notifications'>
 
 <button className='mx-3 text-sm font-[500] hidden desktop:flex desktop:absolute desktop:bottom-[20px] desktop:right-[20px]  flex space-x-1 items-center'>
@@ -79,7 +79,7 @@ export const NewsContainer=()=>{
 </svg>
 
     </button>
-    </Link>
+    </Link> */}
 
         </div>
 
