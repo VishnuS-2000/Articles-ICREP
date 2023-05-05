@@ -20,6 +20,7 @@ export default function Publications({data}){
 
     const [term,setTerm]=useState('')
     const [pageOptions,setPageOptions]=useState({})
+    
 
     const router = useRouter()
 
@@ -31,7 +32,7 @@ export default function Publications({data}){
 
     const {title,page,sorted}=router.query
     const [sort,setSort]=useState()
-
+    const [issue,setIssue]=useState()
 
     useEffect(()=>{
 
@@ -63,7 +64,9 @@ export default function Publications({data}){
     
 
     useEffect(()=>{
-            
+            if(router?.query?.issue){
+                setIssue(router.query?.issue)
+            }
         
     },[router])
 
@@ -129,7 +132,7 @@ export default function Publications({data}){
         var url=pathname
         url+='?'
 
-        console.log(query)
+        // console.log(query)
 
         Object.keys(query).map((field)=>{
             if(field!='issue')
@@ -245,7 +248,7 @@ export default function Publications({data}){
         
         <div className="flex items-start relative space-x-1 py-2 desktop:px-3 desktop:py-0">
         
-        <Select variant="filled" className="" onChange={handleIssue} size="sm">
+        <Select variant="filled" className="" onChange={handleIssue} size="sm" value={issue}>
                 <option value="I">Issue I</option>
                 <option value="II">Issue II</option>
         </Select>

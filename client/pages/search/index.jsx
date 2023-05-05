@@ -7,7 +7,7 @@ import { FilterBar } from "../../components/FilterBar";
 import Link from "next/link";
 
 import { useRouter } from "next/router";
-const perPageLimit=2
+const perPageLimit=5
 
 import axios from "../../axios";
 import { ArticleContainer } from "../../components/articles/Container";
