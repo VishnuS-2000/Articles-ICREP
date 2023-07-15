@@ -1,4 +1,6 @@
 const {uploadToGoogleDrive,downloadFromGoogleDrive,listFilesFromGoogleDrive,deleteFromGoogleDrive} = require('../utils/drive')
+const {getRichTextFromDocumentId} = require('../utils/docs')
+const {getSheetData}=require('../utils/sheets');
 const Account=require('../model/account')
 const Contribution=require('../model/contribution')
 const fs=require('fs')
@@ -6,13 +8,10 @@ const fs=require('fs')
 const {Op}=require('sequelize')
 
 
-
-
 const getFolder=async(req,res)=>{
 
     try{
         const images=[]
-        // console.log(req.params)
         const data=await listFilesFromGoogleDrive(req.params.id)
         if(data){
             const exportData=[]
@@ -40,7 +39,6 @@ const getFolder=async(req,res)=>{
 
                 }))
 
-                // console.log(exportResults)
 
                 return res.status(200).json({result:{exports:exportResults,images:images}})
 
@@ -94,162 +92,43 @@ const getFile=async(req,res) =>{
 
 
 
-const uploadImage=async(req,res)=>{
+
+
+
+const getDoc=async(req,res)=>{
+
     try{
 
-        const response=await uploadToGoogleDrive({
-            name:req.file.originalname,
-            parents: ["14A_PMj3X_17brGQVvCoAZlZqSwYx65Wx"]
-        },req.file)
+    if(!req.params.id){
+        return res.sendStatus(400)
+    }       
 
-        
-      fs.unlink(req.file.path,()=>{
-    })
+    const result= await getRichTextFromDocumentId(req.params.id)
+    return res.status(200).json({result})
+}catch(err){
+    console.log(err)
+    return res.sendStatus(500)
+
+}
+
     
-    res.status(200).json({ id: response?.data.id });
-
-    }catch(err){
-        console.log(err)
-        res.sendStatus(500)
-    }
-
 }
 
 
-const uploadFile = async (req, res) => {
-    try {
-      if (!req.file) {
-        return res.sendStatus(400);
-      }
-
-      const response = await uploadToGoogleDrive({
-        name: req.file.originalname,
-        parents: ["14A_PMj3X_17brGQVvCoAZlZqSwYx65Wx"]
-      },req.file);
-      
-
-      fs.unlink(req.file.path,()=>{
-      })
-
-    //   console.log(response?.data.id)
-
-      res.status(200).json({ id: response?.data.id });
-    } catch (err) {
-      console.log(err);
-      res.sendStatus(500);
-    }
-  };
-
-
-const getContributions=async(req,res)=>{
-
-    try{
-
-        // console.log(req.headers.offset,req.headers.limit)
-        const contributions=await Contribution.findAndCountAll({offset:req.headers.offset,limit:req.headers.limit})
-        res.status(200).json({result: contributions})
-
-        
-
-    }catch(err){
-        console.log(err)
-        res.sendStatus(500)
-    }
-}
-
-
-const createContribution=async(req,res)=>{
-
-    try{
-
-        // console.log(req.body)
-        if(!req.body.name||!req.body.bio||!req.body.email||!req.body.contact||!req.body.file){
-            return res.sendStatus(400)
-        }
-
-
-        const existing=await Contribution.findOne({where:{[Op.or]:[{email:req.body.email},{contact:req.body.contact}]}})
-
-        if(existing){
-            if(req.body.file){
-            await deleteFromGoogleDrive(req.body.file)
-            }
-            if(req.body.image){
-                await deleteFromGoogleDrive(req.body.image)
-
-            }
-            return res.sendStatus(204)
-        }
-
-
-
-        const contribution= await Contribution.build({
-            name: req.body.name,
-            email: req.body.email,
-            contact:req.body.contact,
-            file: req.body.file,
-            bio: req.body.bio,
-            image:req.body.image
+const getSheet=async(req,res)=>{
+        try{
+            const result = await getSheetData({id:req.params.id,range:req.headers.range?req.headers.range:'Sheet1'})
             
-        })
-
-
-        await contribution.save()
-
-
-        res.status(200).json({result:contribution})
-
-
-    }catch(err){
-        console.log(err)
+            res.status(200).json({result:result})
+        }catch(err){
+        console.error(err)
         res.sendStatus(500)
-    }
-
-}
-
-
-
-const deleteContribution=async(req,res)=>{
-
-    try{
-
-        // console.log(req.body)
-        if(!req.params.id){
-            return res.sendStatus(400)
         }
-
-
-        const existing=await Contribution.findOne({where:{id:req.params.id}})
-
-
-
-        if(!existing){
-            return res.sendStatus(404)
-        }
-
-
-
-       await deleteFromGoogleDrive(existing.file)
-       await existing.destroy()
-       
-        res.sendStatus(200)
-
-
-    }catch(err){
-        console.log(err)
-        res.sendStatus(500)
-    }
-
 }
-
 
 
 
 module.exports ={
     getFolder,
-    uploadFile,
-    createContribution,
-    getContributions,
-    deleteContribution,
-    getFile,listFile,uploadImage
+    getFile,listFile,getDoc,getSheet
 }

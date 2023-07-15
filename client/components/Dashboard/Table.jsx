@@ -3,15 +3,15 @@ import useSWR from "swr"
 import axios from "../../axios"
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
-import { Avatar, Input, Spinner} from '@chakra-ui/react'
+import { Avatar, Input, Skeleton, Spinner,Stack,Tooltip} from '@chakra-ui/react'
 
 import { useEffect, useState } from "react";
 import { useDisclosure,Modal,ModalOverlay,ModalContent,ModalHeader,ModalCloseButton,ModalBody,ModalFooter,Button } from "@chakra-ui/react";
 import useAxiosPrivate from "../../hooks/useAxiosPrivate";
-
 import useNotification from "../../hooks/useNotification";
 
 import moment from "moment";
+import _ from "lodash"
 
 import {
   Table,
@@ -21,12 +21,12 @@ import {
   TableContainer,
 } from '@chakra-ui/react'
 
+import Image from "next/image";
 
 export const DataTable=({initials,args,changeArgs})=>{
 
   const {notification,setNotification}=useNotification()
 
-    // console.log(args)
 
     const fetcher=async(args)=>{
       const response=await axios.get(args.url,{
@@ -38,9 +38,8 @@ export const DataTable=({initials,args,changeArgs})=>{
 
 
     const [selected,setSelected]=useState([])
-    const {data,error,isValidating}=useSWR(args,fetcher)
+    const {data,error,isValidating}=useSWR(args,fetcher,{refreshInterval:'5000'})
 
-    // console.log(data,selected)
 
     const addSelected=(id)=>{
       setSelected([...selected,id])
@@ -52,10 +51,8 @@ export const DataTable=({initials,args,changeArgs})=>{
       }))
     }
 
-    // console.log(data)
     
     return <div className="mt-8 ">
-     <TableSearch setArgs={changeArgs} args={args} placeholder={initials?.search?.placeholder} name={initials?.name}/>
     <TableControl name={initials?.name} count={data?.count} args={args} setArgs={changeArgs} controls={initials?.controls}/>
 
     <TableContainer>
@@ -67,9 +64,20 @@ export const DataTable=({initials,args,changeArgs})=>{
         return <TableRow key={index} setNotification={setNotification} element={e} name={initials?.name} args={args} fields={initials?.fields} addSelected={addSelected} removeSelected={removeSelected} selected={selected} toggler={initials.controls.edit.toggle}/>
       })}
       
-      </Table>:isValidating?<div className="flex p-3 justify-center  mt-3">
-      <h1 className="font-[500]">Loading...</h1></div>:<div className="flex p-3 justify-center mt-3">
-        <h1 className="font-[500]">No {initials?.name+'s'} Available</h1></div>
+      </Table>:<div className="flex flex-col w-full min-h-[350px] items-center p-3 justify-center mt-3">
+
+
+        {!data||error?<Spinner/>:<>
+        <div className="flex flex-col items-center">
+        <div className=" bg-gray bg-gradient-to-r from-slate-100 to-gray-200 rounded-full  flex items-center justify-center  w-[150px] h-[150px]">
+        <svg className="h-16 w-16 stroke-red-200 " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352a144 144 0 1 0 0-288 144 144 0 1 0 0 288z"/></svg>
+        </div>
+        <h1 className="text-lg font-[500] py-4 text-slate-500">No Results/Data Found</h1>
+
+        </div>
+        </>
+        }
+        </div>
     }
       </TableContainer>
     </div>
@@ -78,26 +86,7 @@ export const DataTable=({initials,args,changeArgs})=>{
 }
 
 
-export const TableSearch=({args,setArgs,placeholder,name})=>{
 
-
-  const handleSearch=({target})=>{
-
-
-
-    if(!target.value){
-      setArgs({...args,url:`/${name}`,options:{offset:0,limit:args?.options.limit,include:true}})
-      return
-    }    
-    
-      setArgs({...args,url:`/${name}/search?term=${target.value}`,options:{offset:0,limit:args?.options.limit,include:true}})
-  }
-
-  return <div className="flex w-full">
-      <Input variant='filled' placeholder={`${placeholder}`} className="text-sm placeholder:text-sm " onChange={handleSearch}/>
-  </div>
-
-}
 
 export const TableControl=({name,count,controls,args,setArgs})=>{
   const {current,setCurrent}=useCurrent()
@@ -116,20 +105,12 @@ export const TableControl=({name,count,controls,args,setArgs})=>{
     }
   } 
 
-// console.log(args)
 
-return <div className="flex w-full py-4  items-center justify-between font-[500]">
+return <div className="flex w-full py-4  items-center justify-between  font-[500]">
     
     <div className="flex space-x-5 items-center">
     <p className=" ">All({count?count:'0'})</p>
-    <button className="flex  text-sm justify-between space-x-1 py-2  drop-shadow px-6 rounded-md text-white bg-gradient-to-r from-primary to-indigo-800 items-center" onClick={()=>{controls.create.toggle(); setCurrent({...current,[name]:{firstName:'Vishnu S',lastName:'S'}})}}>
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-5 h-5">
-<path d="M10.75 4.75a.75.75 0 00-1.5 0v4.5h-4.5a.75.75 0 000 1.5h4.5v4.5a.75.75 0 001.5 0v-4.5h4.5a.75.75 0 000-1.5h-4.5v-4.5z" />
-</svg>
-
-
-        <h1>Create</h1></button>
-
+   
 
 
 </div>
@@ -193,7 +174,6 @@ export const TableHeader = ({headers}) => {
     
      
 
-    // console.log(element)
 
     const handleSelection = () => {
       if (!selected.includes(element?.id)) {
@@ -203,7 +183,9 @@ export const TableHeader = ({headers}) => {
       }
     };
 
-    const handleEdit=()=>{setCurrent({...current,[name]:element}); toggler();}
+    const handleEdit=()=>{
+  
+      setCurrent({...current,[name]:element}); toggler();}
 
 
 
@@ -214,13 +196,13 @@ export const TableHeader = ({headers}) => {
 
         if(response.status==200){
           setLoading(false)
-          setNotification({status:'warning',message:`${name} Deleted`,created:moment()})
+          setNotification({status:'warning',message:`${_.startCase(name)} Deleted`,createdAt:moment()})
           onClose()
         }
       }
       catch(err){
         setLoading(false)
-        setNotification({status:'error',message:'Try Again Later',created:moment()})
+        setNotification({status:'error',message:'Try Again Later',createdAt:moment()})
       }
 
     }
@@ -235,18 +217,19 @@ export const TableHeader = ({headers}) => {
 
         {fields.map((e,index)=>{
             
-            if(e.type=="nested"){
+            if(e.type=="nestedWithIcon"){
 
               const nestedOject=element[e.name]
 
-              return<div key={index} className="space-y-2 py-2 justify-center flex flex-col overflow-y-auto max-h-[100px]"> 
+              return<div key={index} className="items-center px-3 py-4 space-x-2 cursor-pointer flex  overflow-x-auto max-h-[100px]"> 
                 
-                {nestedOject.map((author,index)=>{
+                {nestedOject?.map((obj,index)=>{
 
-                  return <div key={index} className="flex space-x-3">
-                    {author?.photo?<img src={`${process.env.NEXT_PUBLIC_BACKEND_IMAGE_URL}/${author?.photo}`} className="w-[30px] rounded-full h-[30px]"/>:<Avatar name={`${author?.name}`} size="sm"/>}
-                    <p>{author?.name}</p>
-                    </div>
+                  return <Tooltip key={index} label={obj?.name}>
+                    {obj?.photo?<Image width={30} height={30} src={`${process.env.NEXT_PUBLIC_BACKEND_IMAGE_URL}/${obj?.photo}`} alt={`${obj?.name}`} className="w-[30px] rounded-full h-[30px]"/>:<Avatar name={`${obj?.name}`} size="sm"/>}
+                     
+                    </Tooltip>
+                    
 
               })
 
@@ -254,11 +237,23 @@ export const TableHeader = ({headers}) => {
               </div> 
 
             }
-            if(e.type=="icon"){
 
-              return <Td key={index} className={`flex items-center  space-x-3 `}>
+            else if(e.type=="nestedObject"){
+
+              const nestedObject = element[e.name]
+
+              return <Td key={index}>
+              {e?.subFields?.map((sub,index)=>{
+                  return <span key={index}>{nestedObject[sub]}</span>
+              })}
+
+</Td>
+            }
+            else if(e.type=="icon"){
+
+              return <Td key={index}  className={`flex items-center  space-x-3 `}>
                 
-              {element?.photo?<img src={`${process.env.NEXT_PUBLIC_BACKEND_IMAGE_URL}/${element?.photo}`} className="w-[30px] rounded-full h-[30px]"/>:<Avatar name={`${element[e.name]}`} size="sm"/>}
+              {element?.photo?<Image alt="author-icon" src={`${process.env.NEXT_PUBLIC_BACKEND_IMAGE_URL}/${element?.photo}`} className="w-[30px] rounded-full h-[30px]"/>:<Avatar name={`${element[e.name]}`} size="sm"/>}
               <h1 className="text-gray-700">{element[e.name]?.length>e.limit?element[e.name].slice(0,e.limit):element[e.name]}</h1>
 
             </Td>
@@ -267,9 +262,25 @@ export const TableHeader = ({headers}) => {
 
             else if(e.type=="count"){
 
+              
               return <Td key={index} className={``}>
-
+                
               <h1 className="text-gray-700">{element[e.name]?.length}</h1>
+
+            </Td>
+
+
+            }
+
+            else if(e.type=="localFile"){
+
+              return <Td key={index} className={``}>
+                <a href={`${process.env.NEXT_PUBLIC_BACKEND_DOCUMENT_URL}/${element[e.name]}`} download>
+
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
+  <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m.75 12l3 3m0 0l3-3m-3 3v-6m-1.5-9H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" />
+</svg>
+                </a>
 
             </Td>
 
@@ -289,19 +300,23 @@ export const TableHeader = ({headers}) => {
   
         <Td>
         <div class="">
+          <Tooltip label={`Edit`}>
           <button
-            className="rounded-full  p-1  hover:bg-slate-200"
+            className="rounded-full  p-1  hover:bg-black duration-900 hover:text-white"
             onClick={handleEdit}
           >
             <EditIcon />
           </button>
-  
+          </Tooltip>
+
+          <Tooltip label={`Delete`}>
           <button
-            className="rounded-full  p-1  hover:bg-slate-200"
+            className="rounded-full  p-1  hover:bg-black duration-900 hover:text-white"
             onClick={onOpen}
           >
             <DeleteIcon />
           </button>
+          </Tooltip>
         </div>
         </Td>
 

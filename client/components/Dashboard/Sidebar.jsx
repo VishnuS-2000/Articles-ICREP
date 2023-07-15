@@ -14,7 +14,6 @@ export const Sidebar=({active,toggler})=>{
             withCredentials:'include'
             
         })
-        // console.log(result)
 
         if(result?.status==200)
             {
@@ -35,7 +34,6 @@ export const Sidebar=({active,toggler})=>{
 
     
         {menuItems.map((element,index)=>{
-            // console.log(index)
             return <button key={index} className={`flex p-3 items-center space-x-5 select-none font-[500]   rounded-md duration-400 ${active==index?'text-primary bg-blue-100':'text-black hover:bg-slate-100'}`} onClick={()=>{toggler(index)}}>
                 {index==active?element.solidIcon:element.outlineIcon}
                 <p className="hidden desktop:flex">{element.name}</p>

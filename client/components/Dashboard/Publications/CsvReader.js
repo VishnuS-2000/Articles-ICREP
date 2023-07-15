@@ -19,7 +19,6 @@ const [error,setError]=useState()
 
 
 const onDrop = useCallback(acceptedFiles => {
-    console.log(acceptedFiles)
     if(acceptedFiles[0]?.type=="text/csv"){
         const reader = new FileReader();
         reader.onload = () => {
@@ -35,7 +34,6 @@ const onDrop = useCallback(acceptedFiles => {
         row['id']=id
         row['uses']=[]
         row['urls']=[]
-        console.log(url,isValidURL(url))
         if(isValidURL(url)){
           row['urls']=[{link:url,source:'other'}]
           row['description']=rowData.slice(0,rowData.length-1).join()

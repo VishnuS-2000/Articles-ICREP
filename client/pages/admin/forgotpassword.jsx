@@ -57,17 +57,15 @@ const ForgotPassword=()=>{
         e.preventDefault()
 
         await sendCode()
-        // console.log(username)
         
     
       
 
-    },[username])
+    },[sendCode])
 
     const verifyOtp=useCallback(async(e)=>{
         e.preventDefault()
 
-        // console.log(username)
         
         try{
             const result=await axios.post('/auth/verifyotp',{
@@ -92,7 +90,7 @@ const ForgotPassword=()=>{
         }
       
 
-    },[otp])
+    },[otp,username])
 
 
     const changePassword=async(e)=>{

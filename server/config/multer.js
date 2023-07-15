@@ -25,7 +25,6 @@ const documentStorage=multer.diskStorage({
     },
     filename:(req,file,cb)=>{
         var fileType='' 
-        // console.log(file.mimetype)
         if(file.mimetype=="application/msword"){
             fileType='doc'
          }
@@ -34,6 +33,9 @@ const documentStorage=multer.diskStorage({
          }
          else if(file.mimetype=="application/vnd.oasis.opendocument.text"){
             fileType='odt'
+         }
+         else if(file.mimetype=="application/pdf"){
+            fileType='pdf'
          }
          cb(null,'document-'+Date.now()+'.'+fileType)
 

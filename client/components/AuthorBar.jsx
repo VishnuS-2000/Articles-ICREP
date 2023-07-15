@@ -10,7 +10,7 @@ return <div className="flex flex-[1] flex-col ">
             {authors?.map((author,index)=>{
 
                 return <div key={index} className="flex space-x-3 items-center">
-                    {author?.photo?<Avatar src={author?.photo} />:<>
+                    {author?.photo?<Avatar src={`${process.env.NEXT_PUBLIC_BACKEND_IMAGE_URL}/${author?.photo}`} />:<>
 
                     <div className="flex tablet:hidden">
                     <Avatar size="md" name={author?.name} className="tablet:hidden" />

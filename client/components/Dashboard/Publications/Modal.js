@@ -448,5 +448,79 @@ return missingId;
 
 
 
+export const OutlinesModal = ({quill})=>{
+
+
+    const {isOpen,onClose,onOpen}=useDisclosure()
+    const [outlines,setOutlines]=useState([])
+
+    useEffect(()=>{
+      if(quill){
+        const dataElements=quill?.root.getElementsByTagName("h3");
+        const outlineData=[];
+  
+          
+          setOutlines(Array.from(dataElements));
+
+        
+      }
+    },[quill?.root?.innerHTML])
+
+   
+
+  return<>
+   <button className="flex bg-slate-200 rounded-md drop-shadow space-x-2 px-3 py-1" onClick={onOpen}>
+                  Outlines
+            </button>
+  <Modal isOpen={isOpen} onClose={onClose} size="full">
+      <ModalOverlay/>
+      <ModalContent>
+
+      <ModalHeader>Outlines</ModalHeader>
+      <ModalCloseButton/>
+
+
+        <TableContainer>
+          <Table>
+            <TableCaption>Use Heading 3 on element to add to Outlines</TableCaption>
+            <Thead>
+            <Tr>
+              <Th>  
+                Slno.
+              </Th>
+
+              <Th>
+                  Title
+              </Th>
+            </Tr>
+            </Thead>
+            <Tbody>
+              {outlines?.map((outline,index)=>{
+                if(outline?.innerText){
+                return <Tr key={index}>
+                  <Td>{index+1}</Td>
+                  <Td>
+                    <h1 className="font-[500]">{outline?.innerText}</h1>
+                    </Td>
+                </Tr>
+                }
+              })}
+            </Tbody>
+          
+          </Table>
+        </TableContainer>
+
+      </ModalContent>
+
+</Modal>
+  
+  </>
+  
+
+
+
+
+  }
+
 
 

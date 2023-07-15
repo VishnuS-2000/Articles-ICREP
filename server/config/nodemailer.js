@@ -5,7 +5,6 @@ const{oauth2client}=require("./oauth2")
 
 
 const sendMail=async (options)=>{
-    // console.log('hello',options)
     try{
     const accessToken = await oauth2client.getAccessToken()
    

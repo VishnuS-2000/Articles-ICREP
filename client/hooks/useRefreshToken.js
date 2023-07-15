@@ -6,13 +6,11 @@ const useRefreshToken = ()=>{
     const {auth,setAuth}=useAuth()
 
     const refresh=async()=>{
-        // console.log("Awaiting refresh token")
         const response=await axios.get('/auth/refresh',{
             headers:{'Content-Type':'application/json'},
             withCredentials:true
         })
 
-        // console.log(response)
         setAuth(prev=>{
             
            return  {

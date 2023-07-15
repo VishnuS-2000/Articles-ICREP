@@ -26,7 +26,7 @@ const RichTextEditor = ({references,setReferences,quill,quillRef}) => {
       var bounds=quill.getBounds(range?.index, range?.length)
       setModal({open:true,x:bounds?.left,y:bounds?.top})
       setWord({text,range})
-      }
+    }
     }
 
   })

@@ -43,10 +43,11 @@ export default function Article({data}){
     const [isCopied,setIsCopied]=useState(false)
 
 
-
+    
     useEffect(()=>{
         if(quill&&data?.content){
-    
+            
+        
         quill.setContents(JSON.parse(data?.content))
     
         var richText=quill.root.innerHTML
@@ -54,7 +55,6 @@ export default function Article({data}){
             element?.uses?.map((word)=>{
                 if(richText.includes(word)){
 
-                    console.log(word)
                 const regexPattern = new RegExp(`${word}\\s*<sup>(.*?)</sup>`, "gi");
                 const match = regexPattern.exec(richText);
             if(match){  
@@ -83,7 +83,6 @@ export default function Article({data}){
 
     const handleOnEnter=(e)=>{
         const id=e?.target?.textContent?.replace(/\D/g,"");
-        console.log(id)
         var results=JSON.parse(data?.references)?.raw?.map((element)=>{
             if(element?.id==id){
                return element;
@@ -92,7 +91,6 @@ export default function Article({data}){
 
         results=results?.filter((e)=>e!==undefined)
         
-        console.log(results)
         if(results?.length>0){
         setCurrentReference({x:e?.clientX+window?.scrollX,y:e?.clientY+window?.scrollY,text:results[0]?.description})
         }
@@ -200,7 +198,7 @@ const handleOutline=(id,heading)=>{
 
               
 
-        <a onClick={()=>{router.back()}} className="cursor-pointer flex space-x-3 print:hidden">
+        <a onClick={()=>{router.back()}} className="cursor-pointer relative left-[8px] flex space-x-3 print:hidden">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
   <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" />
 </svg>              
@@ -212,10 +210,10 @@ const handleOutline=(id,heading)=>{
 
                     <h1 className="text-lg font-[600] desktop:text-xl text-justify">{data?.title}</h1>
                     <p className="text-sm tablet:text-sm text-slate-600 space-x-2">
-                    <span className="font-[500]">Volume</span> {data?.volume}
-                    <span className="font-[500]">Issue</span> {data?.issue} 
+                    <span className="font-[500]">Volume</span> {data?.issue.volume}
+                    <span className="font-[500]">Issue</span> {data?.issue.issue} 
                     <span> </span>{data?.period}
-                    <span className="font-[500]">Year</span> {data?.year}
+                    <span className="font-[500]">Year</span> {data?.issue.year}
                     
                     </p>
 
@@ -282,7 +280,7 @@ const handleOutline=(id,heading)=>{
 
 
                 <Accordion  allowMultiple className="flex flex-col w-full py-5 tablet:py-12 text-primary print:hidden">
-                    <AccordionItem className="">
+                    <AccordionItem className=" ">
                         <AccordionButton variant="" className="">
                         <Box as="span" flex='1' textAlign='left' className="p-1">
 
@@ -470,9 +468,9 @@ try{
 
 
 
-    const response=await axios.get(`/article/${params.id}`,{
+    const response=await axios.get(`/publication/${params.id}`,{
         headers:{
-            attributes:'id,title,content,issue,volume,period,year,references,keywords'
+            attributes:'id,title,content,references,keywords'
         }
     })
 

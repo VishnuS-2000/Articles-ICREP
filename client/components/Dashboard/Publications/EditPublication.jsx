@@ -10,42 +10,42 @@ import moment, { invalid } from "moment";
 
 import { Spinner } from "@chakra-ui/react";
 
-import {convert} from "html-to-text"
 
 import { start_date,issueData,periodData} from "../Dates";
 
-const folderId="1tuIhE6V8kE-F6oMBvaoaSpBXbLBS82FA"
-const { v4: uuidv4 } = require('uuid');
+
 
 import RichTextEditor from "./TextEditor"
 
-import { useDisclosure } from "@chakra-ui/react";
 
-import { ReferencesModal } from "./Modal";
+import { OutlinesModal, ReferencesModal } from "./Modal";
 import { useQuill } from "react-quilljs";
+import { useCurrent } from "../useCurrent"
 
 
-export const CreateArticle=()=>{
+export const EditPublication=()=>{
 
 const {quill,quillRef}=useQuill()
-
+const {current}=useCurrent()
     
 const axiosPrivate=useAxiosPrivate()
 
     const [text,setText]=useState()
-    const [article,setArticle]=useState({
-        title:null,
-        type:null,
-        content:null,
-        keywords:null,
-        issue:null,
-        volume:null,
-        year:null,
-        period:null,
+    const [publication,setPublication]=useState({
+        title:current?.publication?.title,
+        type:current?.publication?.type,
+        author: current?.publication?.authorId,
+        content:JSON.parse(current?.publication?.content),
+        keywords:current?.publication?.keywords,
+        issue:current?.publication?.issue?.issue,
+        volume:current?.publication?.issue?.volume,
+        year:current?.publication?.issue?.year,
+        period:current?.publication?.issue.period,
+
     })
         
 
-    const [mode,setMode]=useState('individual')
+    const [mode,setMode]=useState(current?.publication?.mode)
     const [collabrator,setCollabrator]=useState(null)
     const [collabrators,setCollabrators]=useState([])
     const [authors,setAuthors]=useState([])
@@ -54,30 +54,28 @@ const axiosPrivate=useAxiosPrivate()
 
     const [loading,setLoading]=useState(false)
     const {notification,setNotification}=useNotification()
+
     const [createType,setCreateType]=useState(true)
 
-    
     const [errorFields,setErrorFields]=useState([false,false,false,false,false])
     const [extras,setExtras]=useState({years:[],volumes:{}})
 
     const [keyword,setKeyword]=useState('')
-    const [keywords,setKeywords]=useState([])
-
-    const [footNotes,setFootNotes]=useState([])
-    const [tableOfContents,setTableOfContents]=useState([])
+    const [keywords,setKeywords]=useState(current?.publication?.keywords)
      
 
 
-    const [references,setReferences]=useState([])
+
+    const [references,setReferences]=useState(JSON.parse(current?.publication?.references)?.raw)
 
 
-    const [modifyPeriod,setModifyPeriod]=useState(true)
+    const [modifyPeriod,setModifyPeriod]=useState(false)
    
 
 
     const validateFields=()=>{
         let valid=true
-        if(!article?.title){
+        if(!publication?.title){
             valid=false
             setNotification({message:'Title required',status:'error',createdAt:moment()})
             setErrorFields((prev)=>{
@@ -85,7 +83,7 @@ const axiosPrivate=useAxiosPrivate()
                 return prev
             })
         }
-        else if(!article?.type){
+        else if(!publication?.type){
             valid=false
             setNotification({message:'Type required',status:'error',createdAt:moment()})
             setErrorFields((prev)=>{
@@ -94,7 +92,7 @@ const axiosPrivate=useAxiosPrivate()
             })
         }
 
-        else if(!article?.volume){
+        else if(!publication?.volume){
             valid=false
             setErrorFields((prev)=>{
                 prev[2]=true
@@ -112,7 +110,7 @@ const axiosPrivate=useAxiosPrivate()
         }
 
   
-        else if(!article?.year){
+        else if(!publication?.year){
             valid=false
             setErrorFields((prev)=>{
                 prev[3]=true
@@ -121,7 +119,7 @@ const axiosPrivate=useAxiosPrivate()
             setNotification({message:'Year required',status:'error',createdAt:moment()})
         }
 
-        else if(!article?.issue){
+        else if(!publication?.issue){
             valid=false
             setErrorFields((prev)=>{
                 prev[4]=true
@@ -130,10 +128,16 @@ const axiosPrivate=useAxiosPrivate()
             setNotification({message:'Issue required',status:'error',createdAt:moment()})
         }
       
-        else if(!collabrators||!collabrator){
+        else if(mode=="individual"&&!collabrator){
             valid=false
             setNotification({message:'Author required',status:'error',createdAt:moment()})
         }
+
+        else if(mode=="collabrated"&&!collabrators){
+            valid=false
+            setNotification({message:'Author required',status:'error',createdAt:moment()})
+        }
+        
         
         return valid
     }
@@ -153,23 +157,24 @@ const axiosPrivate=useAxiosPrivate()
             const referencesString=JSON.stringify({raw:references})
 
 
-            const response=await axiosPrivate.post('/article',{
-            title:article?.title,
+            const response=await axiosPrivate.put(`/publication/${current?.publication?.id}`,{
+            title:publication?.title,
             mode:mode,
-            type:article?.type,
-            authors:collabrators?collabrators:collabrator,
+            type:publication?.type,
+            authors:mode=="individual"?[collabrator]:collabrators,
             content:content,
-            year:article?.year,
-            issue:article?.issue,
-            volume:article?.volume,
-            period:article?.period,
+            year:publication?.year,
+            issue:publication?.issue,
+            volume:publication?.volume,
+            period:publication?.period,
             keywords:keywords,
             references:referencesString
+
             })
 
             if(response?.status==200){
                 setLoading(false)
-                setNotification({message:`Article Created`,status:'success',createdAt:moment()})
+                setNotification({message:`Publication Updated`,status:'success',createdAt:moment()})
                 
             }
             
@@ -187,7 +192,7 @@ const axiosPrivate=useAxiosPrivate()
 
     useEffect(()=>{
         const fetchAuthors=async()=>{
-            const response=await axios.get('/article/authors')
+            const response=await axios.get('/publication/authors')
   
             if(response){
                 setAuthors(response?.data?.result.rows)
@@ -198,7 +203,7 @@ const axiosPrivate=useAxiosPrivate()
 
         const fetchTypes=async()=>{
 
-            const response=await axios.get('/article/types')
+            const response=await axios.get('/publication/types')
 
             if(response){
                 setTypes(response?.data?.result.rows)
@@ -210,9 +215,36 @@ const axiosPrivate=useAxiosPrivate()
 
     },[])
 
+
+
+    useEffect(()=>{
+        if(mode=="individual"&&authors?.length>0){
+
+            setCollabrator(current?.publication?.authors[0]?.id)
+    
+        }
+        else{
+          const  temp=[]
+    
+            current?.publication?.authors?.map((author)=>{
+                temp.push(author?.id)
+            })
+    
+            setCollabrators(temp)
+    
+        }
+        },[])
+
+
+    useEffect(()=>{
+
+        if(!quill) return
+
+        quill.setContents(publication?.content)
+    },[quill])
+
     useEffect(()=>{
         const current_date=moment()
-        // console.log(issueData)
         const year_diff=current_date.diff(start_date,'year')
 
         var year=start_date.year()
@@ -232,7 +264,6 @@ const axiosPrivate=useAxiosPrivate()
         
         issues[year]=issueData.slice(0,remaining_issues)
         setExtras({years:Object.keys(issues),issues})
-        setArticle({...article,year:year,issue:issues[year][issues[year].length-1]})
 
     },[])
 
@@ -286,7 +317,6 @@ const axiosPrivate=useAxiosPrivate()
 
 
 
-
     
 
 return <>
@@ -304,7 +334,7 @@ return <>
     
     <FormControl  isInvalid={errorFields[0]} >
     <h1 className="text-secondary text-sm font-[600]">Title <span className="text-red-500">*</span></h1>
-            <Input variant="filled" size="sm" type="text" value={article?.title} onChange={({target})=>{setArticle({...article,title:target.value}); if(target.value && errorFields[0]){setErrorFields((prev)=>{prev[0]=false; return prev})}}}/>
+            <Input variant="filled" size="sm" type="text" value={publication?.title} onChange={({target})=>{setPublication({...publication,title:target.value}); if(target.value && errorFields[0]){setErrorFields((prev)=>{prev[0]=false; return prev})}}}/>
             {errorFields[0]&&<FormErrorMessage>Title is required</FormErrorMessage>}
 
             </FormControl>
@@ -315,13 +345,13 @@ return <>
 
 
         <div>
-        <button type="button" className="ml-2 text-primary text-sm font-[500]  underline" onClick={()=>{setCreateType(!createType); setArticle({...article,type:null})}}>{createType?'Existing Types':'Create Type'}</button>
+        <button type="button" className="ml-2 text-primary text-sm font-[600]  underline" onClick={()=>{setCreateType(!createType); setPublication({...publication,type:null})}}>{createType?'Existing Types':'Create Type'}</button>
         </div>
 
         </div>
 
-            {createType?<Input variant="filled" size="sm" value={article?.type} onChange={({target})=>{setArticle({...article,type:target.value}); if(target.value && errorFields[1]){setErrorFields((prev)=>{prev[1]=false; return prev})} } }/>:<Select size="sm" variant="filled"  value={article?.type} onChange={({target})=>{setArticle({...article,type:target.value}); if(target.value && errorFields[1]){setErrorFields((prev)=>{prev[1]=false; return prev})} }}>
-            <option disabled value={null}>Select a Type</option>
+            {createType?<Input variant="filled" size="sm" value={publication?.type} onChange={({target})=>{setPublication({...publication,type:target.value}); if(target.value && errorFields[1]){setErrorFields((prev)=>{prev[1]=false; return prev})} } }/>:<Select variant="filled"  value={publication?.type} onChange={({target})=>{setPublcation({...publication,type:target.value}); if(target.value && errorFields[1]){setErrorFields((prev)=>{prev[1]=false; return prev})} }}>
+            <option disabled value={null} variant="filled" size="sm">Select a Type</option>
                 {types.map((type,index)=>{
                     return <option key={index} value={type?.type} selected={index==0?'true':'false'}>{type?.type}</option>
                 })}
@@ -333,7 +363,7 @@ return <>
 
             <FormControl  >
             <h1 className="text-secondary text-sm font-[600]">Mode<span className="text-red-500">*</span></h1>
-            <RadioGroup variant="filled"  className="space-x-3 py-2 text-sm" value={mode} onChange={setMode}>
+            <RadioGroup className="space-x-3 py-2 text-sm" value={mode} onChange={setMode}>
                 <Radio value={'individual'}>Individual</Radio>
                 <Radio value={'collabrated'}>Co-Authored</Radio>
             </RadioGroup>
@@ -353,7 +383,7 @@ return <>
             <FormControl  isInvalid={errorFields[2]} >
             <h1 className="text-secondary text-sm font-[600]">Year <span className="text-red-500">*</span></h1>
                     
-                    <Select variant="filled" size="sm" value={article?.year} defaultValue={extras.years[0]} onChange={(e)=>{setArticle({...article,year:e.target.value,volume:extras.years.indexOf(e.target.value)+1,period:periodData[article?.issue]});}}>
+                    <Select value={publication?.year}  variant="filled" size="sm" onChange={(e)=>{setPublication({...publication,year:e.target.value,volume:extras.years.indexOf(e.target.value)+1,period:periodData[publication?.issue]});}}>
                     <option disabled>Select a Year</option>
 
                         {extras.years?.map((year,index)=>{
@@ -369,16 +399,16 @@ return <>
                 <FormControl >
                 <h1 className="text-secondary text-sm font-[600]">Volume<span className="text-red-500">*</span></h1>
 
-                    <Input variant="filled" size="sm" value={article?.volume} disabled/>
+                    <Input value={publication?.volume} variant="outline" disabled/>
 
                 </FormControl>
 
                 <FormControl isInvalid={errorFields[4]} >
                 <h1 className="text-secondary text-sm font-[600]">Issue <span className="text-red-500">*</span></h1>
 
-                    <Select value={article?.issue} variant="filled" size="sm" defaultValue={extras?.issues?.[article?.year][0]} onChange={(e)=>{setArticle({...article,issue:e.target.value,period:periodData[e.target.value]})}} >
+                    <Select value={publication?.issue} variant="filled" size="sm" onChange={(e)=>{setPublication({...publication,issue:e.target.value,period:periodData[e.target.value]})}} >
                         <option disabled>Select an Issue</option>
-                        {extras?.issues?.[article?.year]?.map((issue,index)=>{
+                        {extras?.issues?.[publication?.year]?.map((issue,index)=>{
                             return <option key={index} value={issue} selected={index==0?'true':'false'}>
                                     {issue}
                             </option>
@@ -395,7 +425,7 @@ return <>
                 <h1 className="text-secondary text-sm font-[600]">Period <span className="text-red-500">*</span></h1>
 
                 {!modifyPeriod?<button type="button" className="underline" onClick={()=>{setModifyPeriod(true)}}>Modify Period</button>
-                :<button type="button" className="underline" onClick={()=>{setModifyPeriod(false); setArticle({...article,period:periodData[article?.issue]})}}>Reset Period</button>
+                :<button type="button" className="underline" onClick={()=>{setModifyPeriod(false); setPublication({...publication,period:periodData[publication?.issue]})}}>Reset Period</button>
                 }
 
 
@@ -403,7 +433,7 @@ return <>
                 
 
 
-                        {!modifyPeriod?<Input variant="filled" size="sm" disabled value={article?.period}/>:<Select variant="filled" size="sm" defaultValue={periodData[article?.issue]} value={article?.period} onChange={({target})=>{setArticle({...article,period:target?.value})}}>
+                        {!modifyPeriod?<Input variant="filled" size="sm" disabled value={publication?.period}/>:<Select variant="filled" size="sm" defaultValue={periodData[publication?.issue]} value={publication?.period} onChange={({target})=>{setPublication({...publication,period:target?.value})}}>
                             <option  disabled>Select an Period</option>
                                 {Object.values(periodData)?.map((period,index)=>{
                                     return <option key={index} value={period}>{period}</option>
@@ -424,9 +454,9 @@ return <>
                 <div className="flex flex-wrap w-full py-2 space-x-3">
                 {keywords.map((element,index) =>{
                     return <p key={index} className="bg-slate-200 text-sm relative p-2 rounded-md ">{element}
-                     <button  type="button" className="font-[600]  absolute top-[-5px] right-0  desktop:top-[-10px] desktop:right-[-10px]" onClick={()=>deleteKeywords(element)}>
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
-  <path strokeLinecap="round" strokeLinejoin="round" d="M9.75 9.75l4.5 4.5m0-4.5l-4.5 4.5M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                     <button  type="button" className="font-[600]  absolute top-[-5px] right-0  desktop:top-[-2px] desktop:right-[1px]" onClick={()=>deleteKeywords(element)}>
+                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-4 h-4">
+  <path fillRule="evenodd" d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25zm-1.72 6.97a.75.75 0 10-1.06 1.06L10.94 12l-1.72 1.72a.75.75 0 101.06 1.06L12 13.06l1.72 1.72a.75.75 0 101.06-1.06L13.06 12l1.72-1.72a.75.75 0 10-1.06-1.06L12 10.94l-1.72-1.72z" clipRule="evenodd" />
 </svg>
 
             </button>
@@ -434,16 +464,15 @@ return <>
                 })}
                 </div>
 
-                <InputGroup>
-                <Input value={keyword}  onChange={(e)=>setKeyword(e.target.value)} variant="filled" size="sm"/>                
-
-                <button type="button" className="flex text-sm justify-between  py-2  drop-shadow px-2 relative left-[15px] rounded-full bg-primary text-slate-200 " onClick={handleKeywords} >
+                <InputGroup className="flex items-center">
+                <Input value={keyword} variant="filled" size="sm"  onChange={(e)=>setKeyword(e.target.value)}/>                
+                <button type="button" className="flex text-sm justify-between py-2 px-5  drop-shadow px-2 relative left-[15px] rounded-md bg-primary text-slate-200 " onClick={handleKeywords} >
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-5 h-5">
 <path d="M10.75 4.75a.75.75 0 00-1.5 0v4.5h-4.5a.75.75 0 000 1.5h4.5v4.5a.75.75 0 001.5 0v-4.5h4.5a.75.75 0 000-1.5h-4.5v-4.5z" />
 </svg>
 
     </button>
-           
+                
                 </InputGroup>
                
 
@@ -461,6 +490,7 @@ return <>
             <Select variant="filled" size="sm"  value={collabrator} onChange={({target})=>{setCollabrator(target.value);}}>
                 <option>Select an Author</option>
                 {authors.map((author,index)=>{
+                    
                     return <option key={index} value={author?.id}>{`${author?.name}-${author?.email}`}</option>
                 }
                     )}
@@ -528,12 +558,15 @@ return <>
 
     <div className="flex p-1 items-center space-x-3">
 
-            <ReferencesModal references={references} setReferences={setReferences} quill={quill} />
+            <ReferencesModal references={references} setReferences={setReferences} quill={quill}/>
+            <OutlinesModal quill={quill}/>
 
 
     </div>
-    <RichTextEditor references={references} setReferences={setReferences} text={text} setText={setText} quill={quill} quillRef={quillRef}/>
-        
+    <RichTextEditor references={references} setReferences={setReferences}  text={text} setText={setText} quill={quill} quillRef={quillRef}/>
+            
+
+
     
 </div>
 

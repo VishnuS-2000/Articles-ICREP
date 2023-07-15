@@ -105,3 +105,6 @@ dist
 
 # Jetbrain
 .idea
+
+#Server Public Files
+server/public

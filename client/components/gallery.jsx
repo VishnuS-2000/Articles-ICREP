@@ -3,10 +3,9 @@ import axios from "../axios"
 
 
 import "react-responsive-carousel/lib/styles/carousel.min.css";
-import { Carousel } from 'react-responsive-carousel';
-import { Gallery } from "react-grid-gallery";
-import { motion, AnimatePresence } from "framer-motion"
+
 import { Modal,useDisclosure,ModalCloseButton, ModalOverlay,ModalBody,ModalContent} from "@chakra-ui/react";
+
 
 const galleryFolderId='1UKlIutBaYqwr9znykoXZMSEAhzBZBE48'
 
@@ -29,7 +28,6 @@ export const PhotoGallery=()=>{
             const response=await axios.get(`/app/folder/${galleryFolderId}`)
 
 
-            // console.log(response?.data?.result?.images)
 
             if(response){
                 
@@ -46,13 +44,11 @@ export const PhotoGallery=()=>{
   
 
     const handleNext=()=>{
-        // console.log((active+1)%images?.length)
         setActive((active+1)%images?.length)
     }
 
     const handlePrevious=()=>{
 
-        // console.log((active-1)%images?.length)
         setActive((active-1)<0?images?.length-1:(active-1)%images?.length)
     }
 
@@ -69,7 +65,7 @@ export const PhotoGallery=()=>{
 
                     
                     return<div key={index} className={`cursor-pointer relative bg-black rounded-md`}>
-                        <img src={`https://drive.google.com/uc?id=${image}`} className="w-full h-full rounded-md hover:opacity-[0.5] duration-300" onClick={()=>{setExpanded(true); onOpen();setActive(index)}}  />
+                        <img src={`https://drive.google.com/uc?id=${image}`} alt={`gallery-image`} className="w-full h-full rounded-md hover:opacity-[0.5] duration-300" onClick={()=>{setExpanded(true); onOpen();setActive(index)}}  />
                         
                     </div>
 
@@ -103,7 +99,7 @@ export const PhotoGallery=()=>{
 
                  </div>
 
-                    {images&&<img src={`https://drive.google.com/uc?id=${images[active]}`} className="w-full h-full rounded-md"/>}
+                    {images&&<img src={`https://drive.google.com/uc?id=${images[active]}`} alt={`gallery-image-expanded`} className="w-full h-full rounded-md"/>}
                     
                 
                     </div>

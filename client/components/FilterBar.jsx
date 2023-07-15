@@ -12,7 +12,7 @@ export const FilterBar=({filteredData,setFilteredData})=>{
 
     useEffect(()=>{
         const fetchTypes=async()=>{
-            const response=await axios.get('/article/types')
+            const response=await axios.get('/publication/types')
 
             if(response){
                 const typesData=response?.data?.result?.rows.map((row)=>{
@@ -52,7 +52,6 @@ export const FilterBar=({filteredData,setFilteredData})=>{
         query[element?.name]=[element?.value]
     }
 
-    // console.log(query)
 
     
     Object.keys(query).map((key)=>{
@@ -74,7 +73,6 @@ export const FilterBar=({filteredData,setFilteredData})=>{
 
 
 
-    // console.log(url)
     
 
 
@@ -89,14 +87,14 @@ export const FilterBar=({filteredData,setFilteredData})=>{
 
     const filterOptions=[{title:'Publication Type',fields:types,name:'type',type:'checkbox'},{title:'Author',fields:['student','faculty','others'],name:'designation',type:'radio'}]
 
-    return <div className="hidden tablet:flex flex-col w-[300px] py-12 px-8 border bg-white border-1 border-gray-200 h-screen">
-            <h1 className="text-sm font-[600] ">Filter Results</h1>
+    return <div className="hidden desktop:flex flex-col w-[320px] py-10 px-8 border bg-white border-1 border-gray-200  h-screen">
+            <h1 className="text-base font-[600] ">Filter Results</h1>
              <div className="flex flex-col space-y-5 text-justify">
 
                 {filterOptions?.map((filter,index)=>{
 
 
-                    return <div key={index} className="text-sm py-5 font-[500]">
+                    return <div key={index} className="text-sm py-5 font-[500] text-secondary">
                             <h1>{filter?.title}</h1>
                             
                     

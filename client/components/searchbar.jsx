@@ -20,7 +20,6 @@ const SearchBar=()=>{
 
     const handleSubmit=(e)=>{
         e.preventDefault()
-        // console.log(params)
         
         // var url='/search?'
         // url+=params.term?`&term=${params.term}`:''
@@ -123,7 +122,7 @@ const SearchBar=()=>{
 
     {/* Desktop */}
 
-            <div className="mobile:hidden desktop:flex fixed left-0 bg-white w-[20%]   flex-col text-base border  border-r px-4 min-h-screen justify-start py-5">
+            <div className="mobile:hidden desktop:flex fixed left-0 bg-white w-[20%]   flex-col text-base border  border-r border-gray-200 px-4 min-h-screen justify-start py-5">
      
      <form className="flex  flex-col items-start w-full space-y-5 "  >
 

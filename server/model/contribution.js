@@ -1,6 +1,7 @@
 const {DataTypes,Model, DATE}=require('sequelize')
 const sequelize=require('../config/database')
 
+const Announcement=require('./announcement')
 class Contribution extends Model{}
 
 Contribution.init({
@@ -30,17 +31,12 @@ Contribution.init({
     file:{
         type:DataTypes.STRING,
         allowNull:false
-    },
-    image:{
-        type:DataTypes.STRING,
-        allowNull:false
     }
-
-
-
 },{modelName:'contribution',sequelize})
 
 
+Announcement.hasMany(Contribution,{onDelete:'cascade'})
+Contribution.belongsTo(Announcement);
 
 const syncModel=async()=>{
 

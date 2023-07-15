@@ -30,7 +30,6 @@ const checkConnection = async ()=>{
 
 try{
     await sequelize.authenticate()
-    console.log('Database connection established')
 }
 catch(err){
     console.log(err)

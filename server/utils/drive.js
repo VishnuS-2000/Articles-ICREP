@@ -26,7 +26,6 @@ const listFilesFromGoogleDrive = async (googleFolderId) => {
         q: `'${googleFolderId}' in parents`
       });
 
-      // console.log(response?.data)
   
       return response.data;
     } catch (err) {
@@ -42,7 +41,6 @@ const listFilesFromGoogleDrive = async (googleFolderId) => {
         fileId:fileId
       });
 
-      // console.log(response?.data)
   
       return response.data;
     } catch (err) {
@@ -64,7 +62,6 @@ const downloadFromGoogleDrive=async(googleFileId,mimeType)=>{
             mimeType:mimeType,
         })
 
-        // console.log(response.data)
         return response.data
 
     }   
@@ -74,6 +71,39 @@ const downloadFromGoogleDrive=async(googleFileId,mimeType)=>{
 
 }
 
+const createFolder=async({folderName,parentFolderId})=>{
+  try {
+    const response = await drive.files.list({
+      q: `name='${folderName}' and '${parentFolderId}' in parents and mimeType='application/vnd.google-apps.folder'`,
+      fields: 'files(id)',
+      spaces: 'drive'
+    });
 
-module.exports = {uploadToGoogleDrive,listFilesFromGoogleDrive,downloadFromGoogleDrive,deleteFromGoogleDrive}
+    if (response.data.files.length > 0) {
+      return response.data.files[0].id;
+    }
+
+    const folderMetadata = {
+      name: folderName,
+      mimeType: 'application/vnd.google-apps.folder',
+      parents: [parentFolderId]
+    };
+
+    const createdFolder = await drive.files.create({
+      resource: folderMetadata,
+      fields: 'id'
+    });
+
+    return createdFolder.data.id;
+  } catch (error) {
+    console.error('Error:', error.message);
+    throw error;
+  }
+}
+
+
+
+
+
+module.exports = {uploadToGoogleDrive,listFilesFromGoogleDrive,downloadFromGoogleDrive,deleteFromGoogleDrive,createFolder}
 

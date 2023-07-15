@@ -1,10 +1,10 @@
 const Author=require("../model/author")
-const Article=require('../model/article')
+const Publication=require('../model/publication')
 
 const {Op}=require('sequelize')
 
 module.exports.getAuthors=async(req,res)=>{
-        await Author.findAndCountAll({offset:req.headers.offset,limit:req.headers.limit,distinct:true,include:req.headers.include?[Article]:null,attributes:req.headers.attributes,order:[[req.headers.orderfield?req.headers.orderfield:'name',req.headers.ordertype?req.headers.ordertype:'ASC']]}).then((authors)=>{
+        await Author.findAndCountAll({offset:req.headers.offset,limit:req.headers.limit,distinct:true,include:req.headers.include?[Publication]:null,attributes:req.headers.attributes,order:[[req.headers.orderfield?req.headers.orderfield:'name',req.headers.ordertype?req.headers.ordertype:'ASC']]}).then((authors)=>{
             res.status(200).json({result:authors})
         }).catch((err)=>{
             console.log(err)
@@ -14,7 +14,7 @@ module.exports.getAuthors=async(req,res)=>{
 }
 
 module.exports.getAuthorById=async(req,res)=>{
-    await Author.findOne({where:{id:req.params.id},include:req.headers.include?[Article]:null,attributes:req.headers.attributes}).then((author)=>{
+    await Author.findOne({where:{id:req.params.id},include:req.headers.include?[Publication]:null,attributes:req.headers.attributes}).then((author)=>{
         res.status(200).json({result:author})
 
     }).catch((err)=>res.sendStatus(404))
@@ -24,12 +24,10 @@ module.exports.getAuthorById=async(req,res)=>{
 
 module.exports.getAuthorByQuery=async(req,res)=>{
 
-    // console.log(req.query)
     await Author.findAndCountAll({where:{
        [Op.or]:[{name:{[Op.iLike]:`${req.query.term}%`} },{email:{[Op.iLike]:`${req.query.term}%`}}]
-    },limit:req.query.limit,offset:req.query.offset,include:req.query.include?[Article]:null}).then((authors)=>{
+    },limit:req.query.limit,offset:req.query.offset,include:req.query.include?[Publication]:null}).then((authors)=>{
         +
-        console.log(authors)
         res.status(200).json({result:authors});
     
     }).catch((err)=>res.sendStatus(404))
@@ -40,8 +38,7 @@ module.exports.getAuthorByQuery=async(req,res)=>{
 
 module.exports.createAuthor=async(req,res)=>{
 
-    // console.log("Requested :",req.body)
-    const author=Author.build({
+    const author=await Author.build({
         id:req.body.id,
         name:req.body.name,
         email:req.body.email,
@@ -88,7 +85,6 @@ module.exports.updateAuthor=async(req,res)=>{
 module.exports.deleteAuthor=async(req,res)=>{
 
     try{
-    // console.log(req.params.id)
     if(!req.params.id) return res.status(400)
 
     const author=await Author.findOne({where:{id:req.params.id}})

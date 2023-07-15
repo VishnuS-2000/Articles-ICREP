@@ -9,41 +9,40 @@ import useSWR from "swr"
 import Link from "next/link"
 import Head from "next/head"
 
+
+import { useRouter } from "next/router"
+
 export default function Editors({data}){
 
     const [editors,setEditors] = useState([])
 
-
-    // console.log(editors)
+    const router=useRouter()
 
     useEffect(()=>{
-    
-        data?.exports?.map((element)=>{
         
-            if(element?.type=="text/csv"){
-            
-                const editorsData=element?.result.split('\r\n').map((editor,index)=>{
+        if(data){
+        const editorsData=data?.map((element)=>{
+
                     
-                    const editorDetails=editor.split(',')
-                    const name=editorDetails[0]
-                    const email=editorDetails[1]
-                    const imageURL=editorDetails[2]
-                    const profileURL=editorDetails[3]
-                    const designation=editorDetails.slice(4,editorDetails.length).join().replaceAll(`"`,'')
+                    const name=element[0]
+                    const email=element[1]
+                    const imageURL=element[2]
+                    const profileURL=element[3]
+                    const designation=element[4]
 
                     return {name,email,imageURL,profileURL,designation}
-                })
+              
 
-               setEditors(editorsData)                 
-            }
+            
 
         })
 
+        setEditors(editorsData)                 
 
+    }
     },[])
 
 
-    console.log(editors)
 
 
     return <>
@@ -52,13 +51,13 @@ export default function Editors({data}){
     </Head>
 
     <NavBar/>
-        <div className="flex w-full  flex-col space-y-5 pb-12 ">
+        <div className="flex w-full  flex-col space-y-5 pb-12 min-h-screen">
 
             <div className="flex desktop:px-20 items-center bg-gradient-to-r space-x-8 from-primary to-black p-5  w-full ">
             
             
             
-            <Link href={`/`}>
+            <a onClick={()=>{router.back()}} className="cursor-pointer">
       
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="#fff" className="w-6 h-6 tablet:h-7 tablet:w-7 ">
   <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" />
@@ -66,7 +65,7 @@ export default function Editors({data}){
 
 
 
-</Link>
+</a>
 
             
 <h1 className="text-base tablet:text-lg  font-[500] text-white ">Editorial Board</h1>
@@ -108,9 +107,8 @@ export default function Editors({data}){
 
 const EditorCard=({name,bio,photo,email,profileURL})=>{
 
-    console.log(profileURL);
 
-    return  <div variant="" className={`flex flex-col space-y-2 desktop:flex-[0.40] p-5 bg-gray-50  border rounded-md  px-3 `}>
+    return  <div variant="" className={`flex flex-col space-y-2 desktop:flex-[0.40] p-5 bg-gray-50  border border-gray-200 rounded-md  px-3 `}>
 
 
 
@@ -162,7 +160,7 @@ export async function getServerSideProps(){
 
 
     try{
-        const response=await axios.get('/app/folder/1x6YdOwXtpXwGMSY8LtlSFuAwZ2Mfxx7s')
+        const response=await axios.get('/app/sheet/10LduXNAFj98Ha0h7UNum2OTff3pB9gjROQoDedXpxh4')
         return{
 
             props:{

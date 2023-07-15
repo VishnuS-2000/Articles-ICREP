@@ -5,6 +5,7 @@ const app=express()
 const port=process.env.PORT||4000
 
 const cors=require('cors')
+const morgan=require('morgan');
 const cookieParser=require('cookie-parser')
 
 const corsOptions = require('./config/cors')
@@ -12,36 +13,35 @@ const credentials=require('./middleware/credentials')
 
 const {AuthRouter}=require('./routes/auth')
 const {AuthorRouter}=require('./routes/author')
-const {ArticlesRouter}=require('./routes/articles')
+const {PublicationRouter}=require('./routes/publication')
 const {AccountsRouter}=require('./routes/account')
 const {GeneralRouter}=require('./routes/general')
-
-const path=require('path')
-
-
-const {getPublicURLFromGoogleDrive,downloadFromGoogleDrive}=require('./utils/drive')
+const {AnnouncementRouter}=require('./routes/announcement')
+const {ContributionRouter}=require('./routes/contribution')
 
 
+
+app.use(morgan('tiny'));
 app.use(credentials)
 app.use(cors(corsOptions))
 
 app.use(express.urlencoded({extended:false}))
 app.use(express.json({limit:'50mb'}))
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static('public'));
 
 
 app.use(cookieParser())
 
 app.use(`${process.env.BASE_PATH}/auth`,AuthRouter)
 app.use(`${process.env.BASE_PATH}/author`,AuthorRouter)
-app.use(`${process.env.BASE_PATH}/article`,ArticlesRouter)
+app.use(`${process.env.BASE_PATH}/publication`,PublicationRouter)
 app.use(`${process.env.BASE_PATH}/account`,AccountsRouter)
 app.use(`${process.env.BASE_PATH}/app`,GeneralRouter)
-
+app.use(`${process.env.BASE_PATH}/announcement`,AnnouncementRouter)
+app.use(`${process.env.BASE_PATH}/contribution`,ContributionRouter)
 
 
 app.get('/',(req,res)=>{
-
 
     try{
         

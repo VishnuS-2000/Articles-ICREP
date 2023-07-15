@@ -15,7 +15,6 @@ const { google } = require("googleapis");
 const register = async (req, res) => {
   try {
 
-    // console.log(req.body)
 
     if (!req.body.email || !req.body.role || !req.body.name) {
       return res.status(400).json({ success: false, message: "Invalid response" });
@@ -71,7 +70,6 @@ const verifyRegister=async(req,res)=>{
         'administrator':[100,101,102,103],
         'editor':[100]
       }
-      // console.log(req.params)
         if(!req.params.token){
             res.sendStatus(401)
         }       
@@ -123,7 +121,6 @@ const handleLogin = async (req, res) => {
 
     const account = await Account.findOne({ where: { username: req.body.email } });
 
-    // console.log(account)
     if (account) {
    
       const match = verifyPassword(
@@ -158,11 +155,9 @@ const handleLogin = async (req, res) => {
           displayName: account.displayName,
         });
       } else {
-        // console.log("Invalid Username")
         return res.sendStatus(401);
       }
     } else {
-      // console.log("Invalid password")
       return res.sendStatus(401);
     }
   } catch (err) {
@@ -174,7 +169,6 @@ const handleLogin = async (req, res) => {
 
 const sendOTP=async(req,res)=>{
 
-    // console.log(req.body.username)
 
     try{
 
@@ -239,7 +233,6 @@ const sendOTP=async(req,res)=>{
 
 const verifyOTP=async(req,res)=>{ 
 
-  // console.log(req.body)
 try{
 if(!req.body.otp || !req.body.username){
   return res.sendStatus(400)
@@ -248,7 +241,6 @@ if(!req.body.otp || !req.body.username){
 const foundToken=await Token.findOne({where:{[Op.and]:[{username:req.body.username},{purpose:'reset-password'}]}})
 
 if(!foundToken?.jwt){
-  console.log("No token")
   return res.sendStatus(401)
 }
 
@@ -256,7 +248,6 @@ jwt.verify(foundToken.jwt,process.env.RESET_PASSWORD_SECRET,(err,decoded)=>{
 
   if(err) return res.sendStatus(403)
 
-  // console.log(decoded)
   if(decoded.otp===Number(req.body.otp)){
     foundToken.set({status:"verified"})
     foundToken.save()
@@ -285,7 +276,6 @@ catch(err){
 
 const resetPassword = async (req,res) => {
   try {
-    // console.log(req.body)
     if (!req.body.password||!req.body.username) {
       return res.sendStatus(400);
     }
@@ -320,7 +310,6 @@ const resetPassword = async (req,res) => {
 const handleRefreshToken = async (req, res) => {
   try {
     const cookies = req.cookies;
-    // console.log(cookies.jwt);
 
     if (!cookies?.jwt) return res.sendStatus(401);
 
@@ -328,18 +317,15 @@ const handleRefreshToken = async (req, res) => {
 
     const foundAccount = await Account.findOne({ where: { refreshToken } });
 
-    console.log(foundAccount)
     if (!foundAccount) return res.sendStatus(403);
 
     jwt.verify(
       refreshToken,
       process.env.REFRESH_TOKEN_SECRET,
       (err, decoded) => {
-        console.log(decoded.username)
         if (err || decoded.username !== foundAccount.username)
           return res.sendStatus(403)
 
-        // console.log(foundAccount.username)
 
         const accessToken = jwt.sign(
           { username: foundAccount.username },
@@ -366,7 +352,6 @@ const handleLogout = async (req, res) => {
   // on Client delete access token
 
   const cookies = req.cookies;
-  // console.log(cookies)
 
   if (!cookies?.jwt) return res.sendStatus(204); //No Content
 
@@ -376,7 +361,6 @@ const handleLogout = async (req, res) => {
   const foundAccount = await Account.findOne({
     where: { refreshToken: refreshToken },
   });
-  // console.log(foundAccount)
   if (!foundAccount) {
     res.clearCookie("jwt", { httpOnly: true, sameSite: "none", secure: true });
     return res.sendStatus(204);
@@ -392,7 +376,6 @@ const handleLogout = async (req, res) => {
 
 const changePassword = async (req,res) => {
   try {
-    // console.log(req.body)
     if (!req.body.password || !req.body.newPassword ||!req.body.username) {
       return res.sendStatus(400);
     }
@@ -419,7 +402,6 @@ const changePassword = async (req,res) => {
       await account.save();
       return res.sendStatus(200);
     } else {
-      // console.log("No match")
       return res.sendStatus(401);
     }
   } catch (err) {
@@ -432,7 +414,6 @@ const changePassword = async (req,res) => {
 
 const getAccount = async (req, res) => {
   try {
-    // console.log(req?.user);
     const account = await Account.findOne({
       where: { username: req?.headers?.username },
       attributes:['id','name','displayName','bio','photo','note']
@@ -453,12 +434,10 @@ const updateAccount =async(req,res)=>{
 
   try {
 
-    // console.log(req.body)
     if(!req.body.username) return res.sendStatus(400)
 
     const account = await Account.findOne({where:{username:req.body.username}});
 
-    // console.log(account)
     if(!account) return res.sendStatus(404)
 
 
@@ -482,7 +461,6 @@ const updateAccount =async(req,res)=>{
 
 const sendVerifyEmailOTP= async (req, res) => {
   try {
-    // console.log(req.body)
     if (!req.body.email||!req.body.newEmail) return res.sendStatus(400);
 
     const account = await Account.findOne(
@@ -547,7 +525,6 @@ const changeEmail=async(req,res)=>{
 
 try{
 
-  // console.log(req.body)
 
 if(!req.body.code || !req.body.username){
   return res.sendStatus(400)
@@ -556,7 +533,6 @@ if(!req.body.code || !req.body.username){
 const foundToken=await Token.findOne({where:{[Op.and]:[{username:req.body.username},{purpose:'reset-email'}]}})
 
 if(!foundToken?.jwt){
-  // console.log("No token")
   return res.sendStatus(401)
 }
 
@@ -565,7 +541,6 @@ jwt.verify(foundToken.jwt,process.env.RESET_EMAIL_SECRET,async(err,decoded)=>{
   if(err) return res.sendStatus(403)
 
 
-  // console.log(decoded)
   if(decoded.otp===Number(req.body.code)){
     await Account.update({username:decoded?.newUsername},{where:{
       username:req.body.username

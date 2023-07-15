@@ -17,6 +17,7 @@ import { EmptyResponse } from "../../components/EmptyResponse";
 
 export default function Search({data}){
 
+    
 
 const router=useRouter()
 const [showMore,setShowMore] =useState(false);
@@ -29,6 +30,10 @@ const [issues,setIssues] = useState([])
 const [volumes,setVolumes] = useState([])
 const {title,page,sorted}=router.query
 const [sort,setSort]=useState()
+
+const emptyState={
+    message:'Sorry we couldnt find any results for your query. Make sure that the spelling is correct.',
+}
 
 useEffect(()=>{
 
@@ -49,7 +54,7 @@ useEffect(()=>{
 
 
         const fetchIssues=async()=>{
-                const response=await axios.get('/article/issues')
+                const response=await axios.get('/publication/issues')
 
                 if(response){
                         setIssues(response?.data?.result?.rows)
@@ -59,7 +64,7 @@ useEffect(()=>{
 
         
         const fetchVolumes=async()=>{
-                const response=await axios.get('/article/volumes')
+                const response=await axios.get('/publication/volumes')
 
                 if(response){
                         setVolumes(response?.data?.result?.rows)
@@ -69,7 +74,7 @@ useEffect(()=>{
 
         
         const fetchYears=async()=>{
-                const response=await axios.get('/article/years')
+                const response=await axios.get('/publication/years')
 
                 if(response){
                         setYears(response?.data?.result?.rows)
@@ -360,7 +365,7 @@ return <>
     {data?.rows?.map((row,index)=>{
         return <ArticleCard key={index} data={row}/>
     })}
-</ArticleContainer>:<EmptyResponse/>}
+</ArticleContainer>:<EmptyResponse message={emptyState?.message}/>}
 
 
 <div className="flex py-8 absolute text-sm  w-full justify-center  space-x-8 tablet:px-8  tablet:right-0 tablet:text-sm items-center flex-[1] tablet:justify-end   bottom-0 ">
@@ -414,7 +419,7 @@ return <>
 export async function getServerSideProps({query}){
         try{
 
-                var url='/article/search?'
+                var url='/publication/search?'
                 var orderField=query?.sorted=="name"? "title":"createdAt"
                 var orderType=query?.sorted=="name" ? "ASC":"DESC"
             
@@ -428,7 +433,7 @@ export async function getServerSideProps({query}){
                         headers:{
                             offset:query?.page?(query?.page-1)*perPageLimit:0,
                             limit:perPageLimit,
-                            attributes:'id,title,year,issue,volume,period,type,createdAt',
+                            attributes:'id,title,type,createdAt',
                             orderfield:orderField,
                             ordertype:orderType
                         }
@@ -442,7 +447,7 @@ export async function getServerSideProps({query}){
         }catch(e){
                 return {props:{
                         data:{
-                                e
+                                
                         }
                 }}
         }

@@ -49,7 +49,6 @@ router.put('/account',updateAccount)
 router.post('/account/changePassword',changePassword)
 
 router.post("/image",imageUpload.single('file'),(req,res)=>{
-  // console.log(req.file)
   try{
   if(!req.file){
      return res.sendStatus(400)

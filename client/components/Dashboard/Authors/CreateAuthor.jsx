@@ -1,13 +1,12 @@
 import {useState,useCallback} from "react"
 
-import { FormControl,FormLabel,Input,Textarea,Avatar,Select, FormHelperText, FormErrorMessage,useDisclosure, Spinner } from "@chakra-ui/react"
+import { FormControl,FormLabel,Input,Textarea,Avatar,Select, FormErrorMessage,useDisclosure, Spinner } from "@chakra-ui/react"
 import useAxiosPrivate from "../../../hooks/useAxiosPrivate"
 
-import { Notification } from "../../Notification"
 
 import moment from "moment"
 import useNotification from "../../../hooks/useNotification"
-
+import Image from "next/image"
 
 export const CreateAuthor=({toggler})=>{
 
@@ -64,11 +63,9 @@ export const CreateAuthor=({toggler})=>{
         return valid
     }
 
-    // console.log(author)
 
     const handleSubmit = async(e)=>{
         e.preventDefault()
-        // console.log(author)
         try{
             
             // Checking Error Fields
@@ -131,7 +128,6 @@ export const CreateAuthor=({toggler})=>{
 return <div className="flex flex-col py-4 space-y-3 tablet:space-y-6 desktop:space-y-3 ">
     
     
-    <h1 className="text-base font-[600]">Create Author</h1>
 
 
     <form className="flex flex-col relative  h-full space-y-4  tablet:space-y-12 w-full desktop:w-[650px] desktop:space-y-6" onSubmit={handleSubmit} >
@@ -140,7 +136,7 @@ return <div className="flex flex-col py-4 space-y-3 tablet:space-y-6 desktop:spa
     <label htmlFor="upload-button">
 
     <div  className="relative w-[100px]">
-    {author?.image?.url?<img src={author?.image?.url} className="w-[60px] h-[60px] rounded-full"/>:<Avatar name={`${author?.firstName} ${author?.lastName}`} size="md" />}
+    {author?.image?.url?<Image alt="author" src={author?.image?.url} className="w-[60px] h-[60px] rounded-full"/>:<Avatar name={`${author?.firstName} ${author?.lastName}`} size="md" />}
     <button type="button" className="">
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-6 h-6 absolute right-[40px] top-[30px] ">
   <path d="M12 9a3.75 3.75 0 100 7.5A3.75 3.75 0 0012 9z" />
@@ -189,7 +185,7 @@ return <div className="flex flex-col py-4 space-y-3 tablet:space-y-6 desktop:spa
 
             <option value={'faculty'} className="text-sm">Faculty</option>
             <option value={'student'} className="text-sm">Student</option>
-            <option value={'student'} className="text-sm">Others</option>
+            <option value={'others'} className="text-sm">Others</option>
         </Select>
         {errorFields[3]&&<FormErrorMessage>No Designation selected</FormErrorMessage>}
     </FormControl>

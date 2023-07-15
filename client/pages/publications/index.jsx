@@ -13,31 +13,35 @@ import { useRouter } from 'next/router'
 
 import { EmptyResponse } from "../../components/EmptyResponse"
 
+
 const perPageLimit=5
+
 
 export default function Publications({data}){
 
+   
 
     const [term,setTerm]=useState('')
     const [pageOptions,setPageOptions]=useState({})
-    
+
 
     const router = useRouter()
 
     const handleTerm=({target})=>{
-
         setTerm(target.value)
     }
 
+    const emptyState={
+        message:'Sorry we couldnt find any results for your query. Make sure that the spelling is correct.',
+    }
 
-    const {title,page,sorted}=router.query
+    const {title,page,sorted,volume,issue}=router.query
     const [sort,setSort]=useState()
-    const [issue,setIssue]=useState()
+    // const [issue,setIssue]=useState()
 
     useEffect(()=>{
 
         if(!page){
-            // console.log(true)
             setPageOptions({pageNumber:1,offset:0})
         }
         else{
@@ -57,18 +61,11 @@ export default function Publications({data}){
             setSort(sorted)
         }
 
-        // console.log(sorted)
 
     },[router])
 
     
 
-    useEffect(()=>{
-            if(router?.query?.issue){
-                setIssue(router.query?.issue)
-            }
-        
-    },[router])
 
     const handleNext=()=>{
         const pathname=router.pathname
@@ -76,7 +73,6 @@ export default function Publications({data}){
         var {page}=query
         
 
-        // console.log(query)
     if(!page){
         page=1
     }
@@ -132,7 +128,6 @@ export default function Publications({data}){
         var url=pathname
         url+='?'
 
-        // console.log(query)
 
         Object.keys(query).map((field)=>{
             if(field!='issue')
@@ -179,9 +174,9 @@ export default function Publications({data}){
         
             
     <InputGroup className="relative px-5 font-[400]">
-        <Input className="bg-white text-xs mt-8 tablet:w-full rounded-full  placeholder:text-xs tablet:placeholder:text-sm " variant="" placeholder="What do you want to explore" onChange={(e)=>{setTerm(e.target.value)}}/>
+        <Input className="bg-white text-xs mt-8 tablet:w-full rounded-full  placeholder:text-xs tablet:placeholder:text-sm " variant="" placeholder="What do you want to explore" onChange={handleTerm}/>
 
-    <Link href={`/publications?title=${title}`}>
+    <Link href={`/publications?title=${term}`}>
 
 
     <button className="bg-indigo-800 text-sm text-white px-3 h-[42px] rounded-sm absolute right-[20px] desktop:right-[20px] bottom-[-1px]" >
@@ -215,55 +210,41 @@ export default function Publications({data}){
     </div>
 
 
-    <div className="flex flex-col min-h-screen relative bottom-0 bg-gray-50 bottom-0 absolute w-full  ">
+    <div className="flex  desktop:flex-row min-h-screen relative bottom-0  bottom-0 absolute w-full  ">
 
-
-
-
-<div className="flex w-full">
     <FilterBar/>
-<div className="flex flex-col w-full">
-<div className="flex flex-col justify-center tablet:flex-row items-between tablet:justify-between  px-5 tablet:px-8 desktop:px-12 py-8 tablet:pt-12">
+<div className="flex flex-col w-full ">
+<div className="flex  justify-between tablet:flex-row items-center tablet:justify-between  px-5 tablet:px-8 desktop:px-12 pt-5 desktop:pt-8 desktop:pb-3">
 {title?
     <h1 className="text-base font-[600]">
         {`Search Results for " ${title?.length>25?`${title?.slice(0,50)}...`:title} "`}
         </h1>:
-<h1 className="text-base  font-[600] ">
-    {`Recent Publications - [ 2022 Volume I]`}
+<h1 className="text-base   font-[600] text-secondary space-x-1">
+    {volume&&issue?<><span>Volume {volume} </span><span>Issue {issue}</span></>:`Recent Publications `}
     </h1>}
 <div className="flex items-center space-x-5 text-sm tablet:text-base">   
     <Stack direction='row' className="mt-1 desktop:mt-0" >
        
-        
+    
 
-        {/* <label for="sorted"> <h1 className="text-sm font-[500] mr-5">Sorted By</h1></label>
-
-        <input type="radio" id="sorted" value="name" onChange={handleSort} checked={sort=="name"}/>
-        <label className="text-sm">Relavance</label>
-
-        <input type="radio" id="sorted" value="date" onChange={handleSort} checked={sort=="date"}/>
-        <label className="text-sm">Date</label> */}
-
+        <div className="flex items-center relative space-x-1 py-2 desktop:px-3 desktop:py-0">
         
-        
-        <div className="flex items-start relative space-x-1 py-2 desktop:px-3 desktop:py-0">
-        
-        <Select variant="filled" className="" onChange={handleIssue} size="sm" value={issue}>
-                <option value="I">Issue I</option>
-                <option value="II">Issue II</option>
-        </Select>
+    
        
         
-        <div className="flex flex-col flex-[0.50 relative top-[-32%]">
-        <p className="text-xs">Sorted By</p>
-        <Select variant="filled" className="" onChange={handleSort} size="sm">
+        <div className="flex flex-col relative ">
+        <Select placeholder="Sort By" variant="filled" className="" onChange={handleSort} size="sm">
                 <option value="name">Relavance</option>
                 <option value="date">Date</option>
         </Select>
         </div>
 
-            </div>
+            </div>  
+        
     
+           
+
+
       </Stack>
 
 </div>
@@ -277,7 +258,7 @@ export default function Publications({data}){
     {data?.rows?.map((row,index)=>{
         return <ArticleCard key={index} data={row}/>
     })}
-</ArticleContainer>:<EmptyResponse/>}
+</ArticleContainer>:<EmptyResponse message={emptyState?.message} icon={emptyState?.icon}/>}
 
 
 <div className="flex py-8 absolute text-sm  w-full justify-center  space-x-8 tablet:px-8  tablet:right-0 tablet:text-sm items-center flex-[1] tablet:justify-end   bottom-0 ">
@@ -308,7 +289,7 @@ export default function Publications({data}){
 
 
 
-</div>
+
 
 
 
@@ -328,12 +309,12 @@ export default function Publications({data}){
 
 export async function  getServerSideProps({query}){
 
-    var url="/article"
+    var url="/publication"
     var orderField=query?.sorted=="name"? "title":"createdAt"
     var orderType=query?.sorted=="name" ? "ASC":"DESC"
 
     if(query?.title||query?.type||query?.designation||query?.issue){
-        url=`/article/search?`
+        url=`/publication/search?`
 
         if(query?.title){
         const keys=Object.keys(query)
@@ -361,7 +342,7 @@ export async function  getServerSideProps({query}){
         headers:{
             offset:query?.page?(query?.page-1)*perPageLimit:0,
             limit:perPageLimit,
-            attributes:'id,title,year,issue,volume,period,type,createdAt',
+            attributes:'id,title,type,createdAt',
             orderfield:orderField,
             ordertype:orderType
         }

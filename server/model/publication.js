@@ -2,10 +2,10 @@ const {DataTypes,Model} =require('sequelize')
 const sequelize=require('../config/database')
 
 const Author=require('./author')
+const Issue=require('./issue')
+class Publication extends Model{}
 
-class Article extends Model{}
-
-Article.init({
+Publication.init({
     id:{
         type:DataTypes.UUID,
         defaultValue:DataTypes.UUIDV4,
@@ -30,43 +30,31 @@ Article.init({
         type:DataTypes.STRING,
         allowNull:false
     },
-    year:{
-        type:DataTypes.INTEGER,
-        allowNull:false
-    },
-    issue:{
-        type:DataTypes.STRING,
-        allowNull:false
-    },
-    volume:{
-        type:DataTypes.INTEGER,
-        allowNull:false
-    },
-    period:{
-        type:DataTypes.STRING,
-        allowNull:false
-    },
     keywords:{
         type:DataTypes.ARRAY(DataTypes.STRING)
     },
-       references:{
+    references:{
         type:DataTypes.TEXT
+       },
+       status:{
+        type:DataTypes.STRING
        }
 },{
     sequelize,
-    modelName:'article'
+    modelName:'publication'
 })
 
 const Grant = sequelize.define('grant', {
   }, { timestamps: false });
   
-Article.belongsToMany(Author,{through:Grant})
-Author.belongsToMany(Article,{through:Grant})
-
+Publication.belongsToMany(Author,{through:Grant})
+Author.belongsToMany(Publication,{through:Grant})
+Issue.hasMany(Publication)
+Publication.belongsTo(Issue)
 
 const syncModel=async()=>{
 try{
-    await Article.sync()
+    await Publication.sync()
     await Grant.sync()
 }
 catch(err){
@@ -77,5 +65,5 @@ console.log(err)
 
 syncModel()
 
-module.exports=Article
+module.exports=Publication
 module.exports.Grant=Grant

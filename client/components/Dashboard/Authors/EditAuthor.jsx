@@ -8,13 +8,13 @@ import { Spinner } from "@chakra-ui/react"
 
 import useNotification from "../../../hooks/useNotification"
 import moment from "moment"
+import Image from "next/image"
 
 export const EditAuthor=({toggler})=>{
     const {current}=useCurrent()
     const axiosPrivate=useAxiosPrivate()
 
-    // console.log(current?.author)
-    const [account,setAccount]=useState({
+    const [author,setAuthor]=useState({
         firstName:current?.author.name.split(' ')[0],
         lastName:current?.author.name.split(' ')[1],
         email:current?.author.email,
@@ -61,11 +61,10 @@ export const EditAuthor=({toggler})=>{
 
             let fileName=null
             
-            if(account?.image!==current?.author.photo){
+            if(author?.image!==current?.author.photo){
 
-            // console.log(account?.image.raw)
             const imageResult=await axiosPrivate.post('/author/image',{
-                file:account?.image?.raw
+                file:author?.image?.raw
             },{
                 headers:{'Content-Type':'multipart/form-data'}
             })
@@ -79,13 +78,13 @@ export const EditAuthor=({toggler})=>{
                 }
 
 
-            const imageURL=account?.image?.url.replace('${process.env.NEXT_PUBLIC_BACKEND_IMAGE_URL}/','')
+            const imageURL=author?.image?.url.replace('${process.env.NEXT_PUBLIC_BACKEND_IMAGE_URL}/','')
             const response=await axiosPrivate.put(`/author/${current?.author?.id}`,{
-                name:account.firstName+' '+account.lastName,
-                email:account.email,
-                designation:account.designation,
-                bio:account.bio,
-                specialization:account.specialization,
+                name:author.firstName+' '+author.lastName,
+                email:author.email,
+                designation:author.designation,
+                bio:author.bio,
+                specialization:author.specialization,
                 photo:fileName?fileName:imageURL
             })
             if(response?.status==200){
@@ -108,7 +107,6 @@ export const EditAuthor=({toggler})=>{
 
 
 return <div className="flex flex-col py-4 space-y-3  tablet:space-y-6 desktop:space-y-3 ">
-    <h1 className="text-base font-[600]">Edit Author</h1>
 
 
     <form className="flex flex-col  h-full space-y-4  tablet:space-y-12 w-full desktop:w-[650px] desktop:space-y-6" onSubmit={handleSubmit} >
@@ -118,7 +116,7 @@ return <div className="flex flex-col py-4 space-y-3  tablet:space-y-6 desktop:sp
 
     <div  className="relative w-[100px] flex">
 
-    {changes?.image?<img src={changes?.image} className="w-[60px] h-[60px] rounded-full"/>:account?.image.url?<img src={account?.image?.url} className="w-[60px] h-[60px] rounded-full"/>:<Avatar name={`${account?.firstName} ${account?.lastName}`} size="md" />}
+    {changes?.image?<Image  src={changes?.image} alt="author" width={60} height={60} className="w-[60px] h-[60px] rounded-full"/>:author?.image.url?<Image src={author?.image?.url} width={60} height={60} alt="author" className="w-[60px] h-[60px] rounded-full"/>:<Avatar name={`${author?.firstName} ${author?.lastName}`} size="md" />}
 
     <button type="button" className="">
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-6 h-6 absolute right-[40px] top-[30px] ">
@@ -133,7 +131,7 @@ return <div className="flex flex-col py-4 space-y-3  tablet:space-y-6 desktop:sp
 
         
     {changes?.image?.raw&&<div className="flex absolute left-[120px] items-center">
-                <button type="button" className="text-green-600 p-1" onClick={()=>{setAccount({...account,image:changes?.image}); setChanges({...changes,image:null})}}>
+                <button type="button" className="text-green-600 p-1" onClick={()=>{setAuthor({...author,image:changes?.image}); setChanges({...changes,image:null})}}>
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
   <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" />
 </svg>
@@ -153,11 +151,11 @@ return <div className="flex flex-col py-4 space-y-3  tablet:space-y-6 desktop:sp
         <FormControl isRequired="true" isInvalid={errorFields[0]}>
         <h1 className="text-secondary text-sm font-[600]">First Name <span className="text-red-500">*</span></h1>
        <InputGroup>
-            <Input variant="filled" type="text" value={changes?.firstName?changes?.firstName:account?.firstName} disabled={changes?.firstName?false:true}  onChange={({target})=>setChanges({...changes,firstName:target.value})}/>
+            <Input variant="filled" type="text" value={changes?.firstName?changes?.firstName:author?.firstName} disabled={changes?.firstName?false:true}  onChange={({target})=>setChanges({...changes,firstName:target.value})}/>
             
             <InputRightElement>
             {changes?.firstName?<div className="flex mr-3 items-center">
-                <button type="button" className="text-green-600 p-1" onClick={()=>{setAccount({...account,firstName:changes?.firstName}); setChanges({...changes,firstName:null})}}>
+                <button type="button" className="text-green-600 p-1" onClick={()=>{setAuthor({...author,firstName:changes?.firstName}); setChanges({...changes,firstName:null})}}>
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
   <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" />
 </svg>
@@ -168,7 +166,7 @@ return <div className="flex flex-col py-4 space-y-3  tablet:space-y-6 desktop:sp
 </svg>
 
                 </button>
-            </div>:<button onClick={()=>{setChanges({...changes,firstName:account?.firstName})}}>
+            </div>:<button onClick={()=>{setChanges({...changes,firstName:author?.firstName})}}>
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
     <path strokeLinecap="round" strokeLinejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10" />
     </svg>
@@ -183,11 +181,11 @@ return <div className="flex flex-col py-4 space-y-3  tablet:space-y-6 desktop:sp
         <FormControl isRequired="true" isInvalid={errorFields[1]}>
         <h1 className="text-secondary text-sm font-[600]">Last Name <span className="text-red-500">*</span></h1>
         <InputGroup>
-            <Input variant="filled" type="text" value={changes?.lastName?changes?.lastName:account?.lastName} disabled={changes?.lastName?false:true}  onChange={({target})=>setChanges({...changes,lastName:target.value})}/>
+            <Input variant="filled" type="text" value={changes?.lastName?changes?.lastName:author?.lastName} disabled={changes?.lastName?false:true}  onChange={({target})=>setChanges({...changes,lastName:target.value})}/>
             
             <InputRightElement>
             {changes?.lastName?<div className="flex mr-3 items-center">
-                <button type="button" className="text-green-600 p-1" onClick={()=>{setAccount({...account,lastName:changes?.lastName}); setChanges({...changes,lastName:null})}}>
+                <button type="button" className="text-green-600 p-1" onClick={()=>{setAuthor({...author,lastName:changes?.lastName}); setChanges({...changes,lastName:null})}}>
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
   <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" />
 </svg>
@@ -198,7 +196,7 @@ return <div className="flex flex-col py-4 space-y-3  tablet:space-y-6 desktop:sp
 </svg>
 
                 </button>
-            </div>:<button type="button" onClick={()=>{setChanges({...changes,lastName:account?.lastName})}}>
+            </div>:<button type="button" onClick={()=>{setChanges({...changes,lastName:author?.lastName})}}>
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
     <path strokeLinecap="round" strokeLinejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10" />
     </svg>
@@ -219,11 +217,11 @@ return <div className="flex flex-col py-4 space-y-3  tablet:space-y-6 desktop:sp
     <h1 className="text-secondary text-sm font-[600]">Email<span className="text-red-500">*</span></h1>
             
             <InputGroup>
-            <Input variant="filled" type="text" value={changes?.email?changes?.email:account?.email} disabled={changes?.email?false:true}  onChange={({target})=>setChanges({...changes,email:target.value})}/>
+            <Input variant="filled" type="text" value={changes?.email?changes?.email:author?.email} disabled={changes?.email?false:true}  onChange={({target})=>setChanges({...changes,email:target.value})}/>
             
             <InputRightElement>
             {changes?.email?<div className="flex mr-3 items-center">
-                <button type="button" className="text-green-600 p-1" onClick={()=>{setAccount({...account,email:changes?.email}); setChanges({...changes,email:null})}}>
+                <button type="button" className="text-green-600 p-1" onClick={()=>{setAuthor({...author,email:changes?.email}); setChanges({...changes,email:null})}}>
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
   <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" />
 </svg>
@@ -234,7 +232,7 @@ return <div className="flex flex-col py-4 space-y-3  tablet:space-y-6 desktop:sp
 </svg>
 
                 </button>
-            </div>:<button type="button" onClick={()=>{setChanges({...changes,email:account?.email})}}>
+            </div>:<button type="button" onClick={()=>{setChanges({...changes,email:author?.email})}}>
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
     <path strokeLinecap="round" strokeLinejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10" />
     </svg>
@@ -251,11 +249,11 @@ return <div className="flex flex-col py-4 space-y-3  tablet:space-y-6 desktop:sp
 
     <FormControl isRequired="true" >
     <h1 className="text-secondary text-sm font-[600]">Designation <span className="text-red-500">*</span></h1>
-        <Select variant="filled" value={account?.designation} onChange={({target})=>{setAccount({...account,designation:target.value})}} >
+        <Select variant="filled" value={author?.designation} onChange={({target})=>{setAuthor({...author,designation:target.value})}} >
             <option disabled></option>
             <option value={'faculty'} >Faculty</option>
             <option value={'student'} >Student</option>
-            <option value={'student'}>Others</option>
+            <option value={'others'}>Others</option>
 
         </Select>
         {errorFields[3]&&<FormErrorMessage>No Designation selected</FormErrorMessage>}
@@ -264,11 +262,11 @@ return <div className="flex flex-col py-4 space-y-3  tablet:space-y-6 desktop:sp
     <h1 className="text-secondary text-sm font-[600]">Bio <span className="text-red-500">*</span></h1>
 
     <InputGroup>
-            <Textarea variant="filled" type="text" resize="none" rows={8} value={changes?.bio?changes?.bio:account?.bio} disabled={changes?.bio?false:true}  onChange={({target})=>setChanges({...changes,bio:target.value})}/>
+            <Textarea variant="filled" type="text" resize="none" rows={8} value={changes?.bio?changes?.bio:author?.bio} disabled={changes?.bio?false:true}  onChange={({target})=>setChanges({...changes,bio:target.value})}/>
             
             <InputRightElement >
             {changes?.bio?<div className="flex mr-3 items-center">
-                <button type="button" className="text-green-600 p-1" onClick={()=>{setAccount({...account,bio:changes?.bio}); setChanges({...changes,bio:null})}}>
+                <button type="button" className="text-green-600 p-1" onClick={()=>{setAuthor({...author,bio:changes?.bio}); setChanges({...changes,bio:null})}}>
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
   <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" />
 </svg>
@@ -279,7 +277,7 @@ return <div className="flex flex-col py-4 space-y-3  tablet:space-y-6 desktop:sp
 </svg>
 
                 </button>
-            </div>:<button type="button" onClick={()=>{setChanges({...changes,bio:account?.bio})}}>
+            </div>:<button type="button" onClick={()=>{setChanges({...changes,bio:author?.bio})}}>
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
     <path strokeLinecap="round" strokeLinejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10" />
     </svg>
@@ -292,7 +290,7 @@ return <div className="flex flex-col py-4 space-y-3  tablet:space-y-6 desktop:sp
 
     <FormControl>
     <h1 className="text-secondary text-sm font-[600]">Specializations</h1>
-            <Input variant="filled" value={account?.specialization} onChange={({target})=>{setAccount({...account,specialization:target.value})}}/>
+            <Input variant="filled" value={author?.specialization} onChange={({target})=>{setAuthor({...author,specialization:target.value})}}/>
     </FormControl>
    
 
