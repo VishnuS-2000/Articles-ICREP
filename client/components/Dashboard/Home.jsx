@@ -21,9 +21,7 @@ export const Home=()=>{
     const [issueVolumesCount,setIssueVolumesCount]=useState(0);
     const [publicationsCount,setPublicationsCount]=useState(0);
     
-    useEffect(()=>{
-        throw new Error('Client Side Error');
-      })
+    
 
     const fetchAuthorsCount=async()=>{
 

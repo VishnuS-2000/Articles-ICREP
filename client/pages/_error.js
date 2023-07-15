@@ -24,7 +24,7 @@ export default function Error(){
                 <div className="flex flex-col items-center ">
 
                 <h1 className="text-8xl desktop:text-9xl font-[800] text-primary">500</h1>
-                <h1 className="text-xl desktop:text-2xl font-[500] text-secondary">Something Happened at our end.Please Try Again Later</h1>
+                <h1 className="text-base desktop:text-lg font-[500] text-secondary text-center text-secondary">Something Happened at our end.Please Try Again Later</h1>
 
                 
 
