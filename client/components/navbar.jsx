@@ -163,7 +163,9 @@ const NavBar=()=>{
             <div className="desktop:hidden items-center justify-center flex flex-col relative bottom-[5px] print:bottom-0">
             <span className=" flex justify-center text-center text-xs print:text-sm font-[600] text-primary">Prof NR Madhava Menon ICREP</span>
             <span className="flex justify-center text-center text-xs print:text-sm font-[600] text-red-600">Cochin University of Science and Technology</span>
-            <span className="flex print:flex hidden text-xs underline print:text-base font-[600] relative top-[5px]">ICREP JOURNAL OF INTERDISCIPLINARY STUDIES</span>
+            <span className="flex print:flex hidden text-xs underline print:text-base font-[600] relative top-[5px]">ICREP JOURNAL OF INTERDISCIPLINARY STUDIES</span>            
+            <span className="hidden text-sm font-[400] text-secondary text-center print:flex">(ISSN 2583-8237)</span>
+
             </div>
 
               <Link href={`https://www.cusat.ac.in/`}>

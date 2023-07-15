@@ -27,7 +27,7 @@ export const AnnouncementsContainer=()=>{
                 {data?.rows?.map((element,index)=>{
 
                  return <Link key={index} href={`/announcements/${element?.id}`} className='flex items-center hover:underline rounded-md  justify-between duration-500 text-sm desktop:text-base  '>
-                       <div className="flex flex-col">
+                       <div className="flex flex-col bg-white bg-primary text-slate-100 p-1 rounded-[5px]">
                         <p className='font-[500] text-sm'>{element?.title?.length>25?`${element?.title.slice(0,25)}...`:`${element?.title}`} ({element?.dated})</p>
                        </div>
                        

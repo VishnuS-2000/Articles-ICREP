@@ -30,13 +30,16 @@ export default function Home({data}){
         </Head>
     <NavBar/>
 
-    <div className="flex flex-col w-full h-[250px]  tablet:h-[320px] desktop:p-4 items-center  bg-gradient-to-r from-primary to-secondary  justify-center ">
+    <div className="flex flex-col w-full h-[250px]  tablet:h-[320px] desktop:p-4 items-center  bg-gradient-to-r from-primary to-secondary  justify-center relative ">
     <div className="w-full  tablet:w-[80%] desktop:w-[60%] flex flex-col items-center font-[600]">
     <div className="text-base desktop:text-2xl text-white drop-shadow flex-col  tablet:flex-row flex  items-center desktop:space-x-1">
         
         <span className="text-gray-200">ICREP</span><span className="text-gray-200">JOURNAL OF INTERDISCIPLINARY STUDIES</span></div>
         
-            
+        <div className=" font-[600] text-slate-200 ">
+                (ISSN 2583-8237)
+        </div>
+
         <InputGroup className="relative px-5 font-[400]">
         <Input className="bg-white text-xs mt-8 tablet:w-full rounded-full  placeholder:text-xs tablet:placeholder:text-sm " variant="" placeholder="What do you want to explore" onChange={(e)=>{setTitle(e.target.value)}}/>
 
@@ -53,9 +56,7 @@ export default function Home({data}){
 
         </InputGroup>
 
-        <div className="">
-
-        </div>
+        
 
 
 
@@ -71,6 +72,8 @@ export default function Home({data}){
     
     
     </div>
+
+ 
     </div>
     
 

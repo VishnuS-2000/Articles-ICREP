@@ -19,3 +19,13 @@
 button{
   user-select: none;
 }
+
+@media print {
+  .page-number::after {
+    content: counter(page);
+  
+  }
+title{
+    display : none;
+  }
+}

@@ -25,11 +25,11 @@ import {
 import { useQuill } from "react-quilljs"
 import dynamic from 'next/dynamic'
 
+
 const DownloadPdfButton = dynamic(
   () => import('../../components/pdfdownload'),
   { ssr: false } // <-- not including this component on server-side
 )
-import {Router} from "next/router"
 
 export default function Article({data}){
     const refContainer=useRef()
@@ -181,11 +181,16 @@ const handleOutline=(id,heading)=>{
               .catch(() => setIsCopied(false));
           };
     
+
+
+ 
    
     return <>
-    <Head>
-        <title>{data?.title}</title>
-        </Head>
+        <Head>
+          <title>{`${data.title}  `}</title>
+            <span>{`(ISSN 2583-8237)`}</span>
+            </Head>
+
     <NavBar/>
     {currentReference?.text&&<div style={{left:currentReference?.x,top:currentReference?.y,position:'absolute',}} className=" rounded-md  px-5 py-2 bg-black text-white text-sm z-[50] w-[350px]">
                 <p>{currentReference?.text}</p>
@@ -204,6 +209,8 @@ const handleOutline=(id,heading)=>{
 </svg>              
 <span>Back</span>
                     </a>
+
+                    
 
                     <div className="p-3" id="title">
                     
@@ -439,7 +446,9 @@ const handleOutline=(id,heading)=>{
 })}
 
 </div>
-                
+
+<div className="page-number"></div>
+    
                 </div>
 
 
