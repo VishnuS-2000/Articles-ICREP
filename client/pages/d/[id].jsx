@@ -188,7 +188,6 @@ const handleOutline=(id,heading)=>{
     return <>
         <Head>
           <title>{`${data.title}  `}</title>
-            <span>{`(ISSN 2583-8237)`}</span>
             </Head>
 
     <NavBar/>

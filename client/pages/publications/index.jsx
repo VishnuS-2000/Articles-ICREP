@@ -332,12 +332,16 @@ export async function  getServerSideProps({query}){
         url+=`designation=${query?.designation}&`
     }
 
+    if(query?.volume){
+        url+=`volume=${query?.volume}&`
+    }
+
     if(query?.issue){
         url+=`issue=${query?.issue}`
     }
 
     }
-
+    
     const response=await axios.get(url,{
         headers:{
             offset:query?.page?(query?.page-1)*perPageLimit:0,
