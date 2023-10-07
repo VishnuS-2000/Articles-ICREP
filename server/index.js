@@ -26,7 +26,7 @@ app.use(credentials)
 app.use(cors(corsOptions))
 
 app.use(express.urlencoded({extended:false}))
-app.use(express.json({limit:'100mb'}))
+app.use(express.json({limit:'250mb'}))
 app.use(express.static('public'));
 
 
